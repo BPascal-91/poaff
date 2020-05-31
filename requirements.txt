@@ -2,3 +2,6 @@
 ### Librayries
 ###    Syntaxe4load --> pip install -r requirements.txt
 ###
+aixmPaser
+#groundEstimatedHeight ; necessary but include to aixmPaser
+#openairPaser ; necessary to complete data

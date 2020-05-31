@@ -13,6 +13,7 @@ sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
 ### Include local modules/librairies
 import bpaTools
 import aixmReader
+from groundEstimatedHeight import GroundEstimatedHeight
 
 
 ### Context applicatif
@@ -43,7 +44,7 @@ scriptProcessing = {
     #"SIA":              {cstOutPath:"../output/SIA/", cstSrcFile:"../input/SIA/20200618_aixm4.5_SIA-FR.xml"},
     "EuCtrl":           {cstOutPath:"../output/EuCtrl/", cstSrcFile:"../input/EuCtrl/20200326_aixm4.5_Eurocontrol-FR.xml"}
 }
-
+    
 
 ####  Options d'appels  ####
 #aArgs = [appName, "-Fall", "-Tall", aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
@@ -51,10 +52,16 @@ aArgs = [appName, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optF
 
 
 def parseFile(sKey:str, oFile:dict) -> bool:
-    bpaTools.createFolder(oFile["outPath"])                                                 #Init dossier de sortie
+    bpaTools.createFolder(oFile["outPath"])     #Init dossier de sortie
     aixmCtrl = aixmReader.AixmControler(oFile["srcFile"], oFile["outPath"], sKey, oLog)     #Init controler
-    ret = aixmCtrl.execParser(oOpts)                                                        #Execution des traitements
+    ret = aixmCtrl.execParser(oOpts)            #Execution des traitements
     return ret
+
+def updateReferentials(sKey:str, oFile:dict) -> None:
+    oGEH = GroundEstimatedHeight(oLog, oFile["outPath"], oFile["outPath"] + "referentials/", sKey + "@")
+    oGEH.parseUnknownGroundHeightRef()          #Execution des traitements
+    return
+
 
 if __name__ == '__main__':
     ####  Préparation d'appel ####
@@ -71,6 +78,7 @@ if __name__ == '__main__':
         parseFile(sKey, oFile)
         """if oLog.CptCritical or oLog.CptError:
             break"""
+        updateReferentials(sKey, oFile)
 
     print()
     oLog.Report()    
