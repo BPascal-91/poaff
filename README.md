@@ -5,7 +5,7 @@
 
 Programme d'extraction et de formatage par lots; basé sur des données issues du standard AIXM (Aeronautical Information Exchange Modele)  
 Ces traitements sont nécessaires pour l'alimentation du blog [Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
-Les données sources utilisés pour la contruction de ce site sont issues  
+Les données sources utilisés pour la contruction de ce site sont majoritairement issues de la source officielle [Eurocontrol](https://www.eurocontrol.int/) 
 
 
 ## Installation
@@ -15,8 +15,8 @@ pip install -r requirements.txt
 
 
 ## External links
-[poaff-website](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
-![eurocontrol-website](eurocontrol.svg)  [eurocontrol-website]https://www.eurocontrol.int/  
+[Paragliding OpenAir FrenchFiles - website](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
+[eurocontrol-website](https://www.eurocontrol.int/)  ![eurocontrol-website](eurocontrol.svg)  
 
 
 ## Credits
