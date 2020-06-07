@@ -16,7 +16,7 @@ pip install -r requirements.txt
 
 ## External links
 [poaff-website](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
-![eurocontrol-website]https://www.eurocontrol.int/ [eurocontrol-website]https://www.eurocontrol.int/  
+![eurocontrol-website]eurocontrol.svg [eurocontrol-website]https://www.eurocontrol.int/  
 
 
 ## Credits
