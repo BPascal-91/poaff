@@ -41,7 +41,7 @@ scriptProcessing = {
     "BPa-ZonesComp":    {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20191210_BPa_ZonesComplementaires_aixm45.xml"},
     "FFVP-Parcs":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20191214_FFVP_ParcsNat_aixm45.xml"},
     "FFVP-Birds":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
-    #"SIA":              {cstOutPath:"../output/SIA/", cstSrcFile:"../input/SIA/20200618_aixm4.5_SIA-FR.xml"},
+    "SIA":              {cstOutPath:"../output/SIA/", cstSrcFile:"../input/SIA/20200618_aixm4.5_SIA-FR.xml"},
     "EuCtrl":           {cstOutPath:"../output/EuCtrl/", cstSrcFile:"../input/EuCtrl/20200326_aixm4.5_Eurocontrol-FR.xml"}
 }
     
