@@ -26,6 +26,6 @@ pip install -r requirements.txt
 
 
 ## Credits
-- [Pascal Bazile](https://github.com/BPascal-91/) autor 
+- [Pascal Bazile](https://github.com/BPascal-91/) author of this software
 - the many open source libraries, projects, and data sources used by this software (show file content of 'requirements.txt' for complete components detail)  
 
