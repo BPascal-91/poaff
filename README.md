@@ -17,7 +17,8 @@ pip install -r requirements.txt
 
 
 ## External links
-- [Paragliding OpenAir FrenchFiles - website](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
+- [Paragliding OpenAir FrenchFiles - On Web](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
+- [Paragliding OpenAir FrenchFiles - On Facebook](https://www.facebook.com/Paragliding-OpenAir-FrenchFiles-102040114894513/)
 - [Carte OACI France](https://www.geoportail.gouv.fr/donnees/carte-oaci-vfr)
 - [SIA France - Service de l'Information Aéronautique](https://www.sia.aviation-civile.gouv.fr/)
 - [Eurocontrol - A pan-European, civil-military organisation dedicated to supporting European aviation](https://www.eurocontrol.int/)  

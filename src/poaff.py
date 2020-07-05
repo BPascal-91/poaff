@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 
-### Local reference of modules or librairies
-aixmParserAppName   = "aixmParser"
-aixmParserLocalSrc  = "../../aixmParser/src/"
-
-### For reference local libraries
 import os
 import sys
-module_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
+import shutil
 
 ### Include local modules/librairies
+aixmParserLocalSrc  = "../../aixmParser/src/"
+module_dir = os.path.dirname(__file__)
+sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
 import bpaTools
 import aixmReader
 from groundEstimatedHeight import GroundEstimatedHeight
 
 
 ### Context applicatif
+aixmParserAppName   = "aixmParser"
 aixmParserVersion   = bpaTools.getVersionFile(aixmParserLocalSrc)
 aixmParserId        = aixmParserAppName + " v" + aixmParserVersion
 appName             = bpaTools.getFileName(__file__)
@@ -25,6 +23,7 @@ appVersion          = bpaTools.getVersionFile()
 appId               = appName + " v" + appVersion
 outPath             = appPath + "../output/"
 logFile             = outPath + "_" + appName + ".log"
+poaffWebPath        = outPath + "_POAFF_www/"
 bpaTools.createFolder(outPath)                                      #Init dossier de sortie
 
 callingContext      = "Paragliding-OpenAir-FrenchFiles"             #Your app calling context
@@ -38,17 +37,17 @@ cstOutPath = "outPath"
 scriptProcessing = {
     "BPa-ParcCevennes": {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20190401_WPa_ParcCevennes_aixm45.xml"},
     "BPa-Birds":        {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20200510_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"},
-    "BPa-ZonesComp":    {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20191210_BPa_ZonesComplementaires_aixm45.xml"},
-    "FFVP-Parcs":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20191214_FFVP_ParcsNat_aixm45.xml"},
+    "BPa-ZonesComp":    {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20200628_BPa_ZonesComplementaires_aixm45.xml"},
+    "FFVP-Parcs":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20200704_FFVP_ParcsNat_BPa_aixm45.xml"},
     "FFVP-Birds":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
     #"SIA":              {cstOutPath:"../output/SIA/", cstSrcFile:"../input/SIA/20200618_aixm4.5_SIA-FR.xml"},
-    #"EuCtrl":           {cstOutPath:"../output/EuCtrl/", cstSrcFile:"../input/EuCtrl/20200326_aixm4.5_Eurocontrol-FR.xml"}
+    "EuCtrl":           {cstOutPath:"../output/EuCtrl/", cstSrcFile:"../input/EuCtrl/20200618_aixm4.5_Eurocontrol-FR.xml"}
 }
     
 
 ####  Options d'appels  ####
 #aArgs = [appName, "-Fall", "-Tall", aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
-aArgs = [appName, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
+aArgs = [appName, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
 
 
 def parseFile(sKey:str, oFile:dict) -> bool:
@@ -77,6 +76,74 @@ def poaffGenerateFiles(sMsg:str=None) -> None:
             updateReferentials(sKey, oFile)    
     return
 
+def moveFile(sSrcPath:str, sSrcFile:str, sCpyFileName:str, sPoaffWebPageBuffer, sToken:str) -> None:
+    sCpyFile = "{0}{1}{2}".format(poaffWebPath, "files/", sCpyFileName)
+    shutil.copyfile(sSrcPath + sSrcFile, sCpyFile)
+    oLog.info("Move file : {0} --> {1}".format(sSrcFile, sCpyFileName), outConsole=False)
+    return sPoaffWebPageBuffer.replace(sToken, sCpyFileName)
+    
+def createPoaffWebPage() -> None:   
+    sTemplateWebPage:str = "__template__index.htm"
+    sNewWebPage:str = "index.htm"
+    sHeadFileDate:str = "{0}_".format(bpaTools.getDateNow())
+    
+    fTemplate = open(poaffWebPath + sTemplateWebPage, "r", encoding="utf-8", errors="ignore")
+    sPoaffWebPageBuffer = fTemplate.read()
+    fTemplate.close()
+
+    fVerionCatalog = open(poaffWebPath + "files/LastVersionsCatalog_BPa.txt", "w", encoding="utf-8", errors="ignore")
+    fVerionCatalog.write("Fichier;Date de transformation;Date d'origine de la source;Description\n")
+    
+    
+    # Openair gpsWithTopo files 
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-all-gpsWithTopo.txt", sHeadFileDate + "airspaces-all-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-all-gpsWithTopo@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-ifr-gpsWithTopo.txt", sHeadFileDate + "airspaces-ifr-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-ifr-gpsWithTopo@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-vfr-gpsWithTopo.txt", sHeadFileDate + "airspaces-vfr-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-vfr-gpsWithTopo@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSAT.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo-forSAT.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo-forSAT@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSUN.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo-forSUN.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo-forSUN@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forHOL.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo-forHOL.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo-forHOL@@")
+    
+    # LastVersion - (similar files of Openair gpsWithTopo files)
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo.txt", "LastVersion_FR-BPa4XCsoar.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSAT.txt", "LastVersion_FR-BPa4XCsoar-forSAT.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo-forSAT@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSUN.txt", "LastVersion_FR-BPa4XCsoar-forSUN.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo-forSUN@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forHOL.txt", "LastVersion_FR-BPa4XCsoar-forHOL.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo-forHOL@@")
+    fVerionCatalog.write("LastVersion_FR-BPa4XCsoar.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifique pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
+    fVerionCatalog.write("LastVersion_FR-BPa4XCsoar-forSAT.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifiquement utilisable les SAMEDIs ; pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
+    fVerionCatalog.write("LastVersion_FR-BPa4XCsoar-forSUN.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifiquement utilisable les DIMANCHEs ; pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
+    fVerionCatalog.write("LastVersion_FR-BPa4XCsoar-forHOL.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifiquement utilisable les Jours-Fériés ; pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
+
+    # Openair gpsWithoutTopo files 
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo-forSAT.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo-forSAT.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo-forSAT@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo-forSUN.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo-forSUN.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo-forSUN@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo-forHOL.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo-forHOL.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo-forHOL@@")
+
+    # GeoJSON files
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-all.geojson", sHeadFileDate + "airspaces-all.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-all@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-ifr.geojson", sHeadFileDate + "airspaces-ifr.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-ifr@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-vfr.geojson", sHeadFileDate + "airspaces-vfr.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-vfr@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight.geojson", sHeadFileDate + "airspaces-freeflight.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-freeflight@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight.geojson", "LastVersion_airspaces-freeflight.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-LastVersion-freeflight@@")
+    fVerionCatalog.write("LastVersion_airspaces-freeflight.geojson;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";GeoJSON spécifiquement utilisable pour la CFD\n")
+    
+    # Calalog files
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/referentials/", "EuCtrl@airspacesCatalog.csv", sHeadFileDate + "airspacesCatalog.csv", sPoaffWebPageBuffer, "@@file@@CSV-airspacesCatalog@@")
+    sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/referentials/", "EuCtrl@airspacesCatalog.json", sHeadFileDate + "airspacesCatalog.json", sPoaffWebPageBuffer, "@@file@@JSON-airspacesCatalog@@")
+    fVerionCatalog.write(sHeadFileDate + "airspacesCatalog.csv;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";Catalogue des espaces-aériens au format CSV\n")
+    fVerionCatalog.write(sHeadFileDate + "airspacesCatalog.json;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";Catalogue des espaces-aériens au format JSON\n")
+    
+    fVerionCatalog.close()
+    
+    sMsg = "Creating Web file - {}".format(sNewWebPage)
+    oLog.info(sMsg, outConsole=True)
+    fWebPageIndex = open(poaffWebPath + sNewWebPage, "w", encoding="utf-8", errors="ignore")
+    fWebPageIndex.write(sPoaffWebPageBuffer)
+    fWebPageIndex.close()
+    shutil.copyfile(poaffWebPath + sNewWebPage, poaffWebPath + sHeadFileDate + sNewWebPage)
+    return
+
 
 if __name__ == '__main__':
     ####  Préparation d'appel ####
@@ -85,12 +152,16 @@ if __name__ == '__main__':
     if aixmReader.CONST.optCleanLog in oOpts:
         oLog.resetFile()                                            #Clean du log si demandé
 
+    #--------- creation des fichiers ----------
     sCallingContext = None
-    poaffGenerateFiles()
-    if (oLog.CptCritical + oLog.CptError) > 0:
-        oLog.resetFile()                                            #Clean du log
-        sCallingContext = "Forced reload by second phase"
-        poaffGenerateFiles(sCallingContext)
+#    poaffGenerateFiles()
+#    if (oLog.CptCritical + oLog.CptError) > 0:
+#        oLog.resetFile()                                            #Clean du log
+#        sCallingContext = "Forced reload by second phase"
+#        poaffGenerateFiles(sCallingContext)
+
+    #--------- preparation de la mise a jour du site Web ----------
+    createPoaffWebPage()
 
     print()
     if sCallingContext!=None:
