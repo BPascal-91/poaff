@@ -24,6 +24,7 @@ appId               = appName + " v" + appVersion
 outPath             = appPath + "../output/"
 logFile             = outPath + "_" + appName + ".log"
 poaffWebPath        = outPath + "_POAFF_www/"
+cfdWebPath          = outPath + "_CFD_www/"
 bpaTools.createFolder(outPath)                                      #Init dossier de sortie
 
 callingContext      = "Paragliding-OpenAir-FrenchFiles"             #Your app calling context
@@ -36,8 +37,9 @@ cstSrcFile = "srcFile"
 cstOutPath = "outPath"
 scriptProcessing = {
     "BPa-ParcCevennes": {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20190401_WPa_ParcCevennes_aixm45.xml"},
+    "BPa-ParcChampagne": {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20200704_BPa_ParcsNat_ChampagneBourgogne_RegisF_aixm45.xml"},
     "BPa-Birds":        {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20200510_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"},
-    "BPa-ZonesComp":    {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20200628_BPa_ZonesComplementaires_aixm45.xml"},
+    "BPa-ZonesComp":    {cstOutPath:"../output/BPa/", cstSrcFile:"../input/BPa/20200705_BPa_ZonesComplementaires_aixm45.xml"},
     "FFVP-Parcs":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20200704_FFVP_ParcsNat_BPa_aixm45.xml"},
     "FFVP-Birds":       {cstOutPath:"../output/FFVP/", cstSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
     #"SIA":              {cstOutPath:"../output/SIA/", cstSrcFile:"../input/SIA/20200618_aixm4.5_SIA-FR.xml"},
@@ -83,17 +85,17 @@ def moveFile(sSrcPath:str, sSrcFile:str, sCpyFileName:str, sPoaffWebPageBuffer, 
     return sPoaffWebPageBuffer.replace(sToken, sCpyFileName)
     
 def createPoaffWebPage() -> None:   
-    sTemplateWebPage:str = "__template__index.htm"
+    sTemplateWebPage:str = "__template__Index-Main.htm"
     sNewWebPage:str = "index.htm"
     sHeadFileDate:str = "{0}_".format(bpaTools.getDateNow())
     
+    #### 1/ repository for POAFF
     fTemplate = open(poaffWebPath + sTemplateWebPage, "r", encoding="utf-8", errors="ignore")
     sPoaffWebPageBuffer = fTemplate.read()
     fTemplate.close()
 
     fVerionCatalog = open(poaffWebPath + "files/LastVersionsCatalog_BPa.txt", "w", encoding="utf-8", errors="ignore")
     fVerionCatalog.write("Fichier;Date de transformation;Date d'origine de la source;Description\n")
-    
     
     # Openair gpsWithTopo files 
     sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-all-gpsWithTopo.txt", sHeadFileDate + "airspaces-all-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-all-gpsWithTopo@@")
@@ -127,7 +129,7 @@ def createPoaffWebPage() -> None:
     sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight.geojson", sHeadFileDate + "airspaces-freeflight.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-freeflight@@")
     sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight.geojson", "LastVersion_airspaces-freeflight.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-LastVersion-freeflight@@")
     fVerionCatalog.write("LastVersion_airspaces-freeflight.geojson;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";GeoJSON spécifiquement utilisable pour la CFD\n")
-    
+
     # Calalog files
     sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/referentials/", "EuCtrl@airspacesCatalog.csv", sHeadFileDate + "airspacesCatalog.csv", sPoaffWebPageBuffer, "@@file@@CSV-airspacesCatalog@@")
     sPoaffWebPageBuffer = moveFile(outPath + "EuCtrl/referentials/", "EuCtrl@airspacesCatalog.json", sHeadFileDate + "airspacesCatalog.json", sPoaffWebPageBuffer, "@@file@@JSON-airspacesCatalog@@")
@@ -135,13 +137,34 @@ def createPoaffWebPage() -> None:
     fVerionCatalog.write(sHeadFileDate + "airspacesCatalog.json;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";Catalogue des espaces-aériens au format JSON\n")
     
     fVerionCatalog.close()
+
+
+    #### 2/ repository for CFD
+    # GeoJSON and Catalog files
+    shutil.copyfile(outPath + "EuCtrl/EuCtrl@airspaces-all.geojson", cfdWebPath + "/airspaces-all.geojson")
+    shutil.copyfile(outPath + "EuCtrl/EuCtrl@airspaces-ifr.geojson", cfdWebPath + "/airspaces-ifr.geojson")
+    shutil.copyfile(outPath + "EuCtrl/EuCtrl@airspaces-vfr.geojson", cfdWebPath + "/airspaces-vfr.geojson")
+    shutil.copyfile(outPath + "EuCtrl/EuCtrl@airspaces-freeflight.geojson", cfdWebPath + "/airspaces-freeflight.geojson")
+    shutil.copyfile(outPath + "EuCtrl/referentials/EuCtrl@airspacesCatalog.csv", cfdWebPath + "/airspacesCatalog.csv")
+    shutil.copyfile(outPath + "EuCtrl/referentials/EuCtrl@airspacesCatalog.json", cfdWebPath + "/airspacesCatalog.json")
     
+    
+    #### 3/ creating html main page
     sMsg = "Creating Web file - {}".format(sNewWebPage)
     oLog.info(sMsg, outConsole=True)
     fWebPageIndex = open(poaffWebPath + sNewWebPage, "w", encoding="utf-8", errors="ignore")
     fWebPageIndex.write(sPoaffWebPageBuffer)
     fWebPageIndex.close()
     shutil.copyfile(poaffWebPath + sNewWebPage, poaffWebPath + sHeadFileDate + sNewWebPage)
+    
+    #### 4/ securisation and move to html main page
+    sFileMoveTo = poaffWebPath + "/__template__Index-MoveP2P.htm"
+    shutil.copyfile(sFileMoveTo, poaffWebPath + "files/index.htm")
+    shutil.copyfile(sFileMoveTo, poaffWebPath + "files/res/index.htm")
+    shutil.copyfile(sFileMoveTo, poaffWebPath + "img/index.htm")
+    shutil.copyfile(sFileMoveTo, poaffWebPath + "palette01/index.htm")
+    shutil.copyfile(sFileMoveTo, poaffWebPath + "palette01/img/index.htm")
+    
     return
 
 
@@ -154,12 +177,14 @@ if __name__ == '__main__':
 
     #--------- creation des fichiers ----------
     sCallingContext = None
-#    poaffGenerateFiles()
-#    if (oLog.CptCritical + oLog.CptError) > 0:
-#        oLog.resetFile()                                            #Clean du log
-#        sCallingContext = "Forced reload by second phase"
-#        poaffGenerateFiles(sCallingContext)
-
+    """
+    poaffGenerateFiles()
+    if (oLog.CptCritical + oLog.CptError) > 0:
+        oLog.resetFile()                                            #Clean du log
+        sCallingContext = "Forced reload by second phase"
+        poaffGenerateFiles(sCallingContext)
+    """
+    
     #--------- preparation de la mise a jour du site Web ----------
     createPoaffWebPage()
 
