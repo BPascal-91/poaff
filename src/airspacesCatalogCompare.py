@@ -12,9 +12,13 @@ import bpaTools
 
 
 def splitDescription(oVal:str, sToken:str, oPop:list):
-    if oVal[0:len(sToken)+1]==sToken+" ":
+    #if oVal[0:len(sToken)+1]==sToken+" ":
+    #    oPop.update({"type":sToken})
+    #    oVal = oVal[len(sToken)+1:]
+    if sToken in oVal:
         oPop.update({"type":sToken})
-        oVal = oVal[len(sToken)+1:]
+        oVal = oVal.replace(sToken,"")
+        oVal = oVal.replace("  "," ")
     return oVal
 
 
@@ -37,18 +41,8 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
             oNewPropZone.update({"FlyXC-Key":sKey})
             for oKey in aKey:
                 oVal = oPropsZone[oKey]
-                if oKey=="category":
-                    oKey="class"
-                    #oVal=oVal.replace("RESTRICTED", "R")
-                    #oVal=oVal.replace("RESTRICTED", "R")
-                    #oVal=oVal.replace("RESTRICTED", "R")
-                if oKey=="bottom" or oKey=="top":
-                    oVal=oVal.replace("FL ", "FL")
-                    oVal=oVal.replace("F ", "FT ")
-                    oVal=oVal.replace("MSL", "AMSL")
-                    oVal=oVal.replace("GND", "SFC")
-                    pos = oVal.find("SFC")
-                    if pos>1: oVal=oVal.replace("SFC", "ASFC")
+                
+                #Cleanning; Transcodage & Complétude de données au niveau du nommage
                 if oKey=="name":
                     #Cleaning du nommage de zones
                     oVal=oVal.replace("CTA-", "CTA ")
@@ -56,21 +50,31 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                     oVal=oVal.replace("LFR ", "LFR")
                     oVal = splitDescription(oVal, "TMA", oNewPropZone)
                     oVal = splitDescription(oVal, "CTR", oNewPropZone)
-                    oVal = splitDescription(oVal, "CTA", oNewPropZone)                 
+                    oVal = splitDescription(oVal, "CTA", oNewPropZone)   
+                    
+                    #Transcodage & Complétude de données
                     if oVal[0:2]=="D " and oPropsZone["category"]=="DANGER":
                         oPropsZone.update({"category":"Q"})
+                        oNewPropZone.update({"type":"Q"})
+                        oNewPropZone.update({"codeActivity":"DANGER"})
                         oVal = oVal[2:]
-                    if oVal[0:2]=="R " and oPropsZone["category"]=="GLIDING":
+                    if oPropsZone["category"]=="GLIDING":
                         oPropsZone.update({"category":"W"})
-                        oPropsZone.update({"type":"GLIDING"})
-                        oVal = "LFR" + oVal[2:]
+                        oNewPropZone.update({"type":"R"})
+                        oNewPropZone.update({"codeActivity":"GLIDER"})
+                        if oVal[0:2]=="R ":
+                            oVal = "LFR" + oVal[2:]
+                        else:
+                            oVal = oVal[11:]
                     if oVal[0:3]=="VV " and (oPropsZone["category"] in ["GLIDING", "RESTRICTED"]):
-                        oPropsZone.update({"category":"R"})
-                        oPropsZone.update({"type":"GLIDING"})
+                        oPropsZone.update({"category":"W"})
+                        oNewPropZone.update({"type":"R"})
+                        oNewPropZone.update({"codeActivity":"GLIDER"})
                         if oVal[0:5]=="VV R ":
                             oVal = "LFR" + oVal[5:]
                         else:
                             oVal = oVal[3:]
+                            
                     #Cleaning des nommage de zones; exemples :
                     # "Agen2 119.15" --> a tranformer en "Agen 2 119.15"
                     oNewVal:str = ""
@@ -86,18 +90,37 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                         oPrevCharDigit = oCharDigit
                         iIdx+=1
                     oVal = oNewVal
+                
+                #Transcodage du nommage de clé
+                if oKey=="category":
+                    oKey="class"
+                    #oVal=oVal.replace("RESTRICTED", "R")
+                    #oVal=oVal.replace("RESTRICTED", "R")
+                    #oVal=oVal.replace("RESTRICTED", "R")
+                
+                #Cleanning de valeur
+                if oKey=="bottom" or oKey=="top":
+                    oVal=oVal.replace("FL ", "FL")
+                    oVal=oVal.replace("F ", "FT ")
+                    oVal=oVal.replace("MSL", "AMSL")
+                    oVal=oVal.replace("GND", "SFC")
+                    pos = oVal.find("SFC")
+                    if pos>1: oVal=oVal.replace("SFC", "ASFC")
+                
+                #Stockage du nouveau couple: clé/valeur
                 oNewPropZone.update({oKey:oVal})
 
         else:        # context == "aixmParser":
-            aKey:list = ["UId", "id", "name", "nameV", "class", "type", "alt"]
+            aKey:list = ["UId", "id", "class", "type", "codeActivity", "name", "nameV", "alt"]
             for oKey in aKey:
-                oVal = oPropsZone[oKey]
-                if oKey=="alt":
-                    aAlt = oVal[1:-1].split("/")
-                    oNewPropZone.update({"bottom":aAlt[0]})
-                    oNewPropZone.update({"top":aAlt[1]})
-                else:
-                    oNewPropZone.update({oKey:oVal})
+                if oKey in oPropsZone:
+                    oVal = oPropsZone[oKey]
+                    if oKey=="alt":
+                        aAlt = oVal[1:-1].split("/")
+                        oNewPropZone.update({"bottom":aAlt[0]})
+                        oNewPropZone.update({"top":aAlt[1]})
+                    else:
+                        oNewPropZone.update({oKey:oVal})
 
         sIdx = len(oCatZones) + 1
         oCatZones.update({sIdx:oNewPropZone})
@@ -117,7 +140,7 @@ def saveCalalogCSV(sFileName:str, oCatalog) -> None:
     csv = ""
     
     #Order keys; for header in CSV file
-    oCols = {"UId":0, "id":0, "class":0, "type":0, "name":0, "bottom":0, "top":0, "nameV":0}
+    oCols = {"UId":0, "id":0, "class":0, "type":0, "codeActivity":0, "name":0, "nameV":0, "bottom":0, "top":0}
     for key0,val0 in oCatalog.items():
         for key1,val1 in val0.items():
             oCols.update({key1:0})
