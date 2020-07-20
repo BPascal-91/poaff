@@ -4,6 +4,6 @@
 ###
 aixmPaser
 #aixmPaser.groundEstimatedHeight    ; necessary but include to aixmPaser
-#openairPaser                       ; necessary to complete data
+#openairPaser                       ; necessary to complete input-data
 Shapely
 #Sous Windows, 'Shapely' peut ne pas s'installer, si besoin le télécharger --> https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely
