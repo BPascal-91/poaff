@@ -3,7 +3,7 @@
 import bpaTools
 import poaffCst
 import airspacesCatalog
-
+import geoRefArea
 
 cstGeoFeatures      = "features"
 cstGeoProperties    = "properties"
@@ -18,6 +18,7 @@ class AsArea:
         self.oAsCat                     = oAsCat
         self.oIdxGeoJSON:dict           = {}
         self.oGlobalGeoJSON:dict        = {}
+        self.oGeoRefArea                = geoRefArea.GeoRefArea()
         return
     
     def saveGeoJsonAirspacesFile(self, sFile:str) -> bool:
@@ -53,6 +54,9 @@ class AsArea:
                sUId = oGlobalCat["UId"]
                if sUId in self.oIdxGeoJSON:
                    oAs = self.oIdxGeoJSON[sUId]
+                   oRet = self.oGeoRefArea.evalAreasRefInclusion(sGlobalKey, oAs)
+                   #print(sGlobalKey, oRet)
+                   oGlobalCat.update(oRet)
                    self.oGlobalGeoJSON.update({sGlobalKey:oAs})
                else:
                    self.oLog.error("Airspace not found in file - {0}".format(sUId), outConsole=False)
