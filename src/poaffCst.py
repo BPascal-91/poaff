@@ -13,7 +13,8 @@ cstReferentialPath          = "referentials/"
 cstSeparatorFileName        = "@"
 cstGlobalHeader             = "global"
 cstCatalogFileName          = "airspacesCatalog.json"
-cstAsGeojsonFileName        = "airspaces-all.geojson"
+cstAsAllGeojsonFileName     = "airspaces-all.geojson"
+
 
 ### scriptProcessing constantes  ###
 cstSpExecute      = "Execute"                         #Identification du Flag d'execution des traitements
@@ -22,5 +23,4 @@ cstSpOutPath      = "outPath"                         #Identification du dossier
 cstSpProcessType  = "processType"                     #Typage du processus de consolidation des données
 cstSpPtAdd        = "processType-AppendData"          #Consolidation des données par simple ajout (empilage des données sans contrôle de présence)
 cstSpPtAddDelta   = "processType-AppendIfNotExist"    #Consolidation des données par ajout des données qui ne sont pas déjà présentes dans la consolidation
-
 

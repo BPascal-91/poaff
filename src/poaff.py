@@ -13,7 +13,6 @@ from groundEstimatedHeight import GroundEstimatedHeight
 
 from airspacesCatalog import AsCatalog
 from airspacesArea import AsArea
-from webPub import PoaffWebPage
 import poaffCst
 
 ###  Context applicatif  ####
@@ -29,10 +28,10 @@ logFile                 = outPath + "_" + appName + ".log"
 ###  Environnement applicatif  ###
 poaffOutPath            = outPath + "_POAFF/"
 globalCatalog           = poaffOutPath + poaffCst.cstReferentialPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + poaffCst.cstCatalogFileName
-globalAsGeojson         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName +  poaffCst.cstAsGeojsonFileName
+globalAsGeojson         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllGeojsonFileName
 
 ####  Liste des fichiers a traiter  ####
-testMode = True     #True or  False
+testMode = False     #True or  False
 scriptProcessing = {
     "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/BPa/99999999_BPa_Test4CleaningCatalog_aixm45.xml"},
     "BPa-Test4AppDelta":    {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/BPa/99999999_BPa_Test4AppendDelta_aixm45.xml"},
@@ -49,24 +48,33 @@ scriptProcessing = {
 
 ####  Options d'appels pour création des fichiers  ####
 #aArgs = [appName, "-Fall", "-Tall", aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
-aArgs = [appName, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
+#aArgs = [appName, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optCleanLog]
+aArgs = [appName, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optCleanLog]
 
 
 def poaffMergeFiles() -> None:
-    
+
     #A/ Consolidation des catalogues (avec premier pré-filtrage qd nécessaire)
     bpaTools.deleteFile(globalCatalog)                                      #Purge du fichier
     oAsCat = AsCatalog(oLog)                                                #Gestion des catalogues
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
         oAsCat.mergeJsonCatalogFile(sKey, oFile)                            #Consolidation des fichiers catalogues
-    oAsCat.saveJsonCatalogFile(globalCatalog)                               #Sérialisation du fichier
-    
+    oAsCat.saveCatalogFiles(globalCatalog)                                  #Sérialisations du fichier
+
     #B/ Consolidation des espaces-éeriens
     bpaTools.deleteFile(globalAsGeojson)                                    #Purge du fichier
     oAsArea = AsArea(oLog, oAsCat)                                          #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
         oAsArea.mergeGeoJsonAirspacesFile(sKey, oFile)                      #Consolidation des fichiers catalogues
-    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson)                       #Sérialisation du fichier
+
+    #Construction des sorties GeoJSON
+    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")
+    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr")
+    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "vfr")
+    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "cfd")
+    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")
+    oAsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson)
+    
     return
 
 def parseFile(sKey:str, oFile:dict) -> bool:
@@ -120,10 +128,10 @@ if __name__ == '__main__':
         oLog.critical("Abort treatment - Show errors in log file", outConsole=True)
     else:
         poaffMergeFiles()                                                   #Consolidation des fichiers
-        if not(testMode):
-            oWeb = PoaffWebPage(oLog, outPath)
-            oWeb.createPoaffWebPage(None)                                   #Preparation pour publication
-            #oWeb.createPoaffWebPage("20200715_")                           #Pour révision d'une publication
+        #if not(testMode):
+        #    oWeb = PoaffWebPage(oLog, outPath)
+        #    oWeb.createPoaffWebPage(None)                                   #Preparation pour publication
+        #    #oWeb.createPoaffWebPage("20200715_")                           #Pour révision d'une publication
 
     print()
     if sCallingContext!=None:

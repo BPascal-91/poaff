@@ -79,7 +79,6 @@ class GeoRefArea:
                 raise Exception("Unqualified type of area")
         else:
             return
-            
         if aArray[0] != aArray[-1]:
             sHeader = "[" + bpaTools.getFileName(__file__) + "." + self.setZone.__name__ + "()] "
             sMsg = "/!\ Area Error - firstPoint={0} != lastPoint={1}".format(aArray[0], aArray[-1])
@@ -101,13 +100,11 @@ class GeoRefArea:
             self.oGeoZoneRef = {"type":"Polygon", "coordinates":[oZoneRef]}
         elif isinstance(oZoneRef, dict):
             self.oGeoZoneRef = oZoneRef
-        else:
-            self.oGeoZoneRef = None
-            
+           
         self.oShapeZoneRef = shape(self.oGeoZoneRef)
         return
 
-    def setZone(self, oZone) -> bool:
+    def setZone(self, oZone) -> None:
         self.ctrlZone(oZone)
         if isinstance(oZone, list):
             self.oGeoZone = {"type":"Polygon", "coordinates":[oZone]}
@@ -115,8 +112,14 @@ class GeoRefArea:
             self.oGeoZone = oZone
         else:
             self.oGeoZone = None
+            self.oShapeZone = None
+            return
             
-        self.oShapeZone = shape(self.oGeoZone)
+        if len(self.oGeoZone["coordinates"])==0:
+            self.oGeoZone = None
+            self.oShapeZone = None
+        else:
+            self.oShapeZone = shape(self.oGeoZone)
         return
 
     #Renvoie True si :
@@ -126,10 +129,10 @@ class GeoRefArea:
         if oZone   !=None:      self.setZone(oZone)
         if oZoneRef!=None:      self.setZoneRef(oZoneRef)
             
-        ###For control of areas ; use http://geojson.tools
+        ###For control of areas ; use http://geojson.tools)
         #g = []
         #g.append({"type":"Feature", "properties": {}, "geometry":gZone})
-        #g.append({"type":"Feature", "properties": {}, "geometry":self.oGeoZoneRef})
+        #g.append({"type":"Feature", "properties": {}, "geometry":self.oShapeZoneRef})
         #geojson = {"type": "FeatureCollection", "features":g}
         #print(str(geojson).replace(chr(39),chr(34)))         
         
@@ -139,11 +142,12 @@ class GeoRefArea:
         return bool(bWithin or bIntersects)
 
     def evalAreasRefInclusion(self, sName, oZone) -> dict:
+        ret:dict = {}
         sRef:str = ""
         try:
             self.setZone(oZone)
-            ret:dict = {}
-            
+            if self.oGeoZone == None:
+                return ret
             for sRef, oRef in self.AreasRef.items():
                 bRet = self.isInclude(None, oRef)
                 ret.update({sRef:bRet})
