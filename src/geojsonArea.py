@@ -5,6 +5,7 @@ from copy import deepcopy
 import bpaTools
 import poaffCst
 import airspacesCatalog
+from airspacesCatalog import AsCatalog
 import geoRefArea
 
 cstGeoFeatures          = "features"
@@ -12,14 +13,14 @@ cstGeoProperties        = "properties"
 cstGeoGeometry          = "geometry"
 cstWithoutLocation      = "withoutGeoLocation"
 
-class AsArea:
+class GeojsonArea:
 
     def __init__(self, oLog, oAsCat)-> None:
         bpaTools.initEvent(__file__, oLog)
-        self.oLog                       = oLog
-        self.oAsCat                     = oAsCat
+        self.oLog:bpaTools.Logger       = oLog      #Log file
+        self.oAsCat:AsCatalog           = oAsCat    #Catalogue des zones
         self.oIdxGeoJSON:dict           = {}
-        self.oGlobalGeoJSON:dict        = {}
+        self.oGlobalGeoJSON:dict        = {}        #Liste globale des zones
         self.oGeoRefArea                = geoRefArea.GeoRefArea()
         return
 
@@ -126,20 +127,20 @@ class AsArea:
             bpaTools.writeJsonFile(sFile, oGeojson)                                             #Sérialisation du fichier
         return
 
-    def mergeGeoJsonAirspacesFile(self, sKeyFile:str, oFile:dict) -> bool:
+    def mergeGeoJsonAirspacesFile(self, sKeyFile:str, oFile:dict) -> None:
         if len(self.oAsCat.oGlobalCatalog)==0:                                                  #Ctrl ../..
             return
         if not oFile[poaffCst.cstSpExecute]:                                                    #Flag pour prise en compte du traitement de fichier
             return
 
         fileGeoJSON = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllGeojsonFileName                  #Fichier comportant toutes les bordures de zones
-        self.oLog.info("Airspaces consolidation file {0}: {1} --> {2}".format(sKeyFile, fileGeoJSON, oFile[poaffCst.cstSpProcessType]), outConsole=False)
+        self.oLog.info("GeoJSON airspaces consolidation file {0}: {1} --> {2}".format(sKeyFile, fileGeoJSON, oFile[poaffCst.cstSpProcessType]), outConsole=False)
         self.makeGeojsonIndex(fileGeoJSON)
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]          #Récupération de la liste des zones consolidés
 
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                       #Traitement du catalogue global complet
            if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
-               self.oLog.info("!!! Airspace consolidation {0}".format(sGlobalKey), outConsole=False)
+               #self.oLog.info("  --> GeoJSON airspace consolidation {0}".format(sGlobalKey), outConsole=False)
                sUId = oGlobalCat["UId"]
                if sUId in self.oIdxGeoJSON:
                    oAs = self.oIdxGeoJSON[sUId]
@@ -148,11 +149,11 @@ class AsArea:
                    oGlobalCat.update(oRet)
                    self.oGlobalGeoJSON.update({sGlobalKey:oAs})
                else:
-                   self.oLog.error("Airspace not found in file - {0}".format(sUId), outConsole=False)
+                   self.oLog.error("GeoJSON airspace not found in file - {0}".format(sUId), outConsole=False)
         self.oAsCat.saveCatalogFiles()
         return
 
-    def makeGeojsonIndex(self, fileGeoJSON:str) -> bool:
+    def makeGeojsonIndex(self, fileGeoJSON:str) -> None:
         self.oIdxGeoJSON = {}                                                                   #Clean previous data
         ofileGeoJSON:dict = bpaTools.readJsonFile(fileGeoJSON)                                  #Chargement des zones
         if cstGeoFeatures in ofileGeoJSON:
@@ -160,7 +161,7 @@ class AsArea:
             for oAs in oFeatures:
                 oAsProp = oAs[cstGeoProperties]
                 sUId = oAsProp["UId"]
-                self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
+                #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
                 oAsGeo = oAs[cstGeoGeometry]
                 self.oIdxGeoJSON.update({sUId:oAsGeo})
         return

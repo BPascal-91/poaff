@@ -11,9 +11,10 @@ import bpaTools
 import aixmReader
 from groundEstimatedHeight import GroundEstimatedHeight
 
-from airspacesCatalog import AsCatalog
-from airspacesArea import AsArea
 import poaffCst
+from airspacesCatalog import AsCatalog
+from geojsonArea import GeojsonArea
+from openairArea import OpenairArea
 
 ###  Context applicatif  ####
 aixmParserVersion       = bpaTools.getVersionFile(aixmParserLocalSrc)
@@ -29,13 +30,15 @@ logFile                 = outPath + "_" + appName + ".log"
 poaffOutPath            = outPath + "_POAFF/"
 globalCatalog           = poaffOutPath + poaffCst.cstReferentialPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + poaffCst.cstCatalogFileName
 globalAsGeojson         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllGeojsonFileName
+globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllOpenairFileName
+
 
 ####  Liste des fichiers a traiter  ####
-testMode = False     #True or  False
+testMode = True     #True or  False
 scriptProcessing = {
     "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/BPa/99999999_BPa_Test4CleaningCatalog_aixm45.xml"},
     "BPa-Test4AppDelta":    {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/BPa/99999999_BPa_Test4AppendDelta_aixm45.xml"},
-    "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20200618_aixm4.5_Eurocontrol-FR.xml"},
+    "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20200716_aixm4.5_Eurocontrol-FR.xml"},
     "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20200618_aixm4.5_SIA-FR.xml"},
     "FFVP-Parcs":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20200704_FFVP_ParcsNat_BPa_aixm45.xml"},
     "FFVP-Birds":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
@@ -61,20 +64,33 @@ def poaffMergeFiles() -> None:
         oAsCat.mergeJsonCatalogFile(sKey, oFile)                            #Consolidation des fichiers catalogues
     oAsCat.saveCatalogFiles(globalCatalog)                                  #Sérialisations du fichier
 
-    #B/ Consolidation des espaces-éeriens
+    #B-1/ Consolidation des espaces-aériens GeoJSON
     bpaTools.deleteFile(globalAsGeojson)                                    #Purge du fichier
-    oAsArea = AsArea(oLog, oAsCat)                                          #Gestion des zones
+    oJsArea = GeojsonArea(oLog, oAsCat)                                     #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
-        oAsArea.mergeGeoJsonAirspacesFile(sKey, oFile)                      #Consolidation des fichiers catalogues
+        oJsArea.mergeGeoJsonAirspacesFile(sKey, oFile)                      #Consolidation des fichiers GeoJSON
 
-    #Construction des sorties GeoJSON
-    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")
-    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr")
-    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "vfr")
-    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "cfd")
-    oAsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")
-    oAsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson)
-    
+    #B-2/ Construction des sorties GeoJSON
+    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")
+    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr")
+    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "vfr")
+    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "cfd")
+    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")
+    oJsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson)
+
+    #C-1/ Consolidation des espaces-aériens Openair
+    bpaTools.deleteFile(globalAsOpenair)                                    #Purge du fichier
+    oOpArea = OpenairArea(oLog, oAsCat)                                     #Gestion des zones
+    for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
+        oOpArea.mergeOpenairAirspacesFile(sKey, oFile)                      #Consolidation des fichiers Openair
+
+    #C-2/ Construction des sorties GeoJSON
+    oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "all")
+    #oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ifr")
+    #oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "vfr")
+    #oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ff")
+    #oOpArea.saveOpenairAirspacesFile4Area(globalAsOpenair)
+
     return
 
 def parseFile(sKey:str, oFile:dict) -> bool:

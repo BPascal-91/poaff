@@ -2,8 +2,8 @@
 ### Librayries
 ###    Syntaxe4load --> pip install -r requirements.txt
 ###
-aixmPaser
-#aixmPaser.groundEstimatedHeight    ; necessary but include to aixmPaser
-#openairPaser                       ; necessary to complete input-data
+#aixmPaser							; necessary to parse sources files
+#aixmPaser.groundEstimatedHeight    ; necessary to complete input-data
+#openairPaser                       ; necessary to parse Openair files
 Shapely
 #Sous Windows, 'Shapely' peut ne pas s'installer, si besoin le télécharger --> https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely
