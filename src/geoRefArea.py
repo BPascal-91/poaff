@@ -30,7 +30,7 @@ class GeoRefArea:
         
         #Lotissement des bordures à traiter
         self.AreasRef = {
-                "geoFrenchAndAlps":     self.aFrenchAndAlps,
+               # "geoFrenchAndAlps":     self.aFrenchAndAlps,
                 "geoFrench":            self.aFrench,
                 "geoFrenchNorth":       self.aFrenchNorth,
                 "geoFrenchSouth":       self.aFrenchSouth,

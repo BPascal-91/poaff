@@ -28,6 +28,7 @@ class GeojsonArea:
         for sAreaKey in self.oGeoRefArea.AreasRef.keys():
             self.saveGeoJsonAirspacesFile(sFile, sContext, sAreaKey)
         self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
+        self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
         return
 
     def saveGeoJsonAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
@@ -58,7 +59,7 @@ class GeojsonArea:
             elif sContext == "cfd":
                 bIsInclude = oGlobalCat["freeFlightZone"]
                 sContent = "freeflightZone for FFVL-CFD"
-                sAreaKey = "geoFrenchAndAlps"
+                sAreaKey = "geoFrench"                          #or "geoFrenchAndAlps" ?
                 sFile = sFile.replace("-all", "-ffvl-cfd")
                 aAlt = str(oGlobalCat["alt"]).split("/")
                 sLow = aAlt[0][1:]
@@ -88,12 +89,12 @@ class GeojsonArea:
                 bIsInclude = True
 
             #Exclude area if unkwown coordonnees
-            if bIsInclude and "excludeAirspaceNotCoord" in oGlobalCat:
+            if bIsInclude and sContext!="all" and "excludeAirspaceNotCoord" in oGlobalCat:
                 if oGlobalCat["excludeAirspaceNotCoord"]: bIsInclude = False
 
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
-            if sAreaKey!=None:
+            if sAreaKey:
                 if sAreaKey == cstWithoutLocation:
                     #Identification des zones non-retenues dans aucun des filtrages géographique paramétrés
                     bIsArea = False
@@ -112,9 +113,10 @@ class GeojsonArea:
                oArea = {"type":"Feature", "properties":oFinalCat, "geometry":oAs}
                oGeoFeatures.append(oArea)
 
-        if sAreaKey!=None:
+        if sAreaKey:
             sContent += " / " + sAreaKey
             sFile = sFile.replace(".geojson", "-" + sAreaKey + ".geojson")
+
         sMsg:str = " file {0} - {1} areas in map"
         if len(oGeoFeatures) == 0:
             self.oLog.info("Unwritten" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
@@ -122,7 +124,9 @@ class GeojsonArea:
         else:
             self.oLog.info("Write" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
+            oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oGeoFeatures)})
+            oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
             oGeojson.update({"type":"FeatureCollection", "headerFile":oNewHeader, "features":oGeoFeatures})
             bpaTools.writeJsonFile(sFile, oGeojson)                                             #Sérialisation du fichier
         return
@@ -145,7 +149,6 @@ class GeojsonArea:
                if sUId in self.oIdxGeoJSON:
                    oAs = self.oIdxGeoJSON[sUId]
                    oRet = self.oGeoRefArea.evalAreasRefInclusion(sGlobalKey, oAs)
-                   #print(sGlobalKey, oRet)
                    oGlobalCat.update(oRet)
                    self.oGlobalGeoJSON.update({sGlobalKey:oAs})
                else:

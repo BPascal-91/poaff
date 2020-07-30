@@ -20,7 +20,6 @@ cstKeyCatalogSrcAixmVersion = "srcAixmVersion"
 cstKeyCatalogSrcAixmCreated = "srcAixmCreated"
 
 
-
 cstKeyCatalogKeySrcFile = "keySrcFile"              #Clé d'identification de fichier source
 cstKeyCatalogKeyGUId = "GUId"                       #Identifiant global de zones ; après consolidation) de toutes les sources
 
@@ -64,10 +63,10 @@ class AsCatalog:
             self.oGlobalCatalogHeader = self.oGlobalCatalog[cstKeyCatalogHeaderFile]                     #Entête du catalogue gloabal
 
         oCatalogFile:dict = {}                                                                      #Description du fichier analysé
-        oCatalogFile.update({cstKeyCatalogSrcAixmFile:oHeadFile[cstKeyCatalogSrcAixmFile]})         #Nom du fichier analysé
-        oCatalogFile.update({cstKeyCatalogSrcAixmOrigin:oHeadFile[cstKeyCatalogSrcAixmOrigin]})     #Origine du fichier analysé
-        oCatalogFile.update({cstKeyCatalogSrcAixmVersion:oHeadFile[cstKeyCatalogSrcAixmVersion]})   #Version du fichier analysé
-        oCatalogFile.update({cstKeyCatalogSrcAixmCreated:oHeadFile[cstKeyCatalogSrcAixmCreated]})   #Horodatage de la création du fichier analysé
+        oCatalogFile.update({cstKeyCatalogSrcAixmFile:oHeadFile[cstKeyCatalogSrcFiles]["1"][cstKeyCatalogSrcAixmFile]})         #Nom du fichier analysé
+        oCatalogFile.update({cstKeyCatalogSrcAixmOrigin:oHeadFile[cstKeyCatalogSrcFiles]["1"][cstKeyCatalogSrcAixmOrigin]})     #Origine du fichier analysé
+        oCatalogFile.update({cstKeyCatalogSrcAixmVersion:oHeadFile[cstKeyCatalogSrcFiles]["1"][cstKeyCatalogSrcAixmVersion]})   #Version du fichier analysé
+        oCatalogFile.update({cstKeyCatalogSrcAixmCreated:oHeadFile[cstKeyCatalogSrcFiles]["1"][cstKeyCatalogSrcAixmCreated]})   #Horodatage de la création du fichier analysé
 
         if cstKeyCatalogSrcFiles in self.oGlobalCatalogHeader:
             self.oGlobalCatalogFiles = self.oGlobalCatalogHeader[cstKeyCatalogSrcFiles]     #Récupération de la liste des fichiers sources
@@ -109,7 +108,9 @@ class AsCatalog:
                 oAs.update({"freeFlightZone":False})
                 oAs.update({"excludeAirspaceByFilter":True})
 
+        oSrcFiles = self.oGlobalCatalogHeader.pop(cstKeyCatalogSrcFiles) 
         self.oGlobalCatalogHeader.update({cstKeyCatalogNbAreas:len(oGlobalAreas)})          #Nombre de zones
+        self.oGlobalCatalogHeader.update({cstKeyCatalogSrcFiles:oSrcFiles})
         self.oGlobalCatalog.update({cstKeyCatalogCatalog:oGlobalAreas})                     #Nouvelle liste de zones
         return
 
@@ -128,8 +129,8 @@ class AsCatalog:
     def isValidArea(self, sKeyFile:str, oAs:dict) -> bool:
         ret:bool = True                                             #Default value
         if oAs["groupZone"]:                       return False     #Exclure les zones de regroupement
-        if "excludeAirspaceNotCoord" in oAs:
-            if oAs["excludeAirspaceNotCoord"]:     return False     #Exclure les zones sans bordures identifiées
+        #if "excludeAirspaceNotCoord" in oAs:
+        #    if oAs["excludeAirspaceNotCoord"]:     return False     #Exclure les zones sans bordures identifiées
 
         if sKeyFile == "BPa-Test4Clean":
             #Test de suppression manuel d'une zone en mer - [Q] 18 B1 (id=LFD18B1)
@@ -149,7 +150,7 @@ class AsCatalog:
     #Flager certaine zone 'inutile' pour la vision 'freeflight'
     def isCleanArea4FreeFlight(self, sKeyFile:str, oAs:dict) -> bool:
         ret:bool = False                                    #Default value
-        if not oAs["freeFlightZone"]:   return ret          #Ne rien changer
+        if not oAs["freeFlightZone"]:   return ret          #Exclure les zones de non concernées
 
         if sKeyFile == "BPa-Test4AppDelta":
             #Test de suppression volontaire
