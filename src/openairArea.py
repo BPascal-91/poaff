@@ -147,6 +147,7 @@ class OpenairArea:
     def saveOpenairAirspacesFile2(self, sFile:str, sContext:str="all", gpsType:str="", exceptDay:str="", sAreaKey:str=None) -> None:
         oOutOpenair:list = []
         sContent:str = ""
+        lNbExcludeZone:int = 0
 
         oGlobalHeader = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogHeaderFile]    #Récupération de l'entete du catalogue global
         oNewHeader:dict = deepcopy(self.oAsCat.oGlobalCatalogHeader)
@@ -177,16 +178,19 @@ class OpenairArea:
             if bIsInclude and "excludeAirspaceNotCoord" in oGlobalCat:
                 if oGlobalCat["excludeAirspaceNotCoord"]: bIsInclude = False
 
-            if bIsInclude==True and exceptDay:
-                if exceptDay in oGlobalCat:               bIsInclude = False
-
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
-            if sAreaKey:
+            if bIsInclude and sAreaKey:
                 if sAreaKey in oGlobalCat:
                     bIsArea = oGlobalCat[sAreaKey]
                 else:
                     bIsArea = False
+
+            #Filtrage des zones par jour d'activation
+            if bIsInclude and bIsArea and exceptDay:
+                if exceptDay in oGlobalCat:
+                    bIsInclude = False
+                    lNbExcludeZone+=1                    
 
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalOpenair):
                 oAs:OpenairZone = self.oGlobalOpenair[sGlobalKey]
@@ -213,6 +217,7 @@ class OpenairArea:
             ext4exceptDay = exceptDay.replace("except","for")
             sContent += " / " + ext4exceptDay
             sFile = sFile.replace(".txt", "-" + ext4exceptDay + ".txt")
+            if lNbExcludeZone==0: oOutOpenair = []   #Annulation de la sortie cause fichier non-utile (pas de différentiel d'exclusion de zones)
 
         sMsg:str = " file {0} - {1} areas in map".format(sFile, len(oOutOpenair))
         if len(oOutOpenair) == 0:
@@ -222,12 +227,18 @@ class OpenairArea:
             self.oLog.info("Write" + sMsg, outConsole=False)
             oOp:OpenairArea = None
             sOutOpenair:str = ""
-            oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
+            oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
+            if sAreaKey in self.oGeoRefArea.AreasRef:
+                sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
+                oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})            
+            else:
+                sAreaDesc:str = ""
+            del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oOutOpenair)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
             oTools = aixmReader.AixmTools(None)
-            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey)
+            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc)
             sOutOpenair += sHeader
             for oOp in oOutOpenair:
                 sOutOpenair += oOp.serializeArea(gpsType)

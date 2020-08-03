@@ -59,12 +59,12 @@ class GeojsonArea:
             elif sContext == "cfd":
                 bIsInclude = oGlobalCat["freeFlightZone"]
                 sContent = "freeflightZone for FFVL-CFD"
-                sAreaKey = "geoFrench"                          #or "geoFrenchAndAlps" ?
+                sAreaKey = ""                          #31/07/2020, demande de Martin - old "geoFrench"
                 sFile = sFile.replace("-all", "-ffvl-cfd")
                 aAlt = str(oGlobalCat["alt"]).split("/")
                 sLow = aAlt[0][1:]
                 sUpp = aAlt[1][:-1]
-                #Single proporties for CFD or FlyXC - {"name":"Agen1 119.15","category":"E","bottom":"2000F MSL","bottom_m":0,"top":"FL 65","color":"#bfbf40"}
+                #Single properties for CFD or FlyXC - {"name":"Agen1 119.15","category":"E","bottom":"2000F MSL","bottom_m":0,"top":"FL 65","color":"#bfbf40"}
                 oSingleCat:dict = {}
                 oSingleCat.update({"name":oGlobalCat["nameV"]})
                 oSingleCat.update({"category":oGlobalCat["class"]})
@@ -123,8 +123,12 @@ class GeojsonArea:
             bpaTools.deleteFile(sFile)
         else:
             self.oLog.info("Write" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
-            oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
+            oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
+            if sAreaKey in self.oGeoRefArea.AreasRef:
+                sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
+                oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})            
+            del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oGeoFeatures)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
             oGeojson.update({"type":"FeatureCollection", "headerFile":oNewHeader, "features":oGeoFeatures})
@@ -149,6 +153,11 @@ class GeojsonArea:
                if sUId in self.oIdxGeoJSON:
                    oAs = self.oIdxGeoJSON[sUId]
                    oRet = self.oGeoRefArea.evalAreasRefInclusion(sGlobalKey, oAs)
+                   if "externalOfFrench" in oGlobalCat:
+                       sToken="geoFrench"
+                       for sKey, oVal in oRet.items():
+                           if sKey[:len(sToken)]==sToken:   
+                               oRet.update({sKey:False})  #Exclusion forcée de certaines zones (très/trop proche) du territoire Français
                    oGlobalCat.update(oRet)
                    self.oGlobalGeoJSON.update({sGlobalKey:oAs})
                else:
