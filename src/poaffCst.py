@@ -7,14 +7,20 @@ aixmParserAppName       = "aixmParser"
 
 
 ###  Environnement applicatif  ###
+cstPoaffOutPath             = "_POAFF/"
 cstPoaffWebPath             = "_POAFF_www/"
+cstPoaffWebPathFiles        = "files/"
 cstCfdWebPath               = "_CFD_www/"
 cstReferentialPath          = "referentials/"
+
 cstSeparatorFileName        = "@"
 cstGlobalHeader             = "global"
 cstCatalogFileName          = "airspacesCatalog.json"
 cstAsAllGeojsonFileName     = "airspaces-all.geojson"
 cstAsAllOpenairFileName     = "airspaces-all-gpsWithTopo.txt"
+cstWithTopo                 = "-gpsWithTopo"
+cstWithoutTopo              = "-gpsWithoutTopo"
+cstLastVersionFileName      = "LastVersion_"
 
 
 ### scriptProcessing constantes  ###

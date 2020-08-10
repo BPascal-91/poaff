@@ -10,6 +10,7 @@ module_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
 import bpaTools
 import poaffCst
+import geoRefArea
 
 ###  Context applicatif  ####
 appName                 = bpaTools.getFileName(__file__)
@@ -21,124 +22,251 @@ logFile                 = outPath + "_" + appName + ".log"
 
 ###  Environnement applicatif  ###
 cstTemplateMoveTo:str       = "__template__Index-MoveP2P.htm"
+cstFinalIndexFile:str       = "index.htm"
 cstTemplateWebPage:str      = "__template__Index-Main.htm"
-cstNewWebPage:str           = "index.htm"
 
+aTypeFiles:list =   [ ["-all"       , "Cartographie complète de l'espace aérien (IFR + VFR)"], \
+                      ["-ifr"       , "Cartographie de l'espace aérien IFR (zones majoritairement situées au dessus du niveau FL115)"], \
+                      ["-vfr"       , "Cartographie de l'espace aérien VFR (zones situées en dessous le niveau FL115)"], \
+                      ["-ffvl-cfd"  , "Cartographie spécifique pour injection dans l'outillage de la CFD FFVL"], \
+                      ["-freeflight", "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL115)"]]
 
 class PoaffWebPage:
     
     def __init__(self, oLog, outPath:str)-> None:
         bpaTools.initEvent(__file__, oLog)
-        self.oLog                   = oLog
-        self.outPath                = outPath
+        self.oLog:bpaTools.Logger   = oLog
+        self.outPath:str            = outPath
+        self.sourcesPath:str        = self.outPath + poaffCst.cstPoaffOutPath
+        self.publishPath:str        = self.outPath + poaffCst.cstPoaffWebPath
+        self.publishPathFiles:str   = self.publishPath + poaffCst.cstPoaffWebPathFiles
+        self.publishPathCfd:str     = self.outPath + poaffCst.cstCfdWebPath
+        self.sWebPageBuffer:str     = None
+        self.sHeadFileDate:str      = "{0}_".format(bpaTools.getDateNow())
+        self.aCatalogFiles:list     = None
         return
 
     def createPoaffWebPage(self, sHeadFileDate:str=None) -> None:
-        if sHeadFileDate==None:
-            sHeadFileDate:str = "{0}_".format(bpaTools.getDateNow())
+        self.aCatalogFiles = []
+        
+        if sHeadFileDate!=None:
+            self.sHeadFileDate = sHeadFileDate
     
-        #### 1/ repository for POAFF
-        fTemplate = open(self.outPath + poaffCst.cstPoaffWebPath + cstTemplateWebPage, "r", encoding="utf-8", errors="ignore")
-        sPoaffWebPageBuffer = fTemplate.read()
+        #### 1/ Recup du modèle page Web
+        fTemplate = open(self.publishPath + cstTemplateWebPage, "r", encoding="utf-8", errors="ignore")
+        self.sWebPageBuffer = fTemplate.read()
         fTemplate.close()
-    
-        fVerionCatalog = open(self.outPath + poaffCst.cstPoaffWebPath + "files/LastVersionsCatalog_BPa.txt", "w", encoding="utf-8", errors="ignore")
+
+        #### 2/ Calalog files
+        srcPath = self.sourcesPath + poaffCst.cstReferentialPath
+        srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + poaffCst.cstCatalogFileName
+        dstFileName = self.sHeadFileDate + poaffCst.cstCatalogFileName
+        sTitle = "Catalogue des espaces-aériens au format JSON"
+        if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName):
+            self.publishFile(dstFileName, "@@file@@JSON-airspacesCatalog@@", sTitle)
+            #Duplication du fichier dans le repo pour export CFD
+            self.copyFile(srcPath, srcFileName, self.publishPathCfd, dstFileName)
+            #Duplication du fichier "LastVersion"
+            dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+            if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName2):
+                self.aCatalogFiles.append(dstFileName2 + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + sTitle)
+        sTitle = "Catalogue des espaces-aériens au format CSV"
+        srcFileName = srcFileName.replace(".json", ".csv")
+        dstFileName = self.sHeadFileDate + str(poaffCst.cstCatalogFileName).replace(".json", ".csv")
+        if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName):
+            self.publishFile(dstFileName, "@@file@@CSV-airspacesCatalog@@", sTitle)
+            #Duplication du fichier dans le repo pour export CFD
+            self.copyFile(srcPath, srcFileName, self.publishPathCfd, dstFileName)
+            #Duplication du fichier "LastVersion"
+            dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+            if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName2):
+                self.aCatalogFiles.append(dstFileName2 + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + sTitle)
+        
+        #### 3/ GeoJSON files
+        sComplementaryFiles:str = ""
+        #Déclinaison de toutes les typologies de fichier racine
+        for aTypeFile in aTypeFiles:
+            srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
+            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
+            if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName):
+                sToken = str("@@file@@GeoJSON-airspaces-all@@").replace("-all", aTypeFile[0])
+                self.publishFile(dstFileName, sToken, aTypeFile[1])
+                if aTypeFile[0]=="-ffvl-cfd":
+                    #Duplication du fichier dans le repo pour export CFD
+                    #self.copyFile(self.sourcesPath, srcFileName, self.publishPathCfd, dstFileName)
+                    #Duplication du fichier "LastVersion"
+                    dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                    if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2):
+                        self.aCatalogFiles.append(dstFileName2 + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + aTypeFile[1])
+                elif aTypeFile[0]=="-freeflight":
+                    #Déclinaison de toutes les régionalisations
+                    for sAreaKey, oAreaRef in geoRefArea.GeoRefArea().AreasRef.items():
+                        srcFileName2 = str(srcFileName).replace(aTypeFile[0], aTypeFile[0] + "-" + sAreaKey)
+                        dstFileName2 = str(dstFileName).replace(aTypeFile[0], aTypeFile[0] + "-" + sAreaKey)
+                        if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
+                            sComplementaryFiles += self.makeLink4File(dstFileName2, aTypeFile[1] + " / " + oAreaRef[2]) + " | "
+                else:
+                    sComplementaryFiles += self.makeLink4File(dstFileName, aTypeFile[1]) + " | "
+        self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@GeoJSON-airspaces-othersfileslist@@", sComplementaryFiles)
+
+
+        #### 4a/ Openair files au format "-gpsWithTopo"
+        sComplementaryFiles:str = ""
+        #Déclinaison de toutes les typologies de fichier racine
+        for aTypeFile in aTypeFiles:
+            srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
+            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
+            if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName):
+                sToken = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithTopo + "@@").replace("-all", aTypeFile[0])
+                sDescription:str = aTypeFile[1] + " [" + poaffCst.cstWithTopo[1:] + "]"
+                self.publishFile(dstFileName, sToken, sDescription)
+                self.publishFilesExeptDays(sToken, srcFileName, dstFileName, aTypeFile[1], poaffCst.cstWithTopo[1:])
+                if aTypeFile[0]=="-ffvl-cfd":
+                    #Duplication du fichier dans le repo pour export CFD
+                    #self.copyFile(self.sourcesPath, srcFileName, self.publishPathCfd, dstFileName)
+                    #Duplication du fichier "LastVersion"
+                    dstFileName2b = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                    if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2b):
+                        self.aCatalogFiles.append(dstFileName2b + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + aTypeFile[1])
+                elif aTypeFile[0]=="-freeflight":
+                    #Déclinaison de toutes les régionalisations
+                    for sAreaKey, oAreaRef in geoRefArea.GeoRefArea().AreasRef.items():
+                        srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                        dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                        if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
+                            #Duplication du fichier "LastVersion" de la France étendue
+                            if sAreaKey == "geoFrenchExt":
+                                dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                                if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
+                                    self.aCatalogFiles.append(dstFileName2b + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + aTypeFile[1])
+                            sToken2 = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithTopo).replace("-all", aTypeFile[0])
+                            sToken2 += "-" + sAreaKey + "@@"
+                            sDescription2:str = aTypeFile[1] + " / " + oAreaRef[2] + " [" + poaffCst.cstWithTopo[1:] + "]"
+                            self.publishFile(dstFileName2, sToken2, sDescription2)
+                            self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[1], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2])
+                else:
+                    sDescription4:str = aTypeFile[1] +  " [" + poaffCst.cstWithTopo[1:] + "]"
+                    sComplementaryFiles += self.makeLink4File(dstFileName, sDescription4) + " | "
+        self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@Openair-airspaces" + poaffCst.cstWithTopo + "-othersfileslist@@", sComplementaryFiles)
+
+        #### 4b/ Openair files au format "-gpsWithoutTopo"
+        sComplementaryFiles:str = ""
+        #Déclinaison de toutes les typologies de fichier racine
+        for aTypeFile in aTypeFiles:
+            if aTypeFile[0]!="-ffvl-cfd":
+                srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
+                srcFileName = srcFileName.replace(poaffCst.cstWithTopo, poaffCst.cstWithoutTopo)
+                dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
+                dstFileName = dstFileName.replace(poaffCst.cstWithTopo, poaffCst.cstWithoutTopo)
+                if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName):
+                    sToken = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithoutTopo + "@@").replace("-all", aTypeFile[0])
+                    sDescription:str = aTypeFile[1] + " [" + poaffCst.cstWithoutTopo[1:] + "]"
+                    self.publishFile(dstFileName, sToken, sDescription)
+                    self.publishFilesExeptDays(sToken, srcFileName, dstFileName, aTypeFile[1], poaffCst.cstWithoutTopo[1:])
+                    if aTypeFile[0]=="-freeflight":
+                        #Déclinaison de toutes les régionalisations
+                        for sAreaKey, oAreaRef in geoRefArea.GeoRefArea().AreasRef.items():
+                            srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                            dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                            if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
+                                #Duplication du fichier "LastVersion" de la France étendue
+                                if sAreaKey == "geoFrenchExt":
+                                    dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                                    if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
+                                        self.aCatalogFiles.append(dstFileName2b + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + aTypeFile[1])
+                                sToken2 = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithoutTopo).replace("-all", aTypeFile[0])
+                                sToken2 += "-" + sAreaKey + "@@"
+                                sDescription2:str = aTypeFile[1] + " / " + oAreaRef[2] + " [" + poaffCst.cstWithoutTopo[1:] + "]"
+                                self.publishFile(dstFileName2, sToken2, sDescription2)
+                                self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[1], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2])
+                    else:
+                        sDescription4:str = aTypeFile[1] +  " [" + poaffCst.cstWithoutTopo[1:] + "]"
+                        sComplementaryFiles += self.makeLink4File(dstFileName, sDescription4) + " | "
+        self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@Openair-airspaces" + poaffCst.cstWithoutTopo + "-othersfileslist@@", sComplementaryFiles)
+
+        #### 5/ Securisation des accès sur site (avec routage vers la racine)
+        self.copyFile(self.publishPath, cstTemplateMoveTo, self.publishPathFiles                , cstFinalIndexFile)
+        self.copyFile(self.publishPath, cstTemplateMoveTo, self.publishPathFiles + "res/"       , cstFinalIndexFile)
+        self.copyFile(self.publishPath, cstTemplateMoveTo, self.publishPath + "img/"            , cstFinalIndexFile)
+        self.copyFile(self.publishPath, cstTemplateMoveTo, self.publishPath + "palette01/"      , cstFinalIndexFile)
+        self.copyFile(self.publishPath, cstTemplateMoveTo, self.publishPath + "palette01/img/"  , cstFinalIndexFile)
+        
+        #### Pre-final/ Creating the global files catalog
+        dstFileName = str(poaffCst.cstLastVersionFileName).replace("_", "s") + "Catalog_BPa.txt"
+        fVerionCatalog = open(self.publishPathFiles + dstFileName, "w", encoding="utf-8", errors="ignore")
         fVerionCatalog.write("Fichier;Date de transformation;Date d'origine de la source;Description\n")
-    
-        # Openair gpsWithTopo files
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-all-gpsWithTopo.txt", sHeadFileDate + "airspaces-all-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-all-gpsWithTopo@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-ifr-gpsWithTopo.txt", sHeadFileDate + "airspaces-ifr-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-ifr-gpsWithTopo@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-vfr-gpsWithTopo.txt", sHeadFileDate + "airspaces-vfr-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-vfr-gpsWithTopo@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSAT.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo-forSAT.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo-forSAT@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSUN.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo-forSUN.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo-forSUN@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forHOL.txt", sHeadFileDate + "airspaces-freeflight-gpsWithTopo-forHOL.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithTopo-forHOL@@")
-    
-        # LastVersion - (similar files of Openair gpsWithTopo files)
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo.txt", "LastVersion_FR-BPa4XCsoar.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSAT.txt", "LastVersion_FR-BPa4XCsoar-forSAT.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo-forSAT@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forSUN.txt", "LastVersion_FR-BPa4XCsoar-forSUN.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo-forSUN@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithTopo-forHOL.txt", "LastVersion_FR-BPa4XCsoar-forHOL.txt", sPoaffWebPageBuffer, "@@file@@Openair-LastVersion-gpsWithTopo-forHOL@@")
-        fVerionCatalog.write("LastVersion_FR-BPa4XCsoar.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifique pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
-        fVerionCatalog.write("LastVersion_FR-BPa4XCsoar-forSAT.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifiquement utilisable les SAMEDIs ; pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
-        fVerionCatalog.write("LastVersion_FR-BPa4XCsoar-forSUN.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifiquement utilisable les DIMANCHEs ; pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
-        fVerionCatalog.write("LastVersion_FR-BPa4XCsoar-forHOL.txt;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";OpenAir France spécifiquement utilisable les Jours-Fériés ; pour XCsoar, LK8000, XCTrack, FlyMe, Compass ou Syride\n")
-    
-        # Openair gpsWithoutTopo files
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo-forSAT.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo-forSAT.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo-forSAT@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo-forSUN.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo-forSUN.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo-forSUN@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight-gpsWithoutTopo-forHOL.txt", sHeadFileDate + "airspaces-freeflight-gpsWithoutTopo-forHOL.txt", sPoaffWebPageBuffer, "@@file@@Openair-airspaces-freeflight-gpsWithoutTopo-forHOL@@")
-    
-        # GeoJSON files
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-all.geojson", sHeadFileDate + "airspaces-all.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-all@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-ifr.geojson", sHeadFileDate + "airspaces-ifr.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-ifr@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-vfr.geojson", sHeadFileDate + "airspaces-vfr.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-vfr@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight.geojson", sHeadFileDate + "airspaces-freeflight.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-airspaces-freeflight@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/", "EuCtrl@airspaces-freeflight.geojson", "LastVersion_airspaces-freeflight.geojson", sPoaffWebPageBuffer, "@@file@@GeoJSON-LastVersion-freeflight@@")
-        fVerionCatalog.write("LastVersion_airspaces-freeflight.geojson;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";GeoJSON spécifiquement utilisable pour la CFD\n")
-    
-        # Calalog files
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/" + poaffCst.cstReferentialPath, "EuCtrl@airspacesCatalog.csv", sHeadFileDate + "airspacesCatalog.csv", sPoaffWebPageBuffer, "@@file@@CSV-airspacesCatalog@@")
-        sPoaffWebPageBuffer = self.publishFile(self.outPath + "EuCtrl/" + poaffCst.cstReferentialPath, "EuCtrl" + poaffCst.cstSeparatorFileName + poaffCst.cstCatalogFileName, sHeadFileDate + "airspacesCatalog.json", sPoaffWebPageBuffer, "@@file@@JSON-airspacesCatalog@@")
-        fVerionCatalog.write(sHeadFileDate + "airspacesCatalog.csv;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";Catalogue des espaces-aériens au format CSV\n")
-        fVerionCatalog.write(sHeadFileDate + "airspacesCatalog.json;" + sHeadFileDate[:-1] + ";" + sHeadFileDate[:-1] + ";Catalogue des espaces-aériens au format JSON\n")
+        for sLine in self.aCatalogFiles:
+            fVerionCatalog.write(sLine + "\n")
         fVerionCatalog.close()
-    
-        #### 2/ repository for CFD
-        # GeoJSON and Catalog files
-        self.copyFile(self.outPath + "EuCtrl/EuCtrl@airspaces-all.geojson", poaffCst.cstCfdWebPath + "/airspaces-all.geojson")
-        self.copyFile(self.outPath + "EuCtrl/EuCtrl@airspaces-ifr.geojson", poaffCst.cstCfdWebPath + "/airspaces-ifr.geojson")
-        self.copyFile(self.outPath + "EuCtrl/EuCtrl@airspaces-vfr.geojson", poaffCst.cstCfdWebPath + "/airspaces-vfr.geojson")
-        self.copyFile(self.outPath + "EuCtrl/EuCtrl@airspaces-freeflight.geojson", poaffCst.cstCfdWebPath + "/airspaces-freeflight.geojson")
-        self.copyFile(self.outPath + "EuCtrl/" + poaffCst.cstReferentialPath + "EuCtrl@airspacesCatalog.csv", poaffCst.cstCfdWebPath + "/airspacesCatalog.csv")
-        self.copyFile(self.outPath + "EuCtrl/" + poaffCst.cstReferentialPath + "EuCtrl" + poaffCst.cstSeparatorFileName + poaffCst.cstCatalogFileName, poaffCst.cstCfdWebPath + "/airspacesCatalog.json")
-    
-        #### 3/ creating html main page
-        if sPoaffWebPageBuffer != None:
-            sMsg = "Creating Web file - {}".format(cstNewWebPage)
+
+        #### Final/ Creating the html main page
+        if self.sWebPageBuffer != None:
+            sNewWebPage:str = "index.htm"
+            sMsg = "Creating Web file - {}".format(sNewWebPage)
             self.oLog.info(sMsg, outConsole=True)
-            fWebPageIndex = open(self.outPath + poaffCst.cstPoaffWebPath + cstNewWebPage, "w", encoding="utf-8", errors="ignore")
-            fWebPageIndex.write(sPoaffWebPageBuffer)
+            fWebPageIndex = open(self.publishPath + sNewWebPage, "w", encoding="utf-8", errors="ignore")
+            fWebPageIndex.write(self.sWebPageBuffer)
             fWebPageIndex.close()
-            self.copyFile(self.outPath + poaffCst.cstPoaffWebPath + cstNewWebPage, self.outPath + poaffCst.cstPoaffWebPath + sHeadFileDate + cstNewWebPage)
-    
-        #### 4/ securisation and move to html main page
-        sFileMoveTo = self.outPath + poaffCst.cstPoaffWebPath + cstTemplateMoveTo
-        self.copyFile(sFileMoveTo, self.outPath + poaffCst.cstPoaffWebPath + "files/index.htm")
-        self.copyFile(sFileMoveTo, self.outPath + poaffCst.cstPoaffWebPath + "files/res/index.htm")
-        self.copyFile(sFileMoveTo, self.outPath + poaffCst.cstPoaffWebPath + "img/index.htm")
-        self.copyFile(sFileMoveTo, self.outPath + poaffCst.cstPoaffWebPath + "palette01/index.htm")
-        self.copyFile(sFileMoveTo, self.outPath + poaffCst.cstPoaffWebPath + "palette01/img/index.htm")
+            self.copyFile(self.publishPath, sNewWebPage, self.publishPath, self.sHeadFileDate + sNewWebPage)
         return
 
-    def copyFile(self, sSrcFile:str, sDstFile:str) -> None:
-        if os.path.exists(sSrcFile):
-            shutil.copyfile(sSrcFile, sDstFile)
-            self.oLog.info("Copy file : {0} --> {1}".format(sSrcFile, sDstFile), outConsole=False)
+    #Traitement de tous les fichiers  complémentaires épurés par jour d'activité
+    def publishFilesExeptDays(self, sToken:str, sSrcFile:str, sDstFile:str, sTypeFile:str, sGpsType:str, sAreaKey:str="", sAreaDesc:str="") -> None:
+        aExeptDays:list =   [ ["-forSAT", "Fichier spécifiquement utilisable les 'SATerday/Samedis' (dépourvu des zones non-activables 'exceptSAT')"], \
+                              ["-forSUN", "Fichier spécifiquement utilisable les 'SUNday/Dimanches' (dépourvu des zones non-activables 'exceptSUN')"], \
+                              ["-forHOL", "Fichier spécifiquement utilisable les 'HOLiday/Jours-Fériés' (dépourvu des zones non-activables 'exceptHOL')"]]
+        sDayFiles:str=""
+        for sDayKey, sDayDesc in aExeptDays:
+            srcFileName = str(sSrcFile).replace(".txt", sDayKey + ".txt")
+            dstFileName = str(sDstFile).replace(".txt", sDayKey + ".txt")
+            if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName):
+                if sAreaDesc:
+                    sDescription:str = sTypeFile + " / " + sAreaDesc + " / " + sDayDesc + " [" + sGpsType + "/" + sDayKey[1:] + "]"
+                else:
+                    sDescription:str = sTypeFile + " / " + sDayDesc + " [" + sGpsType + "/" + sDayKey[1:] + "]"
+                sDayFiles += "<li>" + self.makeLink4File(dstFileName, sDescription) + "</li>"
+
+                #Duplication du fichier "LastVersion" de la France étendue
+                if sAreaKey == "geoFrenchExt":
+                    dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                    if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2):
+                        self.aCatalogFiles.append(dstFileName2 + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + sTypeFile)
+
+        if sAreaKey:
+            sToken2 = sToken.replace(sAreaKey, sAreaKey + "-forDAYS")
         else:
-            self.oLog.warning("Uncopy file (not exist): {0}".format(sSrcFile), outConsole=False)
+            sToken2 = sToken.replace(sGpsType, sGpsType + "-forDAYS")
             
-    def publishFile(self, sSrcPath:str, sSrcFile:str, sCpyFileName:str, sPoaffWebPageBuffer, sToken:str) -> str:
+        self.sWebPageBuffer = self.sWebPageBuffer.replace(sToken2, sDayFiles)
+        return
+
+    def makeLink4File(self, sFile:str, sTitle:str) -> str:
+        cstStdLync:str  = '<a title="@@title@@" target="newPage" href="files/@@file@@">@@file@@</a>'
+        sNewLink:str    = cstStdLync.replace("@@title@@", sTitle)
+        sNewLink        = sNewLink.replace("@@file@@", sFile)
+        return sNewLink
+
+    def publishFile(self, sDstFile:str, sToken:str, sTitle:str, sHtml:str=None) -> None:
+        if not sHtml:
+            sHtml = self.makeLink4File(sDstFile, sTitle)
+        self.sWebPageBuffer = self.sWebPageBuffer.replace(sToken, sHtml)
+        
+    def copyFile(self, sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> bool:
         if os.path.exists(sSrcPath + sSrcFile):
-            sCpyFile = "{0}{1}{2}".format(self.outPath + poaffCst.cstPoaffWebPath, "files/", sCpyFileName)
-            shutil.copyfile(sSrcPath + sSrcFile, sCpyFile)
-            self.oLog.info("Move file : {0} --> {1}".format(sSrcFile, sCpyFileName), outConsole=False)
-            return sPoaffWebPageBuffer.replace(sToken, sCpyFileName)
+            shutil.copyfile(sSrcPath + sSrcFile, sDstPath + sDstFile)
+            self.oLog.info("Copy file : {0} --> {1}".format(sSrcFile, sDstFile), outConsole=False)
+            return True
         else:
-            self.oLog.warning("Unmove file (not exist): {0}".format(sSrcFile), outConsole=False)
+            self.oLog.info("Uncopy file (not exist): {0}".format(sSrcFile), outConsole=False)
+            return False
             
 if __name__ == '__main__':
-    sCallingContext = None
-    
     oLog = bpaTools.Logger(appId, logFile)
+    oLog.resetFile()
     oWeb = PoaffWebPage(oLog, outPath)
     oWeb.createPoaffWebPage(None)                                   #Preparation pour publication
     #oWeb.createPoaffWebPage("20200715_")                           #Pour révision d'une publication
 
     print()
-    if sCallingContext!=None:
-        oLog.warning("{0}".format(sCallingContext), outConsole=True)
     oLog.Report()
     oLog.closeFile()
-    

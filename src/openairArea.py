@@ -126,15 +126,25 @@ class OpenairArea:
     def saveOpenairAirspacesFile4Area(self, sFile:str, sContext:str="ff") -> None:
         for sAreaKey in self.oGeoRefArea.AreasRef.keys():
             self.saveOpenairAirspacesFile(sFile, sContext, sAreaKey)
-        #NoUse - self.saveOpenairAirspacesFile(sFile, sContext, cstWithoutLocation)
         return
 
-    def saveOpenairAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
-        if sContext=="ff":
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo",    None,        sAreaKey)
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
+    def saveOpenairAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str="") -> None:
+        if sContext=="cfd":
+            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo")
+        elif sContext=="ff":
+            #Pour les sorties "-gpsWithTopo" traiter que "geoFrench" et "geoFrenchExt" mais pas les sous-découpages Français qui ne sont nécessaire que pour les petits GPS sans topo ni carte-mémoire..
+            #donc ne pas générer : geoFrenchNorth, geoFrenchSouth, geoFrenchNESW, geoFrenchVosgesJura, geoFrenchPyrenees, geoFrenchAlps
+            aToken = ["geoFrench", "geoFrenchExt"]
+            if sAreaKey[:len(aToken[0])] == aToken[0]:
+                bIsInclude = bool(sAreaKey in aToken)
+            else:
+                bIsInclude = True
+            if bIsInclude:
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo",    None,        sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
+            #Générer tous les fichiers pour les sorties "-gpsWithoutTopo"
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSAT", sAreaKey)
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSUN", sAreaKey)
@@ -144,17 +154,25 @@ class OpenairArea:
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)
         return
 
-    def saveOpenairAirspacesFile2(self, sFile:str, sContext:str="all", gpsType:str="", exceptDay:str="", sAreaKey:str=None) -> None:
+    def saveOpenairAirspacesFile2(self, sFile:str, sContext:str="all", gpsType:str="", exceptDay:str="", sAreaKey:str="") -> None:
         oOutOpenair:list = []
         sContent:str = ""
+        sAddHeader:str = ""
         lNbExcludeZone:int = 0
 
         oGlobalHeader = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogHeaderFile]    #Récupération de l'entete du catalogue global
         oNewHeader:dict = deepcopy(self.oAsCat.oGlobalCatalogHeader)
 
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]         #Récupération de la liste des zones consolidés
+        sTitle = "Openair save airspaces file - {0} / {1} / {2} / {3}".format(sContext, gpsType, exceptDay, sAreaKey)
+        barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
+        idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
+            idx+=1
 
+            #if oGlobalCat["id"] in ["TMA16169","TMA16170"]:
+            #    print(oGlobalCat["id"])
+                
             #Filtrage des zones par typologie de sorties
             bIsInclude:bool = False
             if   sContext == "ifr":
@@ -166,9 +184,36 @@ class OpenairArea:
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
-                bIsInclude = oGlobalCat["freeFlightZone"]
+                if (sAreaKey == "geoFrench") and ("deltaExt" in oGlobalCat):
+                    bIsInclude = not oGlobalCat["deltaExt"]      #Pour Exclure toutes zones hors de responsabilité SIA France
+                    bIsInclude = bIsInclude and oGlobalCat["freeFlightZone"]
+                else:
+                    bIsInclude = oGlobalCat["freeFlightZone"]
+                #Relevage du plafond de carte pour certaines zones situées en France
+                if "freeFlightZoneExt" in oGlobalCat:
+                    aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
+                    bIsExtAlt4Loc:bool = False
+                    for sLoc in aFrLocation:
+                        if oGlobalCat[sLoc]:
+                            bIsExtAlt4Loc = True
+                            break
+                    if bIsExtAlt4Loc:
+                        bIsInclude = bIsInclude or oGlobalCat["freeFlightZoneExt"]
                 sContent = "freeflightZone"
                 sFile = sFile.replace("-all", "-freeflight")
+            elif sContext == "cfd":
+                if "deltaExt" in oGlobalCat:
+                    bIsInclude = not oGlobalCat["deltaExt"]      #Pour Exclure toutes zones hors de responsabilité SIA France
+                    bIsInclude = bIsInclude and oGlobalCat["freeFlightZone"]
+                else:
+                    bIsInclude = oGlobalCat["freeFlightZone"]
+                if "use4cfd" in oGlobalCat:
+                    bIsInclude = bIsInclude or oGlobalCat["use4cfd"]
+                #Relevage systématique du plafond de la carte
+                elif "freeFlightZoneExt" in oGlobalCat:
+                    bIsInclude = bIsInclude or oGlobalCat["freeFlightZoneExt"]
+                sContent =  "freeflightZone for FFVL-CFD"
+                sFile = sFile.replace("-all", "-ffvl-cfd")
             else:
                 sContext = "all"
                 sContent = "allZone"
@@ -180,17 +225,25 @@ class OpenairArea:
 
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
-            if bIsInclude and sAreaKey:
+            if sContext == "cfd":
+                #06/08/2020, demande de Martin pour la sortie "CFD". Besoin d'une vision mobiale avec les zones interne située exclusivement en France métropole
+                None   #Aucun filtrage geographique
+            elif bIsInclude and sAreaKey:
                 if sAreaKey in oGlobalCat:
                     bIsArea = oGlobalCat[sAreaKey]
                 else:
                     bIsArea = False
+                if bIsArea and oGlobalCat["id"]=="LTA13071":        #Cas spécifique de la zone '[D] FRANCE 1 (LTA / id=LTA13071)' [FL115-FL195]
+                    if sAreaKey in ["geoFrenchNESW","geoCorse"]:
+                        bIsArea = False     #Ne pas afficher cette zone incohérente pour ces régions
+                    else:
+                        sAddHeader = "'{0}' ({1} / {2}) - Symbolisation de la surface 'S' - Afin de simplifier cette carte, vous pouvez éventuellement supprimer cette couche limite du vol-libre (hors masifs-montagneux...)".format(oGlobalCat["nameV"], oGlobalCat["alt"], oGlobalCat["altM"])
 
             #Filtrage des zones par jour d'activation
             if bIsInclude and bIsArea and exceptDay:
                 if exceptDay in oGlobalCat:
                     bIsInclude = False
-                    lNbExcludeZone+=1                    
+                    lNbExcludeZone+=1
 
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalOpenair):
                 oAs:OpenairZone = self.oGlobalOpenair[sGlobalKey]
@@ -200,6 +253,8 @@ class OpenairArea:
                    None                     #Exclure les doubles points fixes (DP.. + DP..) mais autoriser les cercles (V X=.. + DP..)
                 else:
                     oOutOpenair.append(oAs)
+            barre.update(idx)
+        barre.reset()
 
         if gpsType=="-gpsWithTopo":
             sContent += " / " + gpsType[1:]
@@ -231,14 +286,14 @@ class OpenairArea:
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             if sAreaKey in self.oGeoRefArea.AreasRef:
                 sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
-                oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})            
+                oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})
             else:
                 sAreaDesc:str = ""
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oOutOpenair)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
             oTools = aixmReader.AixmTools(None)
-            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc)
+            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, sAddHeader) 
             sOutOpenair += sHeader
             for oOp in oOutOpenair:
                 sOutOpenair += oOp.serializeArea(gpsType)
@@ -251,68 +306,68 @@ class OpenairArea:
         self.oZone = OpenairZone()
         return
 
-    def parseLine(self, line:str) -> None:
-        if line == "":
+    def parseLine(self, srcLine:str) -> None:
+        srcLine = srcLine.replace("\t"," ")    #Cleaning
+        srcLine = srcLine.replace("  "," ")    #Cleaning
+        if srcLine == "":
             return
 
-        line = line.replace(","," ")     #Cleaning
-        line = line.replace("\t"," ")    #Cleaning
-        line = line.replace("  "," ")    #Cleaning
-        aLine = line.split(" ")          #Tokenize
-        if "" in aLine:                  #Supression d'éventuels éléments vides
+        line = srcLine.replace(","," ")        #Cleaning
+        aLine = line.split(" ")                #Tokenize
+        if "" in aLine:                        #Supression d'éventuels éléments vides
             aLine = list(filter(None, aLine))
 
         #### Header - Traitement des entêtes de zones
         if aLine[0] == "AC":
             if self.oZone.bBorderInProcess:
                 self.newZone()
-            self.oZone.sClass = line
+            self.oZone.sClass = srcLine
             return
 
         elif aLine[0] == "AN":
             if self.oZone.bBorderInProcess:
                 self.newZone()
-            self.oZone.sName = line
+            self.oZone.sName = srcLine
             return
 
         elif aLine[0] == "AH":
             if self.oZone.bBorderInProcess:
                 self.newZone()
-            self.oZone.sUpper = line
+            self.oZone.sUpper = srcLine
             return
 
         elif aLine[0] == "AL":
             if self.oZone.bBorderInProcess:
                 self.newZone()
-            self.oZone.sLower = line
+            self.oZone.sLower = srcLine
             return
 
         elif aLine[0] == "*AAlt":
-            self.oZone.sAlt = line
+            self.oZone.sAlt = srcLine
             return
 
         elif aLine[0] == "*ADescr":
-            self.oZone.sDescr = line
+            self.oZone.sDescr = srcLine
             return
 
         elif aLine[0] == "*AActiv":
-            self.oZone.sActiv = line
+            self.oZone.sActiv = srcLine
             return
 
         elif aLine[0] == "*AExSAT":
-            self.oZone.AExSAT = line
+            self.oZone.AExSAT = srcLine
             return
 
         elif aLine[0] == "*AExSUN":
-            self.oZone.AExSUN = line
+            self.oZone.AExSUN = srcLine
             return
 
         elif aLine[0] == "*AExHOL":
-            self.oZone.AExHOL = line
+            self.oZone.AExHOL = srcLine
             return
 
         elif aLine[0] == "*ASeeNOTAM":
-            self.oZone.ASeeNOTAM = line
+            self.oZone.ASeeNOTAM = srcLine
             return
 
         elif aLine[0] == "*AUID":           #Sample - *AUID GUIg=! UId=1563127 Id=LFR12
@@ -328,7 +383,7 @@ class OpenairArea:
 
         else:
             if not self.oZone.isCorrectHeader():
-                self.oLog.critical("Header error before line {}".format(line), outConsole=True)
+                self.oLog.critical("Header error before line {}".format(srcLine), outConsole=True)
                 return
 
         #### Airspace - Enregistrement de la zone
@@ -342,26 +397,7 @@ class OpenairArea:
             None    #Traité plus haut dans la parties 'header'
 
         else:
-            self.oZone.oBorder.append(line)
-        return
-
-
-    def parseFile(self, sSrcFile:str) -> None:
-        fopen = open(sSrcFile, "rt", encoding="utf-8", errors="ignore")
-        lines = fopen.readlines()
-        sMsg = "Parsing Openair file - {}".format(sSrcFile)
-        self.oLog.info(sMsg, outConsole=False)
-        barre = bpaTools.ProgressBar(len(lines), 20, title=sMsg)
-        idx = 0
-        for line in lines:
-            idx+=1
-            lig = cleanLine(line)
-            self.parseLine(lig)
-            barre.update(idx)
-
-        barre.reset()
-        #print()
-        #self.oLog.info("--> {} Openair parsing zones".format(len(self.oOpenair)), outConsole=False)
+            self.oZone.oBorder.append(srcLine)
         return
 
 
@@ -373,12 +409,17 @@ class OpenairArea:
 
         self.oOpenair:dict = {}     #Clean temporary dict
         fileOpenair = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllOpenairFileName                  #Fichier comportant toutes les bordures de zones
-        self.oLog.info("Openair airspaces consolidation file {0}: {1} --> {2}".format(sKeyFile, fileOpenair, oFile[poaffCst.cstSpProcessType]), outConsole=False)
-        self.parseFile(fileOpenair)
+
+        sTitle = "Openair airspaces consolidation - {0}".format(sKeyFile)
+        self.oLog.info(sTitle + ": {1} --> {2}".format(sKeyFile, fileOpenair, oFile[poaffCst.cstSpProcessType]), outConsole=False)
+        self.parseFile(fileOpenair, sKeyFile)
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]          #Récupération de la liste des zones consolidés
 
+        barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
+        idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                       #Traitement du catalogue global complet
-           if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
+            idx+=1
+            if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
                #self.oLog.info("  --> Openair airspace consolidation {0}".format(sGlobalKey), outConsole=False)
                sUId = oGlobalCat["UId"]
                if "excludeAirspaceNotFfArea" in oGlobalCat:
@@ -393,5 +434,24 @@ class OpenairArea:
                    self.oGlobalOpenair.update({sGlobalKey:oAs})
                else:
                    self.oLog.error("Openair airspace not found in file - {0}".format(sUId), outConsole=False)
+            barre.update(idx)
+        barre.reset()
+        return
+
+    def parseFile(self, sSrcFile:str, sKeyFile:str) -> None:
+        sTitle = "Openair airspaces parsing file - {0}".format(sKeyFile)
+        self.oLog.info(sTitle, outConsole=False)
+        fopen = open(sSrcFile, "rt", encoding="utf-8", errors="ignore")
+        lines = fopen.readlines()
+        barre = bpaTools.ProgressBar(len(lines), 20, title=sTitle)
+        idx = 0
+        for line in lines:
+            idx+=1
+            lig = cleanLine(line)
+            self.parseLine(lig)
+            barre.update(idx)
+        barre.reset()
+        #print()
+        #self.oLog.info("--> {} Openair parsing zones".format(len(self.oOpenair)), outConsole=False)
         return
 

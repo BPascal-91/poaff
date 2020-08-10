@@ -11,6 +11,7 @@ import geoRefArea
 cstGeoFeatures          = "features"
 cstGeoProperties        = "properties"
 cstGeoGeometry          = "geometry"
+cstDeltaExtended        = "deltaExtended"
 cstWithoutLocation      = "withoutGeoLocation"
 
 class GeojsonArea:
@@ -29,6 +30,7 @@ class GeojsonArea:
             self.saveGeoJsonAirspacesFile(sFile, sContext, sAreaKey)
         self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
         self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
+        self.saveGeoJsonAirspacesFile(sFile, "all", cstDeltaExtended)
         return
 
     def saveGeoJsonAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
@@ -39,8 +41,15 @@ class GeojsonArea:
 
         #bpaTools.writeJsonFile(sFile + "-tmp.json", self.oGlobalGeoJSON)                       #Sérialisation pour mise au point
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]         #Récupération de la liste des zones consolidés
+        sTitle = "GeoJSON save airspaces file - {0} / {1}".format(sContext, sAreaKey)
+        barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
+        idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
-
+            idx+=1
+            
+            #if oGlobalCat["id"] in ["TMA16169","TMA16170"]:
+            #    print(oGlobalCat["id"])
+            
             #Filtrage des zones par typologie de sorties
             bIsInclude:bool = False
             oFinalCat:dict = oGlobalCat
@@ -53,13 +62,36 @@ class GeojsonArea:
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
-                bIsInclude = oGlobalCat["freeFlightZone"]
+                if (sAreaKey == "geoFrench") and ("deltaExt" in oGlobalCat):
+                    bIsInclude = not oGlobalCat["deltaExt"]      #Pour Exclure toutes zones hors de responsabilité SIA France
+                    bIsInclude = bIsInclude and oGlobalCat["freeFlightZone"]
+                else:
+                    bIsInclude = oGlobalCat["freeFlightZone"]
+                #Relevage du plafond de carte pour certaines zones situées en France
+                if "freeFlightZoneExt" in oGlobalCat:
+                    aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
+                    bIsExtAlt4Loc:bool = False
+                    for sLoc in aFrLocation:
+                        if oGlobalCat[sLoc]:
+                            bIsExtAlt4Loc = True
+                            break
+                    if bIsExtAlt4Loc:
+                        bIsInclude = bIsInclude or oGlobalCat["freeFlightZoneExt"]
                 sContent = "freeflightZone"
                 sFile = sFile.replace("-all", "-freeflight")
             elif sContext == "cfd":
-                bIsInclude = oGlobalCat["freeFlightZone"]
+                if "deltaExt" in oGlobalCat:
+                    bIsInclude = not oGlobalCat["deltaExt"]     #Pour Exclure toutes zones hors de responsabilité SIA France
+                    bIsInclude = bIsInclude and oGlobalCat["freeFlightZone"]
+                else:
+                    bIsInclude = oGlobalCat["freeFlightZone"]
+                if "use4cfd" in oGlobalCat:
+                    bIsInclude = bIsInclude or oGlobalCat["use4cfd"]
+                #Relevage systématique du plafond de la carte
+                elif "freeFlightZoneExt" in oGlobalCat:
+                    bIsInclude = bIsInclude or oGlobalCat["freeFlightZoneExt"]
                 sContent = "freeflightZone for FFVL-CFD"
-                sAreaKey = ""                          #31/07/2020, demande de Martin - old "geoFrench"
+                sAreaKey = ""
                 sFile = sFile.replace("-all", "-ffvl-cfd")
                 aAlt = str(oGlobalCat["alt"]).split("/")
                 sLow = aAlt[0][1:]
@@ -94,7 +126,13 @@ class GeojsonArea:
 
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
-            if sAreaKey:
+            if sContext == "cfd":
+                #06/08/2020, demande de Martin pour la sortie "CFD". Besoin d'une vision mobiale avec les zones interne située exclusivement en France métropole
+                None   #Aucun filtrage geographique
+            if sAreaKey in ["geoFrenchNESW","geoCorse"] and oGlobalCat["id"]=="LTA13071":
+                #Supprimer cett zone de la carte Corse --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
+                bIsArea = False
+            elif bIsInclude and sAreaKey:
                 if sAreaKey == cstWithoutLocation:
                     #Identification des zones non-retenues dans aucun des filtrages géographique paramétrés
                     bIsArea = False
@@ -103,6 +141,11 @@ class GeojsonArea:
                             bIsArea = bIsArea or oGlobalCat[sAreaKey2]
                         if bIsArea: break
                     bIsArea = not bIsArea
+                elif sAreaKey == cstDeltaExtended:
+                    if "deltaExt" in oGlobalCat:
+                        bIsArea = oGlobalCat["deltaExt"]
+                    else:
+                        bIsArea = False
                 elif sAreaKey in oGlobalCat:
                     bIsArea = oGlobalCat[sAreaKey]
                 else:
@@ -112,6 +155,8 @@ class GeojsonArea:
                oAs = self.oGlobalGeoJSON[sGlobalKey]
                oArea = {"type":"Feature", "properties":oFinalCat, "geometry":oAs}
                oGeoFeatures.append(oArea)
+            barre.update(idx)
+        barre.reset()
 
         if sAreaKey:
             sContent += " / " + sAreaKey
@@ -127,7 +172,7 @@ class GeojsonArea:
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             if sAreaKey in self.oGeoRefArea.AreasRef:
                 sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
-                oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})            
+                oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oGeoFeatures)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
@@ -142,39 +187,45 @@ class GeojsonArea:
             return
 
         fileGeoJSON = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllGeojsonFileName                  #Fichier comportant toutes les bordures de zones
-        self.oLog.info("GeoJSON airspaces consolidation file {0}: {1} --> {2}".format(sKeyFile, fileGeoJSON, oFile[poaffCst.cstSpProcessType]), outConsole=False)
-        self.makeGeojsonIndex(fileGeoJSON)
+        sTitle = "GeoJSON airspaces consolidation - {0}".format(sKeyFile)
+        self.oLog.info(sTitle + ": {0} --> {1}".format(fileGeoJSON, oFile[poaffCst.cstSpProcessType]), outConsole=False)
+        self.makeGeojsonIndex(fileGeoJSON, sKeyFile)
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]          #Récupération de la liste des zones consolidés
 
+        barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
+        idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                       #Traitement du catalogue global complet
-           if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
-               #self.oLog.info("  --> GeoJSON airspace consolidation {0}".format(sGlobalKey), outConsole=False)
-               sUId = oGlobalCat["UId"]
-               if sUId in self.oIdxGeoJSON:
-                   oAs = self.oIdxGeoJSON[sUId]
-                   oRet = self.oGeoRefArea.evalAreasRefInclusion(sGlobalKey, oAs)
-                   if "externalOfFrench" in oGlobalCat:
-                       sToken="geoFrench"
-                       for sKey, oVal in oRet.items():
-                           if sKey[:len(sToken)]==sToken:   
-                               oRet.update({sKey:False})  #Exclusion forcée de certaines zones (très/trop proche) du territoire Français
-                   oGlobalCat.update(oRet)
-                   self.oGlobalGeoJSON.update({sGlobalKey:oAs})
-               else:
-                   self.oLog.error("GeoJSON airspace not found in file - {0}".format(sUId), outConsole=False)
+            if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
+                idx+=1
+                #self.oLog.info("  --> GeoJSON airspace consolidation {0}".format(sGlobalKey), outConsole=False)
+                sUId = oGlobalCat["UId"]
+                if sUId in self.oIdxGeoJSON:
+                    oAs = self.oIdxGeoJSON[sUId]
+                    oRet = self.oGeoRefArea.evalAreasRefInclusion(sGlobalKey, oAs)
+                    oGlobalCat.update(oRet)
+                    self.oGlobalGeoJSON.update({sGlobalKey:oAs})
+                else:
+                    self.oLog.error("GeoJSON airspace not found in file - {0}".format(sUId), outConsole=False)
+            barre.update(idx)
+        barre.reset()
         self.oAsCat.saveCatalogFiles()
         return
 
-    def makeGeojsonIndex(self, fileGeoJSON:str) -> None:
+    def makeGeojsonIndex(self, fileGeoJSON:str, sKeyFile:str) -> None:
+        sTitle = "GeoJSON airspaces make index - {0}".format(sKeyFile)
         self.oIdxGeoJSON = {}                                                                   #Clean previous data
         ofileGeoJSON:dict = bpaTools.readJsonFile(fileGeoJSON)                                  #Chargement des zones
         if cstGeoFeatures in ofileGeoJSON:
             oFeatures = ofileGeoJSON[cstGeoFeatures]
+            barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
+            idx = 0
             for oAs in oFeatures:
                 oAsProp = oAs[cstGeoProperties]
                 sUId = oAsProp["UId"]
                 #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
                 oAsGeo = oAs[cstGeoGeometry]
                 self.oIdxGeoJSON.update({sUId:oAsGeo})
+            barre.update(idx)
+        barre.reset()
         return
 
