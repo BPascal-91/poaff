@@ -116,6 +116,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                 if oKey in oPropsZone:
                     oVal = oPropsZone[oKey]
                     if oKey=="alt":
+		a-revoir "alt"
                         aAlt = oVal[1:-1].split("/")
                         oNewPropZone.update({"bottom":aAlt[0]})
                         oNewPropZone.update({"top":aAlt[1]})
@@ -131,7 +132,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
 def writeTextFile(sFile="", oText=None):
     if sFile!="":
         oLog.info("Write file {0}".format(sFile), outConsole=True)
-        with open(sFile, "w", encoding="utf-8") as output:
+        with open(sFile, "w", encoding="cp1252") as output:
             output.write(oText)
     return
 

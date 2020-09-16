@@ -4,6 +4,7 @@ from copy import deepcopy
 
 import bpaTools
 import poaffCst
+import aixmReader
 import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
@@ -59,14 +60,14 @@ class GeojsonArea:
                 sFile = sFile.replace("-all", "-ifr")
             elif sContext == "vfr":
                 bIsInclude = oGlobalCat["vfrZone"]
+                #bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)		#Ne pas exporter l'extension de vol possible en VFR de 0m jusqu'au FL175/5334m
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
-                if (sAreaKey == "geoFrench") and ("deltaExt" in oGlobalCat):
-                    bIsInclude = not oGlobalCat["deltaExt"]      #Pour Exclure toutes zones hors de responsabilité SIA France
-                    bIsInclude = bIsInclude and oGlobalCat["freeFlightZone"]
-                else:
-                    bIsInclude = oGlobalCat["freeFlightZone"]
+                bIsIncludeLoc:bool = True
+                if (sAreaKey == "geoFrench") and ("ExtOfFrensh" in oGlobalCat):
+                    bIsIncludeLoc = not oGlobalCat["ExtOfFrensh"]      						#Pour Exclure toutes zones hors de France
+                bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 #Relevage du plafond de carte pour certaines zones situées en France
                 if "freeFlightZoneExt" in oGlobalCat:
                     aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
@@ -76,35 +77,30 @@ class GeojsonArea:
                             bIsExtAlt4Loc = True
                             break
                     if bIsExtAlt4Loc:
-                        bIsInclude = bIsInclude or oGlobalCat["freeFlightZoneExt"]
+                        bIsInclude = bIsInclude or (bIsIncludeLoc and oGlobalCat["freeFlightZoneExt"])
                 sContent = "freeflightZone"
                 sFile = sFile.replace("-all", "-freeflight")
             elif sContext == "cfd":
-                if "deltaExt" in oGlobalCat:
-                    bIsInclude = not oGlobalCat["deltaExt"]     #Pour Exclure toutes zones hors de responsabilité SIA France
-                    bIsInclude = bIsInclude and oGlobalCat["freeFlightZone"]
-                else:
-                    bIsInclude = oGlobalCat["freeFlightZone"]
+                bIsIncludeLoc:bool = True
+                if "ExtOfFrensh" in oGlobalCat:
+                    bIsIncludeLoc = not oGlobalCat["ExtOfFrensh"]      						#Pour Exclure toutes zones hors de France
+                bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 if "use4cfd" in oGlobalCat:
                     bIsInclude = bIsInclude or oGlobalCat["use4cfd"]
                 #Relevage systématique du plafond de la carte
                 elif "freeFlightZoneExt" in oGlobalCat:
-                    bIsInclude = bIsInclude or oGlobalCat["freeFlightZoneExt"]
+                    bIsInclude = bIsInclude or (bIsIncludeLoc and oGlobalCat["freeFlightZoneExt"])
                 sContent = "freeflightZone for FFVL-CFD"
-                sAreaKey = ""
                 sFile = sFile.replace("-all", "-ffvl-cfd")
-                aAlt = str(oGlobalCat["alt"]).split("/")
-                sLow = aAlt[0][1:]
-                sUpp = aAlt[1][:-1]
+                sAreaKey = ""
                 #Single properties for CFD or FlyXC - {"name":"Agen1 119.15","category":"E","bottom":"2000F MSL","bottom_m":0,"top":"FL 65","color":"#bfbf40"}
                 oSingleCat:dict = {}
                 oSingleCat.update({"name":oGlobalCat["nameV"]})
                 oSingleCat.update({"category":oGlobalCat["class"]})
                 oSingleCat.update({"type":oGlobalCat["type"]})
-                if "codeActivity" in oGlobalCat:    oSingleCat.update({"codeActivity":oGlobalCat["codeActivity"]})
-                oSingleCat.update({"alt":oGlobalCat["alt"]})
-                oSingleCat.update({"bottom":sLow})
-                oSingleCat.update({"top":sUpp})
+                if "codeActivity" in oGlobalCat:    oSingleCat.update({"codeActivity":oGlobalCat["codeActivity"]})				
+                oSingleCat.update({"bottom":aixmReader.getSerializeAlt(oGlobalCat,"Upp")})
+                oSingleCat.update({"top":aixmReader.getSerializeAlt(oGlobalCat,"Low")})
                 oSingleCat.update({"bottom_m":oGlobalCat["lowerM"]})
                 oSingleCat.update({"top_m":oGlobalCat["upperM"]})
                 if "exceptSAT" in oGlobalCat:       oSingleCat.update({"exceptSAT":oGlobalCat["exceptSAT"]})
@@ -127,9 +123,9 @@ class GeojsonArea:
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
             if sContext == "cfd":
-                #06/08/2020, demande de Martin pour la sortie "CFD". Besoin d'une vision mobiale avec les zones interne située exclusivement en France métropole
+                #06/08/2020, demande de Martin pour la sortie "CFD". Besoin d'une vision mondiale avec les zones interne située exclusivement en France métropole
                 None   #Aucun filtrage geographique
-            if sAreaKey in ["geoFrenchNESW","geoCorse"] and oGlobalCat["id"]=="LTA13071":
+            elif sAreaKey in ["geoFrenchNESW","geoCorse"] and oGlobalCat["id"]=="LTA13071":
                 #Supprimer cett zone de la carte Corse --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
                 bIsArea = False
             elif bIsInclude and sAreaKey:
@@ -222,9 +218,12 @@ class GeojsonArea:
             for oAs in oFeatures:
                 oAsProp = oAs[cstGeoProperties]
                 sUId = oAsProp["UId"]
-                #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
-                oAsGeo = oAs[cstGeoGeometry]
-                self.oIdxGeoJSON.update({sUId:oAsGeo})
+                if "excludeAirspaceNotFfArea" in oAsProp:
+                   None     #Ne pas inclure cette zone sans bordure
+                else:
+                    #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
+                    oAsGeo = oAs[cstGeoGeometry]
+                    self.oIdxGeoJSON.update({sUId:oAsGeo})
             barre.update(idx)
         barre.reset()
         return

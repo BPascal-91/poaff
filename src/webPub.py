@@ -53,7 +53,7 @@ class PoaffWebPage:
             self.sHeadFileDate = sHeadFileDate
     
         #### 1/ Recup du modèle page Web
-        fTemplate = open(self.publishPath + cstTemplateWebPage, "r", encoding="utf-8", errors="ignore")
+        fTemplate = open(self.publishPath + cstTemplateWebPage, "r", encoding="utf-8", errors="ignore")   #or encoding="cp1252"
         self.sWebPageBuffer = fTemplate.read()
         fTemplate.close()
 
@@ -204,7 +204,7 @@ class PoaffWebPage:
             sNewWebPage:str = "index.htm"
             sMsg = "Creating Web file - {}".format(sNewWebPage)
             self.oLog.info(sMsg, outConsole=True)
-            fWebPageIndex = open(self.publishPath + sNewWebPage, "w", encoding="utf-8", errors="ignore")
+            fWebPageIndex = open(self.publishPath + sNewWebPage, "w", encoding="utf-8", errors="ignore")	#or encoding="cp1252"
             fWebPageIndex.write(self.sWebPageBuffer)
             fWebPageIndex.close()
             self.copyFile(self.publishPath, sNewWebPage, self.publishPath, self.sHeadFileDate + sNewWebPage)
