@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import bpaTools
 import aixmReader
 
-cstFreqTypePriority:list = ["APP","TWR","FIS","ATIS","AFIS","A/A"]  #Priorisation des typologies de fréquence radio
+cstFreqTypePriority:list = ["APP","TWR","FIS","AFIS","ATIS"]  #Priorisation des typologies de fréquence radio
 
 def getMasterFrequecy(oFreqs:dict, sTypeZone:str="") -> str:
     sFreqType:str = "xxx"

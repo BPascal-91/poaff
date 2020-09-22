@@ -11,70 +11,98 @@ import bpaTools
 
 
 
-def splitDescription(oVal:str, sToken:str, oPop:list):
+def splitDescription(sVal:str, sToken:str, oPop:list) -> str:
     #if oVal[0:len(sToken)+1]==sToken+" ":
     #    oPop.update({"type":sToken})
     #    oVal = oVal[len(sToken)+1:]
-    if sToken in oVal:
+    if sToken in sVal:
         oPop.update({"type":sToken})
-        oVal = oVal.replace(sToken,"")
-        oVal = oVal.replace("  "," ")
-    return oVal
+        sVal = sVal.replace(sToken,"")
+        sVal = sVal.replace("  "," ")
+    return sVal
 
 
 def loadAirspacesCatalog (sFile:str, context="") -> dict:
     oLog.info("loadAirspacesCatalog - file source: {0}".format(sFile))
     oJson = bpaTools.readJsonFile(sFile)
     oContents = oJson["features"]
-
-    oCatZones = dict()
+    
+    oCatZones:dict = dict()
     for oZone in oContents:
-        oNewPropZone = dict()
-        oPropsZone = oZone["properties"]
-
+        oNewPropZone:dict = dict()
+        oPropsZone =oZone["properties"]
         #for key,val in oPropsZone.items():
         #    oLog.info("{0} --> {1}".format(key, val))
+        
+        if context == "aixmParser":
+            aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
+            for oKey in aKey:
+                if oKey in oPropsZone:
+                    oVal = oPropsZone[oKey]
+                    oNewPropZone.update({oKey:oVal})
 
-        if context == "FlyXC":
-            aKey:list = ["name", "category", "bottom", "top"]
+        elif context == "FlyXC":
+            aKey:list = ["category", "name", "bottom", "top"]
             sKey:str = "[" + oPropsZone["category"] + "] " + oPropsZone["name"]
             oNewPropZone.update({"FlyXC-Key":sKey})
+            oNewPropZone.update({"orgCategory":oPropsZone["category"]})
+            oNewPropZone.update({"orgName":oPropsZone["name"]})
             for oKey in aKey:
                 oVal = oPropsZone[oKey]
+                oVal = oVal.replace("  ", " ")      #Cleanning
+                
+                #Normalisation des Class ou Category des zones
+                if oKey=="category":
+                    #Transcodage pour Normalisation & Complétude de données
+                    if oPropsZone["category"]=="CTR":
+                        oVal = "D"
+                        oPropsZone.update({"category":oVal})
+                        oNewPropZone.update({"type":"CTR"})
+                    if oPropsZone["category"]=="RMZ":
+                        oNewPropZone.update({"type":"RMZ"})
+                    elif oPropsZone["category"]=="DANGER":
+                        oVal = "Q"
+                        oPropsZone.update({"category":oVal})
+                        oNewPropZone.update({"type":oVal})
+                    elif oPropsZone["category"]=="PROHIBITED":
+                        oVal = "P"
+                        oPropsZone.update({"category":oVal})
+                        oNewPropZone.update({"type":"P"})
+                    elif oPropsZone["category"]=="RESTRICTED":
+                        oVal = "R"
+                        oPropsZone.update({"category":oVal})
+                        oNewPropZone.update({"type":oVal})
+                    elif oPropsZone["category"]=="GLIDING":
+                        oVal = "W"
+                        oPropsZone.update({"category":oVal})
+                        oNewPropZone.update({"type":"R"})
+                        oNewPropZone.update({"codeActivity":"GLIDER"})
                 
                 #Cleanning; Transcodage & Complétude de données au niveau du nommage
-                if oKey=="name":
+                elif oKey=="name":
                     #Cleaning du nommage de zones
                     oVal=oVal.replace("CTA-", "CTA ")
                     oVal=oVal.replace("LF R ", "LFR")
                     oVal=oVal.replace("LFR ", "LFR")
-                    oVal = splitDescription(oVal, "TMA", oNewPropZone)
-                    oVal = splitDescription(oVal, "CTR", oNewPropZone)
-                    oVal = splitDescription(oVal, "CTA", oNewPropZone)   
+                    #oVal = splitDescription(oVal, "TMA", oNewPropZone)
+                    #oVal = splitDescription(oVal, "CTR", oNewPropZone)
+                    #oVal = splitDescription(oVal, "CTA", oNewPropZone)   
                     
+                    if oVal[0:4]=="Axe ":
+                        oPropsZone.update({"category":"W"})
+                        oNewPropZone.update({"category":"W"})
+                        oNewPropZone.update({"type":"Assist"})
+                        oNewPropZone.update({"codeActivity":"GLIDER"})
+
                     #Transcodage & Complétude de données
-                    if oVal[0:2]=="D " and oPropsZone["category"]=="DANGER":
-                        oPropsZone.update({"category":"Q"})
-                        oNewPropZone.update({"type":"Q"})
-                        oNewPropZone.update({"codeActivity":"DANGER"})
-                        oVal = oVal[2:]
-                    if oPropsZone["category"]=="GLIDING":
-                        oPropsZone.update({"category":"W"})
-                        oNewPropZone.update({"type":"R"})
-                        oNewPropZone.update({"codeActivity":"GLIDER"})
-                        if oVal[0:2]=="R ":
-                            oVal = "LFR" + oVal[2:]
-                        else:
-                            oVal = oVal[11:]
-                    if oVal[0:3]=="VV " and (oPropsZone["category"] in ["GLIDING", "RESTRICTED"]):
-                        oPropsZone.update({"category":"W"})
-                        oNewPropZone.update({"type":"R"})
-                        oNewPropZone.update({"codeActivity":"GLIDER"})
-                        if oVal[0:5]=="VV R ":
-                            oVal = "LFR" + oVal[5:]
-                        else:
-                            oVal = oVal[3:]
-                            
+                    #if oVal[0:2]=="D " and oPropsZone["category"]=="Q":
+                    #    oVal = oVal[2:]
+                    #if oVal[0:2]=="R ":
+                    #    oVal = "LFR" + oVal[2:]
+                    #else:
+                    #    oVal = oVal[11:]
+                    
+                    """
                     #Cleaning des nommage de zones; exemples :
                     # "Agen2 119.15" --> a tranformer en "Agen 2 119.15"
                     oNewVal:str = ""
@@ -90,14 +118,8 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                         oPrevCharDigit = oCharDigit
                         iIdx+=1
                     oVal = oNewVal
-                
-                #Transcodage du nommage de clé
-                if oKey=="category":
-                    oKey="class"
-                    #oVal=oVal.replace("RESTRICTED", "R")
-                    #oVal=oVal.replace("RESTRICTED", "R")
-                    #oVal=oVal.replace("RESTRICTED", "R")
-                
+                    """
+                    
                 #Cleanning de valeur
                 if oKey=="bottom" or oKey=="top":
                     oVal=oVal.replace("FL ", "FL")
@@ -105,23 +127,11 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                     oVal=oVal.replace("MSL", "AMSL")
                     oVal=oVal.replace("GND", "SFC")
                     pos = oVal.find("SFC")
-                    if pos>1: oVal=oVal.replace("SFC", "ASFC")
+                    if pos>1: oVal=oVal.replace("SFC", "AGL")
                 
                 #Stockage du nouveau couple: clé/valeur
                 oNewPropZone.update({oKey:oVal})
 
-        else:        # context == "aixmParser":
-            aKey:list = ["UId", "id", "class", "type", "codeActivity", "name", "nameV", "alt"]
-            for oKey in aKey:
-                if oKey in oPropsZone:
-                    oVal = oPropsZone[oKey]
-                    if oKey=="alt":
-		a-revoir "alt"
-                        aAlt = oVal[1:-1].split("/")
-                        oNewPropZone.update({"bottom":aAlt[0]})
-                        oNewPropZone.update({"top":aAlt[1]})
-                    else:
-                        oNewPropZone.update({oKey:oVal})
 
         sIdx = len(oCatZones) + 1
         oCatZones.update({sIdx:oNewPropZone})
@@ -141,7 +151,8 @@ def saveCalalogCSV(sFileName:str, oCatalog) -> None:
     csv = ""
     
     #Order keys; for header in CSV file
-    oCols = {"UId":0, "id":0, "class":0, "type":0, "codeActivity":0, "name":0, "nameV":0, "bottom":0, "top":0}
+    #aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
+    oCols = {"category":0, "type":0, "codeActivity":0, "name":0, "bottom":0, "top":0, "bottom_m":0,"top_m":0, "alt":0, "Ids":0}
     for key0,val0 in oCatalog.items():
         for key1,val1 in val0.items():
             oCols.update({key1:0})
@@ -183,8 +194,7 @@ if __name__ == '__main__':
     oLog = bpaTools.Logger(appId,logFile)
     oLog.resetFile()
 
-    #sFilseSrc1 = cfdPath + "airspaces-freeflight.geojson"
-    sFilseSrc1 = cfdPath + "airspaces-vfr.geojson"
+    sFilseSrc1 = cfdPath + "20200920_airspaces-ffvl-cfd.geojson"
     sFilseSrc2 = flyXCPath + "20200420_FlyXC-app_airspaces.geojson"
     #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
 
@@ -194,7 +204,6 @@ if __name__ == '__main__':
     saveCalalogCSV(deltaPath + "aixmpCatalog.csv", oCat1)
     saveCalalogCSV(deltaPath + "flyxcCatalog.csv", oCat2)
     
-
     print()
     oLog.Report()
     oLog.closeFile

@@ -65,7 +65,7 @@ class PoaffWebPage:
         if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName):
             self.publishFile(dstFileName, "@@file@@JSON-airspacesCatalog@@", sTitle)
             #Duplication du fichier dans le repo pour export CFD
-            self.copyFile(srcPath, srcFileName, self.publishPathCfd, dstFileName)
+            #self.copyFile(srcPath, srcFileName, self.publishPathCfd, dstFileName)
             #Duplication du fichier "LastVersion"
             dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
             if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName2):
@@ -76,7 +76,7 @@ class PoaffWebPage:
         if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName):
             self.publishFile(dstFileName, "@@file@@CSV-airspacesCatalog@@", sTitle)
             #Duplication du fichier dans le repo pour export CFD
-            self.copyFile(srcPath, srcFileName, self.publishPathCfd, dstFileName)
+            #self.copyFile(srcPath, srcFileName, self.publishPathCfd, dstFileName)
             #Duplication du fichier "LastVersion"
             dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
             if self.copyFile(srcPath, srcFileName, self.publishPathFiles, dstFileName2):
