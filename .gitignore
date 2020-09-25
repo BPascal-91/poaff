@@ -7,5 +7,9 @@ __pycache__/
 .spyproject/
 
 # Local resources
-input/
 output/
+input/BPa
+input/EuCtrl
+input/FFVP
+input/SIA
+

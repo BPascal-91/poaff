@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<SiaExport Date="2020-06-30T17:47:09.207+02:00" Origine="Sia-France" Version="5">
+	<Situation pubDate="2020-07-02" effDate="2020-08-13">
+		<FrequenceS>
+			<Frequence pk="300537" lk="[LF][OJ][SRE BRICY Radar][360.125]">
+				<Service pk="300080" lk="[LF][OJ][SRE BRICY Radar]"/>
+				<Frequence>360.125</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+			</Frequence>
+			<Frequence pk="300536" lk="[LF][OJ][SRE BRICY Radar][235.150]">
+				<Service pk="300080" lk="[LF][OJ][SRE BRICY Radar]"/>
+				<Frequence>235.150</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Frequency monitored</Remarque>
+			</Frequence>
+			<Frequence pk="300539" lk="[LF][OJ][SRE BRICY Radar][398.350]">
+				<Service pk="300080" lk="[LF][OJ][SRE BRICY Radar]"/>
+				<Frequence>398.350</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Frequency monitored</Remarque>
+			</Frequence>
+			<Frequence pk="300538" lk="[LF][OJ][SRE BRICY Radar][362.300]">
+				<Service pk="300080" lk="[LF][OJ][SRE BRICY Radar]"/>
+				<Frequence>362.300</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Frequency monitored</Remarque>
+			</Frequence>
+			<Frequence pk="300540" lk="[LF][OJ][SRE BRICY Radar][374.225]">
+				<Service pk="300080" lk="[LF][OJ][SRE BRICY Radar]"/>
+				<Frequence>374.225</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Frequency monitored</Remarque>
+			</Frequence>
+			<Frequence pk="300533" lk="[LF][OJ][PAR BRICY .][138.750]">
+				<Service pk="13350" lk="[LF][OJ][PAR BRICY .]"/>
+				<Frequence>138.750</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+			</Frequence>
+			<Frequence pk="300535" lk="[LF][OJ][SRE BRICY Radar][142.450]">
+				<Service pk="300080" lk="[LF][OJ][SRE BRICY Radar]"/>
+				<Frequence>142.450</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>SRE (ALADIN) MAINTENANCE JEU/THU 0800-1200 loc.</Remarque>
+			</Frequence>
+			<Frequence pk="300534" lk="[LF][OJ][PAR BRICY .][139.400]">
+				<Service pk="13350" lk="[LF][OJ][PAR BRICY .]"/>
+				<Frequence>139.400</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+			</Frequence>
+			<Frequence pk="300520" lk="[LF][OJ][TWR BRICY Tour][121.500]">
+				<Service pk="6050" lk="[LF][OJ][TWR BRICY Tour]"/>
+				<Frequence>121.500</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300521" lk="[LF][OJ][TWR BRICY Tour][243.000]">
+				<Service pk="6050" lk="[LF][OJ][TWR BRICY Tour]"/>
+				<Frequence>243.000</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300522" lk="[LF][OJ][TWR BRICY Tour][257.800]">
+				<Service pk="6050" lk="[LF][OJ][TWR BRICY Tour]"/>
+				<Frequence>257.800</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300523" lk="[LF][OJ][TWR BRICY .][378.750]">
+				<Service pk="6050" lk="[LF][OJ][TWR BRICY .]"/>
+				<Frequence>378.750</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300512" lk="[LF][OJ][APP BRICY Approche][142.450]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>142.450</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300513" lk="[LF][OJ][APP BRICY Approche][235.150]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>235.150</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300514" lk="[LF][OJ][APP BRICY Approche][265.900]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>265.900</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300515" lk="[LF][OJ][APP BRICY .][360.125]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY .]"/>
+				<Frequence>360.125</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300516" lk="[LF][OJ][APP BRICY Approche][336.100]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>336.100</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300517" lk="[LF][OJ][APP BRICY Approche][362.300]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>362.300</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300518" lk="[LF][OJ][APP BRICY Approche][398.350]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>398.350</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300519" lk="[LF][OJ][APP BRICY Approche][374.225]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>374.225</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="300511" lk="[LF][OJ][APP BRICY Approche][139.400]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>139.400</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+			</Frequence>
+			<Frequence pk="300510" lk="[LF][OJ][APP BRICY Approche][138.750]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>138.750</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+			</Frequence>
+			<Frequence pk="300509" lk="[LF][OJ][APP BRICY Approche][123.300]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>123.300</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="6030" lk="[LF][OJ][APP BRICY Approche][122.700]">
+				<Service pk="6030" lk="[LF][OJ][APP BRICY Approche]"/>
+				<Frequence>122.700</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée.RAI/Monitored frequency.Automatical information transmitter</Remarque>
+			</Frequence>
+			<Frequence pk="14510" lk="[LF][OJ][PAR BRICY .][123.300]">
+				<Service pk="13350" lk="[LF][OJ][PAR BRICY .]"/>
+				<Frequence>123.300</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>SPAR MAINTENANCE LUN/MON 0800-1200 loc.</Remarque>
+			</Frequence>
+			<Frequence pk="4400" lk="[LF][RH][VDF LORIENT Gonio][119.700]">
+				<Service pk="4390" lk="[LF][RH][VDF LORIENT Gonio]"/>
+				<Frequence>119.700</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+				<SecteurSituation>078/675m SDE 26</SecteurSituation>
+			</Frequence>
+			<Frequence pk="4390" lk="[LF][RH][VDF LORIENT Gonio][123.300]">
+				<Service pk="4390" lk="[LF][RH][VDF LORIENT Gonio]"/>
+				<Frequence>123.300</Frequence>
+				<HorCode>HO</HorCode>
+				<SecteurSituation>078/675m SDE 26</SecteurSituation>
+				<Remarque>Plus toutes fréquences de LORIENT / Over all frequencies from LORIENT.</Remarque>
+			</Frequence>
+			<Frequence pk="4330" lk="[LF][RH][APP LORIENT Approche][122.100]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>122.100</Frequence>
+				<HorCode>HO</HorCode>
+				<Remarque>Test BPa pour lecture phone - False number 12345 - TEL ATIS : 04 67 13 11 70</Remarque>
+			</Frequence>
+			<Frequence pk="4320" lk="[LF][RH][APP LORIENT Approche][119.700]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>119.700</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+			</Frequence>
+			<Frequence pk="4340" lk="[LF][RH][TWR LORIENT Tour][122.700]">
+				<Service pk="4340" lk="[LF][RH][TWR LORIENT Tour]"/>
+				<Frequence>122.700</Frequence>
+				<HorCode>HO</HorCode>
+			</Frequence>
+			<Frequence pk="4300" lk="[LF][RH][APP LORIENT Approche][122.300]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>122.300</Frequence>
+				<HorCode>HO</HorCode>
+				<Remarque>Transit VFR dans CTR et TMA de LORIENT. / Transit VFR within LORIENT CTR and TMA.</Remarque>
+			</Frequence>
+			<Frequence pk="4301" lk="[LF][RH][VDF LORIENT Vdf][122.300]">
+				<Service pk="4301" lk="[LF][RH][VDF LORIENT Vdf]"/>
+				<Frequence>120.000</Frequence>
+				<HorCode>HO</HorCode>
+				<Remarque>Test BPa for sample VDF exclusion</Remarque>
+			</Frequence>
+			<Frequence pk="4290" lk="[LF][RH][ATIS LORIENT .][129.125]">
+				<Service pk="4290" lk="[LF][RH][ATIS LORIENT .]"/>
+				<Frequence>129.125</Frequence>
+				<HorCode>HX</HorCode>
+				<Remarque>TEL ATIS : 04 67 13 11 70</Remarque>
+			</Frequence>
+			<Frequence pk="4310" lk="[LF][RH][APP LORIENT Approche][123.000]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>123.000</Frequence>
+				<HorCode>HO</HorCode>
+			</Frequence>
+			<Frequence pk="300412" lk="[LF][RH][APP LORIENT Approche][243.000]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>243.000</Frequence>
+				<HorCode>HO</HorCode>
+				<Remarque>Détresse seulement / Distress only</Remarque>
+			</Frequence>
+			<Frequence pk="300413" lk="[LF][RH][APP LORIENT Approche][231.875]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>231.875</Frequence>
+				<HorCode>HO</HorCode>
+			</Frequence>
+			<Frequence pk="300414" lk="[LF][RH][APP LORIENT Approche][362.300]">
+				<Service pk="4300" lk="[LF][RH][APP LORIENT Approche]"/>
+				<Frequence>362.300</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+			</Frequence>
+			<Frequence pk="300415" lk="[LF][RH][PAR LORIENT .][328.550]">
+				<Service pk="4360" lk="[LF][RH][PAR LORIENT .]"/>
+				<Frequence>328.550</Frequence>
+				<HorCode>HO</HorCode>
+			</Frequence>
+			<Frequence pk="300420" lk="[LF][RH][TWR LORIENT Tour][387.600]">
+				<Service pk="4340" lk="[LF][RH][TWR LORIENT Tour]"/>
+				<Frequence>387.600</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+			</Frequence>
+			<Frequence pk="300418" lk="[LF][RH][TWR LORIENT Tour][119.700]">
+				<Service pk="4340" lk="[LF][RH][TWR LORIENT Tour]"/>
+				<Frequence>119.700</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+			</Frequence>
+			<Frequence pk="300419" lk="[LF][RH][TWR LORIENT .][281.550]">
+				<Service pk="4340" lk="[LF][RH][TWR LORIENT .]"/>
+				<Frequence>281.550</Frequence>
+				<HorCode>HO</HorCode>
+			</Frequence>
+			<Frequence pk="300416" lk="[LF][RH][SRE LORIENT Radar][231.875]">
+				<Service pk="4370" lk="[LF][RH][SRE LORIENT Radar]"/>
+				<Frequence>231.875</Frequence>
+				<HorCode>HO</HorCode>
+			</Frequence>
+			<Frequence pk="300417" lk="[LF][RH][SRE LORIENT Radar][362.300]">
+				<Service pk="4370" lk="[LF][RH][SRE LORIENT Radar]"/>
+				<Frequence>362.300</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+			</Frequence>
+			<Frequence pk="15840" lk="[LF][RH][SRE LORIENT Radar][123.000]">
+				<Service pk="4370" lk="[LF][RH][SRE LORIENT Radar]"/>
+				<Frequence>123.000</Frequence>
+				<HorCode>HO</HorCode>
+				<Suppletive>oui</Suppletive>
+			</Frequence>
+			<Frequence pk="15860" lk="[LF][RH][PAR LORIENT .][118.175]">
+				<Service pk="4360" lk="[LF][RH][PAR LORIENT .]"/>
+				<Frequence>118.175</Frequence>
+				<HorCode>HO</HorCode>
+				<SecteurSituation>306/120m ARP</SecteurSituation>
+				<Remarque>Angle de descente / Slope gradient 3°#Indicatif d'appel /  Call sign: LORIENT Précision.</Remarque>
+			</Frequence>
+			<Frequence pk="6050" lk="[LF][OJ][TWR BRICY Tour][124.800]">
+				<Service pk="6050" lk="[LF][OJ][TWR BRICY Tour]"/>
+				<Frequence>124.800</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="6060" lk="[LF][OJ][TWR BRICY Tour][122.100]">
+				<Service pk="6050" lk="[LF][OJ][TWR BRICY Tour]"/>
+				<Frequence>122.100</Frequence>
+				<HorCode>HO</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Freq veillée/Monitored frequency</Remarque>
+			</Frequence>
+			<Frequence pk="8800" lk="[LF][OT][VDF TOURS .][124.400]">
+				<Service pk="8800" lk="[LF][OT][VDF TOURS .]"/>
+				<Frequence>124.400</Frequence>
+				<HorCode>HX</HorCode>
+				<HorTxt>HOR ATS MIL</HorTxt>
+			</Frequence>
+			<Frequence pk="13141" lk="[LF][UIR FRANCE][UAC REIMS Contrôle][135.035]">
+				<Service pk="7501" lk="[LF][UIR FRANCE][UAC REIMS Contrôle]"/>
+				<Frequence>135.035</Frequence>
+				<Espacement>8.33 kHz</Espacement>
+				<HorCode>H24</HorCode>
+				<SecteurSituation>KD</SecteurSituation>
+				<Remarque>Canal 8.33</Remarque>
+			</Frequence>
+			<Frequence pk="8810" lk="[LF][OT][VDF TOURS .][121.000]">
+				<Service pk="8800" lk="[LF][OT][VDF TOURS .]"/>
+				<Frequence>121.000</Frequence>
+				<HorCode>HX</HorCode>
+				<HorTxt>HOR ATS MIL</HorTxt>
+			</Frequence>
+			<Frequence pk="4410" lk="[LF][SX][APP LUXEUIL Approche][129.925]">
+				<Service pk="4410" lk="[LF][SX][APP LUXEUIL Approche]"/>
+				<Frequence>129.925</Frequence>
+				<HorCode>HX</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Particulière transit/Particular to transit</Remarque>
+			</Frequence>
+			<Frequence pk="13151" lk="[LF][UTA FRANCE][UAC BREST Contrôle][119.825]">
+				<Service pk="1501" lk="[LF][UTA FRANCE][UAC BREST Contrôle]"/>
+				<Frequence>119.825</Frequence>
+				<HorCode>H24</HorCode>
+				<SecteurSituation>ID</SecteurSituation>
+			</Frequence>
+			<Frequence pk="13121" lk="[LF][UTA FRANCE][UAC BREST Contrôle][118.030]">
+				<Service pk="1501" lk="[LF][UTA FRANCE][UAC BREST Contrôle]"/>
+				<Frequence>118.030</Frequence>
+				<HorCode>H24</HorCode>
+				<SecteurSituation>IN</SecteurSituation>
+				<Remarque>Canal 8.33</Remarque>
+			</Frequence>
+			<Frequence pk="13120" lk="[NT][AV][AFIS RAIVAVAE Information][118.500]">
+				<Service pk="12670" lk="[NT][AV][AFIS RAIVAVAE Information]"/>
+				<Frequence>118.500</Frequence>
+				<HorCode>HX</HorCode>
+				<HorTxt>Voir/See AD 2 NTAV .3</HorTxt>
+				<Remarque>Exploitant/Operator : DAC Polynésie Française</Remarque>
+			</Frequence>
+		</FrequenceS>
+		<ObstacleS>
+			<Obstacle pk="1" lk="[LF][01001]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01001</NumeroNom>
+				<Latitude>45.875658</Latitude>
+				<Longitude>4.950844</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1696</AmslFt>
+				<AglFt>722</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>45.875658,4.950844</Geometrie>
+			</Obstacle>
+			<Obstacle pk="2" lk="[LF][01002]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01002</NumeroNom>
+				<Latitude>46.2647</Latitude>
+				<Longitude>4.951389</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Château d'eau</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>915</AmslFt>
+				<AglFt>207</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Remarque>Château d'eau + pylône</Remarque>
+				<Geometrie>46.2647,4.951389</Geometrie>
+			</Obstacle>
+			<Obstacle pk="3" lk="[LF][01003]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01003</NumeroNom>
+				<Latitude>46.357222</Latitude>
+				<Longitude>6.016667</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Tour</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>5299</AmslFt>
+				<AglFt>279</AglFt>
+				<Balisage>nuit</Balisage>
+				<Geometrie>46.357222,6.016667</Geometrie>
+			</Obstacle>
+			<Obstacle pk="4" lk="[LF][01004]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01004</NumeroNom>
+				<Latitude>45.8319</Latitude>
+				<Longitude>4.982781</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Cheminée</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>827</AmslFt>
+				<AglFt>243</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>45.8319,4.982781</Geometrie>
+			</Obstacle>
+			<Obstacle pk="5" lk="[LF][01005]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01005</NumeroNom>
+				<Latitude>45.7956</Latitude>
+				<Longitude>5.27</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Centrale thermique</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>978</AmslFt>
+				<AglFt>331</AglFt>
+				<Balisage>nuit</Balisage>
+				<Geometrie>45.7956,5.27</Geometrie>
+			</Obstacle>
+			<Obstacle pk="6" lk="[LF][01006]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01006</NumeroNom>
+				<Latitude>45.7942</Latitude>
+				<Longitude>5.269439</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>919</AmslFt>
+				<AglFt>272</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>45.7942,5.269439</Geometrie>
+			</Obstacle>
+			<Obstacle pk="7" lk="[LF][01007]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01007</NumeroNom>
+				<Latitude>46.0908</Latitude>
+				<Longitude>5.026389</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Château d'eau</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1099</AmslFt>
+				<AglFt>177</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>46.0908,5.026389</Geometrie>
+			</Obstacle>
+			<Obstacle pk="8" lk="[LF][01008]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01008</NumeroNom>
+				<Latitude>46.0808</Latitude>
+				<Longitude>5.393889</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1381</AmslFt>
+				<AglFt>213</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>46.0808,5.393889</Geometrie>
+			</Obstacle>
+			<Obstacle pk="9" lk="[LF][01009]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01009</NumeroNom>
+				<Latitude>46.0667</Latitude>
+				<Longitude>5.510831</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>3491</AmslFt>
+				<AglFt>164</AglFt>
+				<Balisage>jour</Balisage>
+				<Geometrie>46.0667,5.510831</Geometrie>
+			</Obstacle>
+			<Obstacle pk="10" lk="[LF][01010]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01010</NumeroNom>
+				<Latitude>46.207067</Latitude>
+				<Longitude>5.207431</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Tour</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1060</AmslFt>
+				<AglFt>282</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>46.207067,5.207431</Geometrie>
+			</Obstacle>
+			<Obstacle pk="11" lk="[LF][01011]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01011</NumeroNom>
+				<Latitude>45.9258</Latitude>
+				<Longitude>4.9375</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1132</AmslFt>
+				<AglFt>164</AglFt>
+				<Balisage>jour</Balisage>
+				<Geometrie>45.9258,4.9375</Geometrie>
+			</Obstacle>
+			<Obstacle pk="12" lk="[LF][01012]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>01012</NumeroNom>
+				<Latitude>46.14</Latitude>
+				<Longitude>4.828611</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>922</AmslFt>
+				<AglFt>184</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>46.14,4.828611</Geometrie>
+			</Obstacle>
+			<Obstacle pk="13" lk="[LF][02001]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02001</NumeroNom>
+				<Latitude>49.862217</Latitude>
+				<Longitude>4.015478</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1404</AmslFt>
+				<AglFt>666</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>49.862217,4.015478</Geometrie>
+			</Obstacle>
+			<Obstacle pk="14" lk="[LF][02002]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02002</NumeroNom>
+				<Latitude>49.120556</Latitude>
+				<Longitude>3.47</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Tour</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>915</AmslFt>
+				<AglFt>207</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>49.120556,3.47</Geometrie>
+			</Obstacle>
+			<Obstacle pk="15" lk="[LF][02003]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02003</NumeroNom>
+				<Latitude>49.95475</Latitude>
+				<Longitude>3.548667</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>795</AmslFt>
+				<AglFt>204</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Pylône haubané</Remarque>
+				<Geometrie>49.95475,3.548667</Geometrie>
+			</Obstacle>
+			<Obstacle pk="17" lk="[LF][02005]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02005</NumeroNom>
+				<Latitude>49.3942</Latitude>
+				<Longitude>3.366669</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Cheminée</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>344</AmslFt>
+				<AglFt>197</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>49.3942,3.366669</Geometrie>
+			</Obstacle>
+			<Obstacle pk="16" lk="[LF][02004]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02004</NumeroNom>
+				<Latitude>49.5781</Latitude>
+				<Longitude>3.436111</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>876</AmslFt>
+				<AglFt>197</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>49.5781,3.436111</Geometrie>
+			</Obstacle>
+			<Obstacle pk="19" lk="[LF][02007]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02007</NumeroNom>
+				<Latitude>49.9083</Latitude>
+				<Longitude>3.480561</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>656</AmslFt>
+				<AglFt>174</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>49.9083,3.480561</Geometrie>
+			</Obstacle>
+			<Obstacle pk="18" lk="[LF][02006]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02006</NumeroNom>
+				<Latitude>49.2833</Latitude>
+				<Longitude>3.094439</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Tour</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>925</AmslFt>
+				<AglFt>197</AglFt>
+				<Balisage>jour</Balisage>
+				<Geometrie>49.2833,3.094439</Geometrie>
+			</Obstacle>
+			<Obstacle pk="21" lk="[LF][02009]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02009</NumeroNom>
+				<Latitude>48.9322</Latitude>
+				<Longitude>3.473889</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>968</AmslFt>
+				<AglFt>240</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>48.9322,3.473889</Geometrie>
+			</Obstacle>
+			<Obstacle pk="20" lk="[LF][02008]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>02008</NumeroNom>
+				<Latitude>49.0636</Latitude>
+				<Longitude>3.389169</Longitude>
+				<Wgs84>x</Wgs84>
+				<TypeObst>Pylône</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>928</AmslFt>
+				<AglFt>236</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Geometrie>49.0636,3.389169</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309330" lk="[LF][E8068]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>E8068</NumeroNom>
+				<Latitude>49.989814</Latitude>
+				<Longitude>2.008947</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Eolienne(s)</TypeObst>
+				<Combien>7</Combien>
+				<AmslFt>878</AmslFt>
+				<AglFt>575</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Coordonnées du point central du polygone, 1600 m de longueur, 400 m de largeur, orienté NE/SO.</Remarque>
+				<Geometrie>49.989814,2.008947</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309331" lk="[LF][E8069]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>E8069</NumeroNom>
+				<Latitude>49.847339</Latitude>
+				<Longitude>2.737706</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Eolienne(s)</TypeObst>
+				<Combien>7</Combien>
+				<AmslFt>794</AmslFt>
+				<AglFt>493</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Coordonnées du point central.#Cercle de 1500 m de rayon.</Remarque>
+				<Geometrie>49.847339,2.737706</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309328" lk="[LF][E2305]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>E2305</NumeroNom>
+				<Latitude>46.388425</Latitude>
+				<Longitude>1.488897</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Eolienne(s)</TypeObst>
+				<Combien>10</Combien>
+				<AmslFt>1581</AmslFt>
+				<AglFt>493</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Coordonnées du point central.#Rayon de 1000 m autour du point central.</Remarque>
+				<Geometrie>46.388425,1.488897</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309329" lk="[LF][10052]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>10052</NumeroNom>
+				<Latitude>48.151944</Latitude>
+				<Longitude>4.433056</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Mât</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>850</AmslFt>
+				<AglFt>331</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Mât de mesure</Remarque>
+				<Geometrie>48.151944,4.433056</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309334" lk="[LF][E5913]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>E5913</NumeroNom>
+				<Latitude>50.165011</Latitude>
+				<Longitude>3.523989</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Eolienne(s)</TypeObst>
+				<Combien>8</Combien>
+				<AmslFt>829</AmslFt>
+				<AglFt>410</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Coordonnées du point central du polygone.#Longueur 2000 m, largeur 800 m.</Remarque>
+				<Geometrie>50.165011,3.523989</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309335" lk="[LF][E1716]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>E1716</NumeroNom>
+				<Latitude>46.100742</Latitude>
+				<Longitude>-0.6102</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Eolienne(s)</TypeObst>
+				<Combien>9</Combien>
+				<AmslFt>745</AmslFt>
+				<AglFt>493</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Coordonnées du point central</Remarque>
+				<Geometrie>46.100742,-0.6102</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309332" lk="[LF][22076]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>22076</NumeroNom>
+				<Latitude>48.386661</Latitude>
+				<Longitude>-2.589822</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Mât</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>728</AmslFt>
+				<AglFt>397</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>48.386661,-2.589822</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309333" lk="[LF][45095]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>45095</NumeroNom>
+				<Latitude>48.032522</Latitude>
+				<Longitude>2.450253</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Mât</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>669</AmslFt>
+				<AglFt>337</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>48.032522,2.450253</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309322" lk="[LF][03030]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>03030</NumeroNom>
+				<Latitude>46.174167</Latitude>
+				<Longitude>2.603333</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Câble</TypeObst>
+				<Combien>2</Combien>
+				<AmslFt>1460</AmslFt>
+				<AglFt>180</AglFt>
+				<Balisage>non balisé</Balisage>
+				<Remarque>Coordonnées du point central.#Ligne orientée 020°/200°.#Longueur 310 mètres.</Remarque>
+				<Geometrie>46.174167,2.603333</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309326" lk="[LF][03029]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>03029</NumeroNom>
+				<Latitude>46.573275</Latitude>
+				<Longitude>2.982511</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Mât</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>1213</AmslFt>
+				<AglFt>102</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>46.573275,2.982511</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309325" lk="[LF][79027]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>79027</NumeroNom>
+				<Latitude>46.708694</Latitude>
+				<Longitude>-0.537333</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Mât</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>973</AmslFt>
+				<AglFt>405</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Geometrie>46.708694,-0.537333</Geometrie>
+			</Obstacle>
+			<Obstacle pk="309324" lk="[LF][51080]">
+				<Territoire pk="100" lk="[LF]"/>
+				<NumeroNom>51080</NumeroNom>
+				<Latitude>48.874167</Latitude>
+				<Longitude>4.650556</Longitude>
+				<Wgs84>2</Wgs84>
+				<TypeObst>Mât</TypeObst>
+				<Combien>1</Combien>
+				<AmslFt>948</AmslFt>
+				<AglFt>328</AglFt>
+				<Balisage>jour et nuit</Balisage>
+				<Remarque>Mât de mesure.</Remarque>
+				<Geometrie>48.874167,4.650556</Geometrie>
+			</Obstacle>
+		</ObstacleS>
+		<TerritoireS>
+			<Territoire pk="1100" lk="[NT]">
+				<Territoire>NT</Territoire>
+				<Nom>POLYNESIE FRANCAISE</Nom>
+			</Territoire>
+			<Territoire pk="400" lk="[ED]">
+				<Territoire>ED</Territoire>
+				<Nom>ALLEMAGNE</Nom>
+			</Territoire>
+			<Territoire pk="1500" lk="[lf]">
+				<Territoire>lf</Territoire>
+				<Nom>ST PIERRE ET MIQUELON</Nom>
+			</Territoire>
+			<Territoire pk="1300" lk="[TF]">
+				<Territoire>TF</Territoire>
+				<Nom>ANTILLES FRANCAISES</Nom>
+			</Territoire>
+			<Territoire pk="1000" lk="[FM]">
+				<Territoire>FM</Territoire>
+				<Nom>REUNION</Nom>
+			</Territoire>
+			<Territoire pk="700" lk="[LE]">
+				<Territoire>LE</Territoire>
+				<Nom>ESPAGNE</Nom>
+			</Territoire>
+			<Territoire pk="800" lk="[LI]">
+				<Territoire>LI</Territoire>
+				<Nom>ITALIE</Nom>
+			</Territoire>
+			<Territoire pk="102" lk="[LF-ED]">
+				<Territoire>LF-ED</Territoire>
+				<Nom>FRANCE/ALLEMAGNE</Nom>
+			</Territoire>
+			<Territoire pk="103" lk="[LF-EL]">
+				<Territoire>LF-EL</Territoire>
+				<Nom>FRANCE/LUXEMBOURG</Nom>
+			</Territoire>
+			<Territoire pk="100" lk="[LF]">
+				<Territoire>LF</Territoire>
+				<Nom>FRANCE</Nom>
+			</Territoire>
+			<Territoire pk="101" lk="[LF-EB]">
+				<Territoire>LF-EB</Territoire>
+				<Nom>FRANCE/BELGIQUE</Nom>
+			</Territoire>
+			<Territoire pk="300016" lk="[TF-TL]">
+				<Territoire>TF-TL</Territoire>
+				<Nom>ANTILLES FRANCAISES/SAINTE LUCIE</Nom>
+			</Territoire>
+			<Territoire pk="1400" lk="[SO]">
+				<Territoire>SO</Territoire>
+				<Nom>GUYANE FRANCAISE</Nom>
+			</Territoire>
+			<Territoire pk="1600" lk="[NL]">
+				<Territoire>NL</Territoire>
+				<Nom>WALLIS ET FUTUNA</Nom>
+			</Territoire>
+			<Territoire pk="500" lk="[EG]">
+				<Territoire>EG</Territoire>
+				<Nom>GRANDE BRETAGNE</Nom>
+			</Territoire>
+			<Territoire pk="106" lk="[LF-LS]">
+				<Territoire>LF-LS</Territoire>
+				<Nom>FRANCE/SUISSE</Nom>
+			</Territoire>
+			<Territoire pk="104" lk="[LF-LE]">
+				<Territoire>LF-LE</Territoire>
+				<Nom>FRANCE/ESPAGNE</Nom>
+			</Territoire>
+			<Territoire pk="105" lk="[LF-LI]">
+				<Territoire>LF-LI</Territoire>
+				<Nom>FRANCE/ITALIE</Nom>
+			</Territoire>
+			<Territoire pk="1200" lk="[NW]">
+				<Territoire>NW</Territoire>
+				<Nom>NOUVELLE CALEDONIE</Nom>
+			</Territoire>
+			<Territoire pk="9999" lk="[ZZ]">
+				<Territoire>ZZ</Territoire>
+				<Nom>AUTRES</Nom>
+			</Territoire>
+			<Territoire pk="600" lk="[EL]">
+				<Territoire>EL</Territoire>
+				<Nom>LUXEMBOURG</Nom>
+			</Territoire>
+			<Territoire pk="300013" lk="[LF-EG]">
+				<Territoire>LF-EG</Territoire>
+				<Nom>FRANCE/GRANDE BRETAGNE</Nom>
+			</Territoire>
+			<Territoire pk="300014" lk="[FM-FM]">
+				<Territoire>FM-FM</Territoire>
+				<Nom>REUNION/COMORES</Nom>
+			</Territoire>
+			<Territoire pk="300015" lk="[TF-TN]">
+				<Territoire>TF-TN</Territoire>
+				<Nom>ANTILLES FRANCAISES/ANTILLES NEERLANDAISES</Nom>
+			</Territoire>
+			<Territoire pk="900" lk="[LS]">
+				<Territoire>LS</Territoire>
+				<Nom>SUISSE</Nom>
+			</Territoire>
+			<Territoire pk="300" lk="[EB]">
+				<Territoire>EB</Territoire>
+				<Nom>BELGIQUE</Nom>
+			</Territoire>
+			<Territoire pk="300011" lk="[EU]">
+				<Territoire>EU</Territoire>
+				<Nom>FABEC</Nom>
+			</Territoire>
+		</TerritoireS>
+	</Situation>
+</SiaExport>

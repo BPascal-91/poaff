@@ -1,0 +1,48 @@
+*********************************
+*********************************
+	Procedure d'intégration des fichiers
+	a/ Recupération des fic SIA
+		https://www.sia.aviation-civile.gouv.fr/produits-numeriques-en-libre-disposition/exports-de-donnees.html
+		Fichiers a placer 
+			Zip ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA\src
+			xml ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA
+		Renommer aux formats:
+			20200910-20201007_aixm4.5_SIA-FR.xml
+			20200910-20201007_xml_SIA-FR.xml
+		avec Notepad++
+			Ouvrir fichier *_xml_SIA-FR.xml
+			Menu Encoding/Convert to UTF-8
+			Remplacer dans la premiere ligne
+				origine - <?xml version="1.0" encoding="ISO-8859-1"?>
+				a modifier en - <?xml version="1.0" encoding="UTF-8"?>
+			Enregistrer sous ... meme nom avec '_BPa' à la fin
+			
+	b/ Récupérer le fic Eurocontrol
+		Se connecter dans mon DRIVE, document partagés - https://drive.google.com/drive/u/1/shared-with-me
+		Récupérer le fichier et le Renommer aux format: 20200910_aixm4.5_Eurocontrol-FR.xml
+		Ouvrir le fichier avec XMLspy et appliquer ces modification si nécessaire:
+		Enregistrer sous ... meme nom avec '_BPa' à la fin
+			<!-- Correction BPascal - inversion Upper / Lower -->
+				<codeDistVerUpper>STD</codeDistVerUpper>
+				<valDistVerUpper>195</valDistVerUpper>
+				<uomDistVerUpper>FL</uomDistVerUpper>
+				<codeDistVerLower>HEI</codeDistVerLower>
+				<valDistVerLower>1000</valDistVerLower>
+				<uomDistVerLower>FT</uomDistVerLower>		
+			pour la zone aérienne suivante:
+			<Ase>
+				<AseUid mid="311103234">
+					<codeType>CLASS</codeType>
+					<codeId>LECP_A</codeId>
+				</AseUid>
+				<txtName>PALMA TMA</txtName>
+				<codeClass>A</codeClass>
+				<codeDistVerUpper>HEI</codeDistVerUpper>
+				<valDistVerUpper>1000</valDistVerUpper>
+				<uomDistVerUpper>FT</uomDistVerUpper>
+				<codeDistVerLower>STD</codeDistVerLower>
+				<valDistVerLower>195</valDistVerLower>
+				<uomDistVerLower>FL</uomDistVerLower>
+				<txtRmk>1000ft AGL/ Upper limit CTR-FL195</txtRmk>
+			</Ase>
+			
