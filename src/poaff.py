@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
-import os
-import sys
+try:
+    import bpaTools
+except ImportError:    
+    ### Include local modules/librairies  ##
+    import os
+    import sys
+    aixmParserLocalSrc  = "../../aixmParser/src/"
+    module_dir = os.path.dirname(__file__)
+    sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
+    import bpaTools
 
-### Include local modules/librairies  ##
-aixmParserLocalSrc  = "../../aixmParser/src/"
-module_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
-import bpaTools
 import aixmReader
 from groundEstimatedHeight import GroundEstimatedHeight
 
@@ -35,12 +38,13 @@ globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cst
 
 
 ####  Liste des fichiers a traiter  ####
-testMode = False     #True or  False
+testMode = True     #True or  False
 scriptProcessing = {
     "BPa-TestRefAlt":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestReferentielAltitude_aixm45.xml"},
     "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4CleaningCatalog_aixm45.xml"},
     "BPa-Test4AppDelta1":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta1_aixm45.xml"},
     "BPa-Test4AppDelta2":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta2_aixm45.xml"},
+    "BPa-Test4AppDelta3":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4kml_aixm45.xml"},
     "BPa-TestXmlSIA":       {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestFrequency_xml_SIA-FR.xml"},
     "xmlSIA":               {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20200910-20201007_xml_SIA-FR_BPa.xml"},
     "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20200910-20201007_aixm4.5_SIA-FR.xml"},

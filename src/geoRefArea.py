@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-import os
-import sys
-
 from shapely.geometry import shape
-
-### Include local modules/librairies  ##
-aixmParserLocalSrc  = "../../aixmParser/src/"
-module_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
 import bpaTools
 
 class GeoRefArea:

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from copy import deepcopy
 
 import bpaTools
@@ -9,6 +8,7 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
+#standard geojson struct
 cstGeoFeatures          = "features"
 cstGeoProperties        = "properties"
 cstGeoGeometry          = "geometry"
@@ -219,6 +219,7 @@ class GeojsonArea:
             barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
             idx = 0
             for oAs in oFeatures:
+                idx+=1
                 oAsProp = oAs[cstGeoProperties]
                 sUId = oAsProp["UId"]
                 if "excludeAirspaceNotFfArea" in oAsProp:
@@ -227,7 +228,7 @@ class GeojsonArea:
                     #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
                     oAsGeo = oAs[cstGeoGeometry]
                     self.oIdxGeoJSON.update({sUId:oAsGeo})
-            barre.update(idx)
-        barre.reset()
+                barre.update(idx)
+            barre.reset()
         return
 

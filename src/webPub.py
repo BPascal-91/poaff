@@ -4,11 +4,15 @@ import os
 import sys
 import shutil
 
-### Include local modules/librairies  ##
-aixmParserLocalSrc  = "../../aixmParser/src/"
-module_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
-import bpaTools
+try:
+    import bpaTools
+except ImportError:    
+    ### Include local modules/librairies  ##
+    aixmParserLocalSrc  = "../../aixmParser/src/"
+    module_dir = os.path.dirname(__file__)
+    sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
+    import bpaTools
+
 import poaffCst
 import geoRefArea
 

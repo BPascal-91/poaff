@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
-
-### Include local modules/librairies
-import os
-import sys
-aixmParserLocalSrc  = "../../aixmParser/src/"
-module_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
-import bpaTools
-
+try:
+    import bpaTools
+except ImportError:    
+    ### Include local modules/librairies  ##
+    import os
+    import sys
+    aixmParserLocalSrc  = "../../aixmParser/src/"
+    module_dir = os.path.dirname(__file__)
+    sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
+    import bpaTools
 
 
 def splitDescription(sVal:str, sToken:str, oPop:list) -> str:

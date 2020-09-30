@@ -33,3 +33,9 @@ cstSpPtAddDelta   = "processType-AppendIfNotExist"    #Consolidation des donnée
 
 ft = 0.3048      #foot in meter
 
+#standard goejson structure
+cstGeoFeatures      = "features"
+cstGeoProperties    = "properties"
+cstGeoGeometry      = "geometry"
+cstGeoType          = "type"
+cstGeoCoordinates   = "coordinates"
