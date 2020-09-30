@@ -5,7 +5,7 @@
 */!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.*  
 */!\ WARNING  : Only official data must be used for air navigation*  
 
-Programme d'extraction et de formatage par lots; basé sur des données issues des standards AIXM (Aeronautical Information Exchange Modele) et XML (SIA-France) 
+Programme d'extraction et de formatage par lots; basé sur des données issues des standards AIXM (Aeronautical Information Exchange Modele) et XML (SIA-France)  
 Ces traitements sont nécessaires pour la génération des centaines de cartographies publiées via le blog [Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
 Les données sources utilisés pour la contruction de ce site sont majoritairement issues des sources officielles [SIA-France](https://www.sia.aviation-civile.gouv.fr/) et [Eurocontrol](https://www.eurocontrol.int/) 
 
