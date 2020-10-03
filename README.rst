@@ -47,17 +47,20 @@ Liens externes
 --------------
 .. [1] `Paragliding OpenAir French Files`_ - On Web
 .. [2] `Paragliding OpenAir French Files (on Facebook)`_ - On Facebook
-.. [3] `Carte OACI France`_ - Scan digitalisé
-.. [4] SIA-France_ - Service de l'Information Aéronautique
-.. [5] Eurocontrol_ - A pan-European, civil-military organisation dedicated to supporting European aviation
-.. [6] AIXM_ - Aeronautical Information Exchange Modele
-.. [7] XML_ - W3C Standard
-.. [8] KML_ - Google Documentation
-.. [9] `Openair Format`_ - Openair Documentation historique
-.. [10] `Openair New Format`_ - Documentation des nouvelles évolutions du format Openair
+.. [3] `Paragliding OpenAir French Files (on GitHub)`_ - Crédit `Pascal Bazile`_ - Programme de construction des cartographies `Paragliding OpenAir French Files`_ aux formats (GeoJSON_ ; `Openair New Format`_ et KML_)
+.. [4] aixmParser_ - Crédit `Pascal Bazile`_ - Programme d'interprétation du format AIXM_ pour transformations aux formats (GeoJSON_ ; `Openair New Format`_)
+.. [5] openairParser_ - Crédit `Pascal Bazile`_ - Programme d'interprétation du format Openair_ pour transformaion AIXM_
+.. [6] `Carte OACI France`_ - Scan digitalisé
+.. [7] SIA-France_ - Service de l'Information Aéronautique
+.. [8] Eurocontrol_ - A pan-European, civil-military organisation dedicated to supporting European aviation
+.. [9] AIXM_ - Aeronautical Information Exchange Modele
+.. [10] XML_ - W3C Standard
+.. [11] KML_ - Google Documentation
+.. [12] `Openair Format`_ - Openair Documentation historique
+.. [13] `Openair New Format`_ - Documentation des nouvelles évolutions du format Openair
 
 
-Credits
+Crédits
 -------
 * `Pascal Bazile`_ author of this software <pascal_bazile@yahoo.fr>
 * the many open source libraries, projects, and data sources used by this software (show file content of 'requirements.txt' for complete components detail)
@@ -66,8 +69,11 @@ Credits
 .. _Pascal Bazile: https://github.com/BPascal-91/
 .. _Paragliding OpenAir French Files: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
 .. _Paragliding OpenAir French Files (on Facebook): https://www.facebook.com/Paragliding-OpenAir-FrenchFiles-102040114894513/
+.. _Paragliding OpenAir French Files (on GitHub): https://github.com/BPascal-91/poaff/
 .. _Carte OACI France: https://www.geoportail.gouv.fr/donnees/carte-oaci-vfr
 .. _SIA-France: https://www.sia.aviation-civile.gouv.fr/
+.. _aixmParser: https://github.com/BPascal-91/aixmParser/
+.. _openairParser: https://github.com/BPascal-91/openairParser/
 .. _Eurocontrol: https://www.eurocontrol.int/
 .. _AIXM: http://www.aixm.aero/
 .. _Openair Format: http://www.winpilot.com/UsersGuide/UserAirspace.asp
