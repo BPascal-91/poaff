@@ -17,6 +17,21 @@ This Python library contains:
 - Classes for all GeoJSON Objects
 - An implementation of the Python `__geo_interface__ Specification`_
 
+Other Tests
+Python has a number of built-in protocols (descriptors, iterators, etc). A very
+simple and familiar one involves string representations of objects. The
+built-in ``str()`` function calls the ``__str__()`` method of its single
+argument. By implementing ``__str__()``, instances of any class can be printed
+by any other Python program.
+
+
+References
+==========
+.. [1] http://docs.scipy.org/doc/numpy/reference/arrays.interface.html
+.. [2] http://pypi.python.org/pypi/geojson/
+
+
+
 **Table of Contents**
 
 .. contents::
