@@ -8,35 +8,29 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
-#standard geojson struct
-cstGeoFeatures          = "features"
-cstGeoProperties        = "properties"
-cstGeoGeometry          = "geometry"
-cstDeltaExtended        = "deltaExtended"
-cstWithoutLocation      = "withoutGeoLocation"
 
 class GeojsonArea:
 
     def __init__(self, oLog, oAsCat)-> None:
         bpaTools.initEvent(__file__, oLog)
-        self.oLog:bpaTools.Logger       = oLog      #Log file
-        self.oAsCat:AsCatalog           = oAsCat    #Catalogue des zones
-        self.oIdxGeoJSON:dict           = {}
-        self.oGlobalGeoJSON:dict        = {}        #Liste globale des zones
-        self.oGeoRefArea                = geoRefArea.GeoRefArea()
+        self.oLog:bpaTools.Logger       = oLog                      #Log file
+        self.oAsCat:AsCatalog           = oAsCat                    #Catalogue des zones
+        self.oIdxGeoJSON:dict           = {}                        #Index de construction GeoJSON
+        self.oGlobalGeoJSON:dict        = {}                        #Liste globale des zones
+        self.oOutGeoJSON:dict           = {}                        #Sortie finale GeoJSON
+        self.oGeoRefArea                = geoRefArea.GeoRefArea()   #Zonnages géographique
         return
 
     def saveGeoJsonAirspacesFile4Area(self, sFile:str, sContext="ff") -> None:
         for sAreaKey in self.oGeoRefArea.AreasRef.keys():
             self.saveGeoJsonAirspacesFile(sFile, sContext, sAreaKey)
-        self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
-        self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
-        self.saveGeoJsonAirspacesFile(sFile, "all", cstDeltaExtended)
+        self.saveGeoJsonAirspacesFile(sFile, sContext, poaffCst.cstWithoutLocation)
+        self.saveGeoJsonAirspacesFile(sFile, "all", poaffCst.cstWithoutLocation)
+        self.saveGeoJsonAirspacesFile(sFile, "all", poaffCst.cstDeltaExtended)
         return
 
     def saveGeoJsonAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
         oGeoFeatures:list = []
-        oGeojson:dict = {}
         sContent:str = ""
         oNewHeader:dict = deepcopy(self.oAsCat.oGlobalCatalogHeader)
 
@@ -60,7 +54,7 @@ class GeojsonArea:
                 sFile = sFile.replace("-all", "-ifr")
             elif sContext == "vfr":
                 bIsInclude = oGlobalCat["vfrZone"]
-                #bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)		#Ne pas exporter l'extension de vol possible en VFR de 0m jusqu'au FL175/5334m
+                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)		#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL175/5334m
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
@@ -132,7 +126,7 @@ class GeojsonArea:
                 #Supprimer cett zone de la carte Corse --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
                 bIsArea = False
             elif bIsInclude and sAreaKey:
-                if sAreaKey == cstWithoutLocation:
+                if sAreaKey == poaffCst.cstWithoutLocation:
                     #Identification des zones non-retenues dans aucun des filtrages géographique paramétrés
                     bIsArea = False
                     for sAreaKey2 in self.oGeoRefArea.AreasRef.keys():
@@ -140,7 +134,7 @@ class GeojsonArea:
                             bIsArea = bIsArea or oGlobalCat[sAreaKey2]
                         if bIsArea: break
                     bIsArea = not bIsArea
-                elif sAreaKey == cstDeltaExtended:
+                elif sAreaKey == poaffCst.cstDeltaExtended:
                     if "deltaExt" in oGlobalCat:
                         bIsArea = oGlobalCat["deltaExt"]
                     else:
@@ -152,7 +146,7 @@ class GeojsonArea:
 
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalGeoJSON):
                oAs = self.oGlobalGeoJSON[sGlobalKey]
-               oArea = {"type":"Feature", "properties":oFinalCat, "geometry":oAs}
+               oArea = {poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties:oFinalCat, poaffCst.cstGeoGeometry:oAs}
                oGeoFeatures.append(oArea)
             barre.update(idx)
         barre.reset()
@@ -175,8 +169,9 @@ class GeojsonArea:
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oGeoFeatures)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
-            oGeojson.update({"type":"FeatureCollection", "headerFile":oNewHeader, "features":oGeoFeatures})
-            bpaTools.writeJsonFile(sFile, oGeojson)                                             #Sérialisation du fichier
+            self.oOutGeoJSON = {}  #Output reset
+            self.oOutGeoJSON.update({poaffCst.cstGeoType:poaffCst.cstGeoFeatureCol, poaffCst.cstGeoHeaderFile:oNewHeader, poaffCst.cstGeoFeatures:oGeoFeatures})
+            bpaTools.writeJsonFile(sFile, self.oOutGeoJSON)                                             #Sérialisation du fichier
         return
 
     def mergeGeoJsonAirspacesFile(self, sKeyFile:str, oFile:dict) -> None:
@@ -214,19 +209,19 @@ class GeojsonArea:
         sTitle = "GeoJSON airspaces make index - {0}".format(sKeyFile)
         self.oIdxGeoJSON = {}                                                                   #Clean previous data
         ofileGeoJSON:dict = bpaTools.readJsonFile(fileGeoJSON)                                  #Chargement des zones
-        if cstGeoFeatures in ofileGeoJSON:
-            oFeatures = ofileGeoJSON[cstGeoFeatures]
+        if poaffCst.cstGeoFeatures in ofileGeoJSON:
+            oFeatures = ofileGeoJSON[poaffCst.cstGeoFeatures]
             barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
             idx = 0
             for oAs in oFeatures:
                 idx+=1
-                oAsProp = oAs[cstGeoProperties]
+                oAsProp = oAs[poaffCst.cstGeoProperties]
                 sUId = oAsProp["UId"]
                 if "excludeAirspaceNotFfArea" in oAsProp:
                    None     #Ne pas inclure cette zone sans bordure
                 else:
                     #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)
-                    oAsGeo = oAs[cstGeoGeometry]
+                    oAsGeo = oAs[poaffCst.cstGeoGeometry]
                     self.oIdxGeoJSON.update({sUId:oAsGeo})
                 barre.update(idx)
             barre.reset()

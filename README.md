@@ -9,6 +9,11 @@ Programme d'extraction et de formatage par lots; basé sur des données issues d
 Ces traitements sont nécessaires pour la génération des centaines de cartographies publiées via le blog [Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
 Les données sources utilisés pour la contruction de ce site sont majoritairement issues des sources officielles [SIA-France](https://www.sia.aviation-civile.gouv.fr/) et [Eurocontrol](https://www.eurocontrol.int/) 
 
+**Table of Contents**
+.. contents::
+   :backlinks: none
+   :local:
+
 
 ## Installation
 ```
