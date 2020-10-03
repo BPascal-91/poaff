@@ -6,6 +6,7 @@
 poaff - `Paragliding OpenAir French Files`_
 ==============
 .. code::
+
 	/!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.
 	/!\ WARNING  : Only official data must be used for air navigation
 
