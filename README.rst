@@ -5,8 +5,8 @@
 
 poaff - `Paragliding OpenAir French Files`_
 ==============
-.. code::
 
+.. code::
 	/!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.
 	/!\ WARNING  : Only official data must be used for air navigation
 
@@ -18,6 +18,7 @@ Vous pouvez également suivre les évolutions via la page `Paragliding OpenAir F
 
 
 **Table of Contents**
+
 .. contents::
    :backlinks: none
    :local:
@@ -26,6 +27,7 @@ Vous pouvez également suivre les évolutions via la page `Paragliding OpenAir F
 Installation
 ------------
 geojson is compatible with Python 3.6, 3.7 and 3.8. The recommended way to install is via pip_:
+
 .. code::
   pip install -r requirements.txt
 
@@ -33,6 +35,7 @@ geojson is compatible with Python 3.6, 3.7 and 3.8. The recommended way to insta
 
 Utilisation
 -----------
+
 .. code:: python
 	>>> #!/usr/bin/env python3  
 	>>> $ python3 poaff.py  
@@ -40,7 +43,15 @@ Utilisation
 
 External links
 --------------
-.. [1] `Paragliding OpenAir French Files`_
+.. [1] `Paragliding OpenAir French Files`_ On Web
+.. [2] `Paragliding OpenAir French Files (on Facebook)`_ On Facebook
+.. [3] `Carte OACI France`_
+.. [4] SIA-France_ Service de l'Information Aéronautique
+.. [5] Eurocontrol_ A pan-European, civil-military organisation dedicated to supporting European aviation
+.. [6] AIXM_ Aeronautical Information Exchange Modele
+.. [7] XML_ W3C Standard
+.. [8] KML_ Google Documentation
+.. [9] Openair_
 
 
 Credits
@@ -53,10 +64,12 @@ Credits
 .. _Paragliding OpenAir French Files: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
 .. _Paragliding OpenAir French Files (on Facebook): https://www.facebook.com/Paragliding-OpenAir-FrenchFiles-102040114894513/
 .. _Carte OACI France: https://www.geoportail.gouv.fr/donnees/carte-oaci-vfr
-.. _AIXM: http://www.aixm.aero/
 .. _SIA-France: https://www.sia.aviation-civile.gouv.fr/
 .. _Eurocontrol: https://www.eurocontrol.int/
+.. _AIXM: http://www.aixm.aero/
+.. _Openair: http://www.winpilot.com/UsersGuide/UserAirspace.asp
 .. _XML: https://www.w3.org/TR/xml/
+.. _KML: https://developers.google.com/kml/documentation
 .. _GeoJSON: http://geojson.org/
 .. _pip: http://www.pip-installer.org
 
