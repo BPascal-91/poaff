@@ -2,9 +2,11 @@
    :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
    :alt: Paragliding OpenAir FrenchFiles
 
-poaff - `Paragliding OpenAir FrenchFiles`_
+poaff - `Paragliding OpenAir French Files`_
 ==============
+
 .. code::
+
 	/!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.
 	/!\ WARNING  : Only official data must be used for air navigation
 
@@ -45,5 +47,5 @@ Utilisation
 
 .. _SIA-France: https://www.sia.aviation-civile.gouv.fr/
 .. _Eurocontrol: https://www.eurocontrol.int/
-.. _Paragliding OpenAir FrenchFiles: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
+.. _Paragliding OpenAir French Files: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
 
