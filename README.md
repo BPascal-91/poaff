@@ -1,7 +1,15 @@
+.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
+   :alt: Paragliding OpenAir FrenchFiles
+
+
+
 [![Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg)](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)
 
+
+
 # poaff - [Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)
-.. code::
+.. code::  
 */!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.*  
 */!\ WARNING  : Only official data must be used for air navigation*  
 
@@ -10,23 +18,23 @@ Ces traitements sont nécessaires pour la génération des centaines de cartogra
 Les données sources utilisés pour la contruction de ce site sont majoritairement issues des sources officielles [SIA-France](https://www.sia.aviation-civile.gouv.fr/) et [Eurocontrol](https://www.eurocontrol.int/) 
 
 **Table of Contents**
-.. contents::
-   :backlinks: none
-   :local:
+.. contents::  
+   :backlinks: none  
+   :local:  
 
 
 ## Installation
-.. code::
+.. code::  
 pip install -r requirements.txt
 
 
 ## Utilisation
-.. code:: python
-  >>> #!/usr/bin/env python3
-  >>> $ python3 poaff.py
+.. code:: python  
+  >>> #!/usr/bin/env python3  
+  >>> $ python3 poaff.py  
 
 
-## External links
+## External links  
 - [Paragliding OpenAir FrenchFiles - On Web](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)  
 - [Paragliding OpenAir FrenchFiles - On Facebook](https://www.facebook.com/Paragliding-OpenAir-FrenchFiles-102040114894513/)
 - [Carte OACI France](https://www.geoportail.gouv.fr/donnees/carte-oaci-vfr)
