@@ -1,7 +1,7 @@
 [![Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg)](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)
 
 # poaff - [Paragliding OpenAir FrenchFiles](http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/)
-
+.. code::
 */!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.*  
 */!\ WARNING  : Only official data must be used for air navigation*  
 
@@ -16,9 +16,14 @@ Les données sources utilisés pour la contruction de ce site sont majoritaireme
 
 
 ## Installation
-```
+.. code::
 pip install -r requirements.txt
-```
+
+
+## Utilisation
+.. code:: python
+  >>> #!/usr/bin/env python3
+  >>> $ python3 poaff.py
 
 
 ## External links
