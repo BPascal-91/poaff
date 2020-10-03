@@ -11,6 +11,8 @@ except ImportError:
     sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
     import bpaTools
 
+import poaffCst
+
 
 def splitDescription(sVal:str, sToken:str, oPop:list) -> str:
     #if oVal[0:len(sToken)+1]==sToken+" ":
@@ -22,16 +24,15 @@ def splitDescription(sVal:str, sToken:str, oPop:list) -> str:
         sVal = sVal.replace("  "," ")
     return sVal
 
-
 def loadAirspacesCatalog (sFile:str, context="") -> dict:
     oLog.info("loadAirspacesCatalog - file source: {0}".format(sFile))
     oJson = bpaTools.readJsonFile(sFile)
-    oContents = oJson["features"]
+    oContents = oJson[poaffCst.cstGeoFeatures]
     
     oCatZones:dict = dict()
     for oZone in oContents:
         oNewPropZone:dict = dict()
-        oPropsZone =oZone["properties"]
+        oPropsZone =oZone[poaffCst.cstGeoProperties]
         #for key,val in oPropsZone.items():
         #    oLog.info("{0} --> {1}".format(key, val))
         

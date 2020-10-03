@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from shapely.geometry import shape
 import bpaTools
+import poaffCst
 
 class GeoRefArea:
     
@@ -99,10 +100,10 @@ class GeoRefArea:
         if isinstance(oZone, list):
             aArray = oZone
         elif isinstance(oZone, dict):
-            if oZone["type"] in ["Point","LineString"]:
+            if oZone[poaffCst.cstGeoType] in [poaffCst.cstGeoPoint,poaffCst.cstGeoLine]:
                 return
-            if oZone["type"] == "Polygon":
-                aArray = oZone["coordinates"][0]
+            if oZone[poaffCst.cstGeoType] == poaffCst.cstGeoPolygon:
+                aArray = oZone[poaffCst.cstGeoCoordinates][0]
             else:
                 raise Exception("Unqualified type of area")
         else:
@@ -125,7 +126,7 @@ class GeoRefArea:
             
     def setZoneRef(self, oZoneRef) -> bool:
         if isinstance(oZoneRef, list):
-            self.oGeoZoneRef = {"type":"Polygon", "coordinates":[oZoneRef]}
+            self.oGeoZoneRef = {poaffCst.cstGeoType:poaffCst.cstGeoPolygon, poaffCst.cstGeoCoordinates:[oZoneRef]}
         elif isinstance(oZoneRef, dict):
             self.oGeoZoneRef = oZoneRef
            
@@ -135,7 +136,7 @@ class GeoRefArea:
     def setZone(self, oZone) -> None:
         self.ctrlZone(oZone)
         if isinstance(oZone, list):
-            self.oGeoZone = {"type":"Polygon", "coordinates":[oZone]}
+            self.oGeoZone = {poaffCst.cstGeoType:poaffCst.cstGeoPolygon, poaffCst.cstGeoCoordinates:[oZone]}
         elif isinstance(oZone, dict):
             self.oGeoZone = oZone
         else:
@@ -143,7 +144,7 @@ class GeoRefArea:
             self.oShapeZone = None
             return
             
-        if len(self.oGeoZone["coordinates"])==0:
+        if len(self.oGeoZone[poaffCst.cstGeoCoordinates])==0:
             self.oGeoZone = None
             self.oShapeZone = None
         else:
@@ -159,10 +160,10 @@ class GeoRefArea:
             
         ###For control of areas ; use http://geojson.tools)
         #g = []
-        #g.append({"type":"Feature", "properties": {}, "geometry":gZone})
-        #g.append({"type":"Feature", "properties": {}, "geometry":self.oShapeZoneRef})
-        #geojson = {"type": "FeatureCollection", "features":g}
-        #print(str(geojson).replace(chr(39),chr(34)))         
+        #g.append({poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties: {}, poaffCst.cstGeoGeometry:gZone})
+        #g.append({poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties: {}, poaffCst.cstGeoGeometry:self.oShapeZoneRef})
+        #geojson = {poaffCst.cstGeoType: poaffCst.cstGeoFeatureCol, poaffCst.cstGeoFeatures:g}
+        #print(str(geojson).replace(chr(39),chr(34)))
         
         bWithin = self.oShapeZone.within(self.oShapeZoneRef)
         if not bWithin:

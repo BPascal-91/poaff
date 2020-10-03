@@ -5,8 +5,6 @@ import poaffCst
 
 ####  Constantes de paramétrage des catalogues  ####
 cstDeduplicateSeparator = "@@-"
-cstKeyCatalogType = "type"
-cstKeyCatalogHeaderFile = "headerFile"
 cstKeyCatalogCatalog = "catalog"
 cstKeyCatalogSoftware = "software"
 cstKeyCatalogCreated = "created"
@@ -70,17 +68,17 @@ class AsCatalog:
         ofileCatalog = bpaTools.readJsonFile(fileCatalog)                                                #Chargement du catalogue du fichier analysé
         #self.oLog.info("ofileCatalog:\n{0}".format(ofileCatalog, outConsole=False))
 
-        oHeadFile = ofileCatalog[cstKeyCatalogHeaderFile]                                                #Entête concernant le fichier analysé
+        oHeadFile = ofileCatalog[poaffCst.cstGeoHeaderFile]                                                #Entête concernant le fichier analysé
 
         self.oGlobalCatalogHeader:dict = {}                                                              #Entête du catalogue gloabal
         if self.oGlobalCatalog=={}:                                                                      #Catalogue vde, donc initialisation du catalogue gloabal
-            self.oGlobalCatalog.update({cstKeyCatalogType:ofileCatalog[cstKeyCatalogType]})              #Typage du catalogue
+            self.oGlobalCatalog.update({poaffCst.cstGeoType:ofileCatalog[poaffCst.cstGeoType]})              #Typage du catalogue
             self.oGlobalCatalogHeader.update({cstKeyCatalogSoftware:oHeadFile[cstKeyCatalogSoftware]})   #Référence au soft de construction
             self.oGlobalCatalogHeader.update({cstKeyCatalogCreated:oHeadFile[cstKeyCatalogCreated]})     #Heurodatage de la construction
             self.oGlobalCatalogHeader.update({cstKeyCatalogContent:oHeadFile[cstKeyCatalogContent]})     #Déclaration du contenu
-            self.oGlobalCatalog.update({cstKeyCatalogHeaderFile:self.oGlobalCatalogHeader})              #Ajout de l'entête de catalogue
+            self.oGlobalCatalog.update({poaffCst.cstGeoHeaderFile:self.oGlobalCatalogHeader})              #Ajout de l'entête de catalogue
         else:
-            self.oGlobalCatalogHeader = self.oGlobalCatalog[cstKeyCatalogHeaderFile]                     #Entête du catalogue gloabal
+            self.oGlobalCatalogHeader = self.oGlobalCatalog[poaffCst.cstGeoHeaderFile]                     #Entête du catalogue gloabal
 
         self.addSrcFile(sKeyFile, \
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmFile"], \

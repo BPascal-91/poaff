@@ -123,7 +123,7 @@ class OpenairArea:
         sAddHeader:str = ""
         lNbExcludeZone:int = 0
 
-        oGlobalHeader = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogHeaderFile]    #Récupération de l'entete du catalogue global
+        oGlobalHeader = self.oAsCat.oGlobalCatalog[poaffCst.cstGeoHeaderFile]                   #Récupération de l'entete du catalogue global
         oNewHeader:dict = deepcopy(self.oAsCat.oGlobalCatalogHeader)
 
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]         #Récupération de la liste des zones consolidés
@@ -144,7 +144,7 @@ class OpenairArea:
                 sFile = sFile.replace("-all", "-ifr")
             elif sContext == "vfr":
                 bIsInclude = oGlobalCat["vfrZone"]
-                #bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)			#Ne pas exporter l'extension de vol possible en VFR de 0m jusqu'au FL175/5334m
+                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)			#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL175/5334m
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 try:
     import bpaTools
-except ImportError:    
+except ImportError:
     ### Include local modules/librairies  ##
     import os
     import sys
@@ -13,19 +13,36 @@ except ImportError:
 import poaffCst
 
 class Geojson2Kml:
-     
-    def __init__(self, oLog=None, oCat=None, oGeo:dict=None)-> None:
+
+    def __init__(self, oLog=None, oGeo:dict=None)-> None:
+        self.oLog = None
         if oLog:
             bpaTools.initEvent(__file__, oLog)
             self.oLog:bpaTools.Logger = oLog        #Log file
-        self.oGeo:dict = oGeo
         self.oKmlTmp:dict = {}
         self.oKml:bpaTools.Xml = None
         self.oKmlDoc = None
-        return    
- 
+        self.oGeo:dict = None
+        if oGeo:
+            self.oGeo:dict = oGeo
+        return
+
     def readGeojsonFile(self, fileSrc:str) -> None:
+        sMsg = "Read file - " + fileSrc
+        if self.oLog:
+            self.oLog.info(sMsg, outConsole=False)
+        else:
+            print(sMsg)
         self.oGeo = bpaTools.readJsonFile(fileSrc)
+        return
+
+    def writeKmlFile(self, fileDst:str, bExpand=0) -> None:
+        self.oKml.write(fileDst, bExpand=bExpand)
+        sMsg = "Write file - " + fileDst
+        if self.oLog:
+            self.oLog.info(sMsg, outConsole=False)
+        else:
+            print(sMsg)
         return
 
     def __createKmlRoot(self):
@@ -35,7 +52,7 @@ class Geojson2Kml:
         self.oKml.addAttrib(oRoot, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
         self.oKml.addAttrib(oRoot, "xsi:schemaLocation", sXmlns + " http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd")
         return oRoot
-    
+
     def createKmlDocument(self, sName:str, sDesc:str=None):
         oRoot = self.__createKmlRoot()  #New Xml document
         oDoc = self.oKml.addTag(oRoot, "Document")
@@ -75,15 +92,12 @@ class Geojson2Kml:
         oFolder2 = self.oKml.addTag(oFolder1, "LinearRing")
         oCoords = self.oKml.addTag(oFolder2, "coordinates")
         return oCoords
-   
+
     def makeAirspacesKml(self) -> None:
         sTitle = "Analyse airspaces"
-        self.createKmlStyle(self.oKmlDoc, "transRedPoly",    "ff1400FF", "7f0000ff")  #7d0000ff
-        self.createKmlStyle(self.oKmlDoc, "transPurplePoly", "ff1400FF", "7fff00ff")
-        self.createKmlStyle(self.oKmlDoc, "transBluePoly",   "ff1400FF", "7fff0000")
-        self.createKmlStyle(self.oKmlDoc, "transGreenPoly",  "ffff0000", "4f00ff00")
-        self.createKmlStyle(self.oKmlDoc, "transYellowPoly", "ff000000", "4f00ffff")
-        
+        if self.oLog:
+            self.oLog.info(sTitle, outConsole=False)
+
         #Interprétation du contenu source
         if poaffCst.cstGeoFeatures in self.oGeo:
             oFeatures:dict = self.oGeo[poaffCst.cstGeoFeatures]
@@ -93,8 +107,8 @@ class Geojson2Kml:
                 idx+=1
                 oAsPro = oAs[poaffCst.cstGeoProperties]              #get properties
                 oAsGeo = oAs[poaffCst.cstGeoGeometry]                #get geometry
-                
-                #Classification pour organisation des zones 
+
+                #Classification pour organisation des zones
                 if (oAsPro.get("vfrZoneExt",None)==True) and (oAsPro.get("vfrZone",None) ==False):
                     sTypeZone:str = "vfrZoneExt"
                 elif oAsPro.get("vfrZone",None)==True:
@@ -103,30 +117,30 @@ class Geojson2Kml:
                     sTypeZone:str = "ifrZone"
                 else:
                     sTypeZone:str = "Airspace"
-                
+
                 sClassZone:str = oAsPro.get("class","")
                 sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("nameV","")
-                sDesc:str = "Altidutes ["
-                if "lowerMin" in oAsPro:
-                    sDesc += oAsPro["lowerMin"] + "|"
-                sDesc += oAsPro["lower"] + "/" + oAsPro["upper"]
-                if "upperMax" in oAsPro:
-                    sDesc += "|" + oAsPro["upperMax"]
-                sDesc += "]"
-                if "desc" in oAsPro:
-                    sDesc += " - Description - " + oAsPro["desc"]
                 sUpperM:str = oAsPro.get("upperM", 9999)
                 sLowerM:str = oAsPro.get("lowerM", 0)
+                sDesc:str = ""
+                if "lowerMin" in oAsPro:
+                    sDesc += oAsPro["lowerMin"] + "|"
+                sDesc += oAsPro["lower"] + " / " + oAsPro["upper"]
+                if "upperMax" in oAsPro:
+                    sDesc += "|" + oAsPro["upperMax"]
+                sDesc += " ({0}m / {1}m)".format(sLowerM , sUpperM)
+                if "desc" in oAsPro:
+                    sDesc += "<br/><br/>" + oAsPro["desc"]
                 oTypeZone:dict = self.oKmlTmp.get(sTypeZone, {})
                 oClassZone:list = oTypeZone.get(sClassZone, [])
-                
-                if oAsGeo[poaffCst.cstGeoType].lower()=="point":
-                    oCoords:list = []                               #Don't show this point feature
-                elif oAsGeo[poaffCst.cstGeoType].lower()=="linestring":
+
+                if oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPoint).lower():
+                    oCoords:list = []                                       #Don't show this point feature
+                elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoLine).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]        #get coordinates of geometry
-                elif oAsGeo[poaffCst.cstGeoType].lower()=="polygon":
+                elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates][0]     #get coordinates of geometry
-            
+
                 #Stockage organisationnel temporaire
                 #Nota. Exclure la LTA France dont le tracé 3D n'est pas très-bon
                 if (len(oCoords)>1) and (sNameZone.find("LTA FRANCE 1")<0):
@@ -134,17 +148,26 @@ class Geojson2Kml:
                     oClassZone.append(oZone)
                     oTypeZone.update({sClassZone:oClassZone})
                     self.oKmlTmp.update({sTypeZone:oTypeZone})
-                
+
                 barre.update(idx)
             barre.reset()
-            
+
             #Construction de l'organisation des polygons dans le KML
             if len(self.oKmlTmp)>0:
                 sTitle = "KML generator"
+                if self.oLog:
+                    self.oLog.info(sTitle, outConsole=False)
+                    
+                self.createKmlStyle(self.oKmlDoc, "transRedPoly",    "ff1400FF", "7f0000ff")
+                self.createKmlStyle(self.oKmlDoc, "transPurplePoly", "ff1400FF", "7fff00ff")
+                self.createKmlStyle(self.oKmlDoc, "transBluePoly",   "ff1400FF", "7fff0000")
+                self.createKmlStyle(self.oKmlDoc, "transGreenPoly",  "ffff0000", "4f00ff00")
+                self.createKmlStyle(self.oKmlDoc, "transYellowPoly", "ff000000", "4f00ffff")
+                
                 barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
                 idx = 0
                 for sKeyType, oTypeZone in self.oKmlTmp.items():
-                    
+
                     sVisiblility:str="0" #defailt value
                     if sKeyType == "vfrZone":
                         sVisiblility:str="1"
@@ -152,8 +175,8 @@ class Geojson2Kml:
                     elif sKeyType == "vfrZoneExt":
                         oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR-Ext", sVisiblility, "Couche de l'espace aérien VFR étandue ; zones dont le plafond s'élève jusqu'à la limite maximum de FL175")
                     elif sKeyType == "ifrZone":
-                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche IFR", sVisiblility, "Couche de l'espace aérien IFR ; zones dont le plancher débute au dessus de l'altitude FL175")
-                    
+                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche IFR", sVisiblility, "Couche de l'espace aérien IFR ; zones hautes (UTA=UpperControlArea, OCA=OceanicControlArea, OTA=OceanicTransitionArea, ...) et autres espaces-aériens nécessaires aux transmissions radards ou radios (FIR=FlightInformationRegion, UIR=UpperFlightInformationRegion, SECTOR=ControlSector, ...")
+
                     for sKeyClass, oClassZone in oTypeZone.items():
                         oFolderClass = self.createKmlFolder(oFolderType, "Folder", "Classe " + sKeyClass, sVisiblility)
 
@@ -176,11 +199,11 @@ class Geojson2Kml:
                             sUpperM:str = oZone[2]
                             sLowerM:str = oZone[3]
                             oCoords:list = oZone[4]
-                            
+
                             oPlacemark = self.createKmlFolder(oFolderClass, "Placemark", sZoneName, sVisibility=sVisiblility, sDescription=sDesc)
                             self.oKml.addTag(oPlacemark, "styleUrl", sValue=sStyle)
                             oMultiGeo = self.oKml.addTag(oPlacemark, "MultiGeometry")
-                            
+
                             #Construct top panel
                             oPolygon:list = []
                             for oAs in oCoords:
@@ -204,7 +227,7 @@ class Geojson2Kml:
                                 #add bottom panel
                                 oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0")
                                 oKmlCoords.text = " ".join(oPolygon)
-                                
+
                                 #Construct sides panels
                                 for idx, oAs in enumerate(oCoords):
                                     sPoint0:str = str(oCoords[idx][0]) + "," + str(oCoords[idx][1]) + ","
@@ -212,18 +235,18 @@ class Geojson2Kml:
                                         sPoint1:str = str(oCoords[0][0]) + "," + str(oCoords[0][1]) + ","
                                     else:
                                         sPoint1:str = str(oCoords[idx+1][0]) + "," + str(oCoords[idx+1][1]) + ","
-                                    
+
                                     oPolygon:list = []
                                     oPolygon.append(sPoint0 + str(sLowerM))
                                     oPolygon.append(sPoint0 + str(sUpperM))
                                     oPolygon.append(sPoint1 + str(sUpperM))
                                     oPolygon.append(sPoint1 + str(sLowerM))
                                     oPolygon.append(sPoint0 + str(sLowerM))
-                                    
+
                                     #Side panel
                                     oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0")
                                     oKmlCoords.text = " ".join(oPolygon)
-                                
+
                         barre.update(idx)
                 barre.reset()
         return
@@ -235,14 +258,14 @@ if __name__ == '__main__':
     oKml.readGeojsonFile(sPath + "__testAirspaces.geojson")
     oKml.createKmlDocument("Paragliding Openair Frensh Files", "Cartographies aériennes France - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/")
     oKml.makeAirspacesKml()
-    oKml.oKml.write(sPath + "__testAirspaces.kml", bExpand=1)
+    oKml.writeKmlFile(sPath + "__testAirspaces.kml", bExpand=1)
 
     """
     oKml.readGeojsonFile(sPath + "__testAirspaces-freeflight.geojson")
     oKml.makeKml()
-    oKml.oKml.write(sPath + "__testAirspaces-freeflight.kml", bExpand=0)
+    oKml.writeKmlFile(sPath + "__testAirspaces-freeflight.kml", bExpand=0)
 
     oKml.readGeojsonFile(sPath + "___truncateFile3.geojson")
     oKml.makeKml()
-    oKml.oKml.write(sPath + "__truncateAirspaces-freeflight.kml", bExpand=0)
+    oKml.writeKmlFile(sPath + "__truncateAirspaces-freeflight.kml", bExpand=0)
     """

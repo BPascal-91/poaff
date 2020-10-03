@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+import zipfile
 
+aixmParserLocalSrc  = "../../aixmParser/src/"
 try:
     import bpaTools
 except ImportError:    
     ### Include local modules/librairies  ##
     import os
     import sys
-    aixmParserLocalSrc  = "../../aixmParser/src/"
     module_dir = os.path.dirname(__file__)
     sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
     import bpaTools
@@ -17,8 +18,11 @@ from groundEstimatedHeight import GroundEstimatedHeight
 import poaffCst
 from airspacesCatalog import AsCatalog
 from geojsonArea import GeojsonArea
+from geojsonTruncature import GeojsonTrunc
+from geojson2kml import Geojson2Kml
 from openairArea import OpenairArea
 from xmlSIA import XmlSIA
+
 
 ###  Context applicatif  ####
 aixmParserVersion       = bpaTools.getVersionFile(aixmParserLocalSrc)
@@ -33,8 +37,8 @@ logFile                 = outPath + "_" + appName + ".log"
 ###  Environnement applicatif  ###
 poaffOutPath            = outPath + poaffCst.cstPoaffOutPath
 globalCatalog           = poaffOutPath + poaffCst.cstReferentialPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + poaffCst.cstCatalogFileName
-globalAsGeojson         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllGeojsonFileName
-globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllOpenairFileName
+globalAsGeojson         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + poaffCst.cstAsAllGeojsonFileName
+globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + poaffCst.cstAsAllOpenairFileName
 
 
 ####  Liste des fichiers a traiter  ####
@@ -90,7 +94,6 @@ def poaffMergeFiles() -> None:
     oFreq.syncFrequecies(oAsCat.getContent())
     oAsCat.saveCatalogFiles(globalCatalog)                                  #Sérialisation du catalogue global
 
-    #"""    
     #B-1/ Consolidation des espaces-aériens GeoJSON
     oJsArea = GeojsonArea(oLog, oAsCat)                                     #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
@@ -98,25 +101,45 @@ def poaffMergeFiles() -> None:
 
     #B-2/ Construction des sorties GeoJSON
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")                #Sortie complète des zones
+    makeKml(oJsArea.oOutGeoJSON, "all")                                     #Sortie du ficher en KML
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr")                #Sortie des zones IFR
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "vfr")                #Sortie des zones VFR
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "cfd")                #Sortie spécifique vol-libre pour affichage dans la CFD (VictorB et https://flyxc.app)
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")                 #Sortie spécifique vol-libre
+    makeKml(oJsArea.oOutGeoJSON, "ff")                                      #Sortie du ficher en KML
     oJsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson)                  #Sorties par zonage géographique
 
-    #C-1/ Consolidation des espaces-aériens Openair
+    #D-1/ Consolidation des espaces-aériens Openair
     oOpArea = OpenairArea(oLog, oAsCat)                                     #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
         oOpArea.mergeOpenairAirspacesFile(sKey, oFile)                      #Consolidation des fichiers Openair
 
-    #C-2/ Construction des sorties Openair
+    #D-2/ Construction des sorties Openair
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "all")                #Sortie complète des zones
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ifr")                #Sortie des zones IFR
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "vfr")                #Sortie des zones VFR
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "cfd")                #Sortie spécifique vol-libre pour validation des traces CFD (KevinB et https://flyxc.app)
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ff")                 #Sortie spécifique vol-libre
     oOpArea.saveOpenairAirspacesFile4Area(globalAsOpenair)                  #Sorties par zonage géographique
-    #"""
+    return
+
+def makeKml(oGeo, sContext:str) -> None:
+    sKmlFile = globalAsGeojson.replace(".geojson", ".kml")
+    if sContext=="ff":
+        sKmlFile = sKmlFile.replace("-all", "-freeflight")
+    
+    #C-1/ Construction d'une sortie KML sur la base d'un GeoJSON
+    oTrunc = GeojsonTrunc(oLog=oLog, oGeo=oGeo)                             #Simplification du GeoJSON réceptionné
+    oKml = Geojson2Kml(oLog=oLog, oGeo=oTrunc.oOutGeo)                      #Construction du KML du GeoJSON simplifié
+    oKml.createKmlDocument("Paragliding Openair Frensh Files", "Cartographies aériennes France - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/")
+    oKml.makeAirspacesKml()
+    oKml.writeKmlFile(sKmlFile, bExpand=0)
+    
+    #C-2/ Construction du KMZ avec compression de données
+    sKmzFile = sKmlFile.replace(".kml", ".kmz")
+    oZip = zipfile.ZipFile(sKmzFile, 'w', zipfile.ZIP_DEFLATED)
+    oZip.write(sKmlFile)
+    oZip.close()
     return
 
 def parseFile(sKey:str, oFile:dict) -> bool:

@@ -8,6 +8,8 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
+cstDeltaExtended        = "deltaExtended"
+cstWithoutLocation      = "withoutGeoLocation"
 
 class GeojsonArea:
 
@@ -24,9 +26,9 @@ class GeojsonArea:
     def saveGeoJsonAirspacesFile4Area(self, sFile:str, sContext="ff") -> None:
         for sAreaKey in self.oGeoRefArea.AreasRef.keys():
             self.saveGeoJsonAirspacesFile(sFile, sContext, sAreaKey)
-        self.saveGeoJsonAirspacesFile(sFile, sContext, poaffCst.cstWithoutLocation)
-        self.saveGeoJsonAirspacesFile(sFile, "all", poaffCst.cstWithoutLocation)
-        self.saveGeoJsonAirspacesFile(sFile, "all", poaffCst.cstDeltaExtended)
+        self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
+        self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
+        self.saveGeoJsonAirspacesFile(sFile, "all", cstDeltaExtended)
         return
 
     def saveGeoJsonAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
@@ -126,7 +128,7 @@ class GeojsonArea:
                 #Supprimer cett zone de la carte Corse --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
                 bIsArea = False
             elif bIsInclude and sAreaKey:
-                if sAreaKey == poaffCst.cstWithoutLocation:
+                if sAreaKey == cstWithoutLocation:
                     #Identification des zones non-retenues dans aucun des filtrages géographique paramétrés
                     bIsArea = False
                     for sAreaKey2 in self.oGeoRefArea.AreasRef.keys():
@@ -134,7 +136,7 @@ class GeojsonArea:
                             bIsArea = bIsArea or oGlobalCat[sAreaKey2]
                         if bIsArea: break
                     bIsArea = not bIsArea
-                elif sAreaKey == poaffCst.cstDeltaExtended:
+                elif sAreaKey == cstDeltaExtended:
                     if "deltaExt" in oGlobalCat:
                         bIsArea = oGlobalCat["deltaExt"]
                     else:

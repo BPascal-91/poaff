@@ -5,14 +5,12 @@ callingContext          = "Paragliding-OpenAir-FrenchFiles"             #Your ap
 linkContext             = "http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/"
 aixmParserAppName       = "aixmParser"
 
-
 ###  Environnement applicatif  ###
 cstPoaffOutPath             = "_POAFF/"
 cstPoaffWebPath             = "_POAFF_www/"
 cstPoaffWebPathFiles        = "files/"
 cstCfdWebPath               = "_CFD_www/"
 cstReferentialPath          = "referentials/"
-
 cstSeparatorFileName        = "@"
 cstGlobalHeader             = "global"
 cstCatalogFileName          = "airspacesCatalog.json"
@@ -22,7 +20,6 @@ cstWithTopo                 = "-gpsWithTopo"
 cstWithoutTopo              = "-gpsWithoutTopo"
 cstLastVersionFileName      = "LastVersion_"
 
-
 ### scriptProcessing constantes  ###
 cstSpExecute      = "Execute"                         #Identification du Flag d'execution des traitements
 cstSpSrcFile      = "srcFile"                         #Identification du fichier source
@@ -31,11 +28,23 @@ cstSpProcessType  = "processType"                     #Typage du processus de co
 cstSpPtAdd        = "processType-AppendData"          #Consolidation des données par simple ajout (empilage des données sans contrôle de présence)
 cstSpPtAddDelta   = "processType-AppendIfNotExist"    #Consolidation des données par ajout des données qui ne sont pas déjà présentes dans la consolidation
 
-ft = 0.3048      #foot in meter
-
-#standard goejson structure
+###  Standard GeoJSON structure  ###
+cstGeoType          = "type"
+cstGeoFeatureCol    = "FeatureCollection"
 cstGeoFeatures      = "features"
+cstGeoFeature       = "Feature"
 cstGeoProperties    = "properties"
 cstGeoGeometry      = "geometry"
-cstGeoType          = "type"
+cstGeoPoint         = "Point"
+cstGeoLine          = "LineString"
+cstGeoPolygon       = "Polygon"
 cstGeoCoordinates   = "coordinates"
+
+###  Specific GeoJSON structure  ###
+cstGeoHeaderFile    = "headerFile"
+
+
+
+###  Convertion constantes ###
+ft = 0.3048      #foot in meter
+
