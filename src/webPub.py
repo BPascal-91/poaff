@@ -112,6 +112,21 @@ class PoaffWebPage:
                             sComplementaryFiles += self.makeLink4File(dstFileName2, aTypeFile[1] + " / " + oAreaRef[2]) + " | "
                 else:
                     sComplementaryFiles += self.makeLink4File(dstFileName, aTypeFile[1]) + " | "
+                
+                if aTypeFile[0]=="-all":
+                    #Complément du fichier optimisé 'global@airspaces-all-optimized.geojson'
+                    srcFileName2 = str(srcFileName).replace(aTypeFile[0], aTypeFile[0] + "-optimized")
+                    dstFileName2 = str(dstFileName).replace(aTypeFile[0], aTypeFile[0] + "-optimized")
+                    if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
+                        sComplementaryFiles += self.makeLink4File(dstFileName2, "Fichier optimisé - " + aTypeFile[1]) + " | "
+                if aTypeFile[0]=="-freeflight":
+                    #Complément du fichier optimisé 'global@airspaces-freeflight-optimized.geojson'
+                    srcFileName2 = str(srcFileName).replace(aTypeFile[0], aTypeFile[0] + "-optimized")
+                    dstFileName2 = str(dstFileName).replace(aTypeFile[0], aTypeFile[0] + "-optimized")
+                    if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
+                        sToken = str("@@file@@GeoJSON-airspaces-freeflight-optimized@@")
+                        self.publishFile(dstFileName2, sToken, "Fichier optimisé - " + aTypeFile[1])
+        
         self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@GeoJSON-airspaces-othersfileslist@@", sComplementaryFiles)
 
         #### 3b/ KML files
