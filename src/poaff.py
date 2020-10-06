@@ -42,7 +42,7 @@ globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cst
 
 
 ####  Liste des fichiers a traiter  ####
-testMode = True     #True or  False
+testMode = False     #True or  False
 scriptProcessing = {
     "BPa-TestRefAlt":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestReferentielAltitude_aixm45.xml"},
     "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4CleaningCatalog_aixm45.xml"},
@@ -50,8 +50,8 @@ scriptProcessing = {
     "BPa-Test4AppDelta2":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta2_aixm45.xml"},
     "BPa-Test4AppDelta3":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4kml_aixm45.xml"},
     "BPa-TestXmlSIA":       {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestFrequency_xml_SIA-FR.xml"},
-    "xmlSIA":               {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20200910-20201007_xml_SIA-FR_BPa.xml"},
-    "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20200910-20201007_aixm4.5_SIA-FR.xml"},
+    "xmlSIA":               {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_xml_SIA-FR_BPa.xml"},
+    "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_aixm4.5_SIA-FR.xml"},
     "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20200910_aixm4.5_Eurocontrol-FR_BPa.xml"},
     "FFVP-Parcs":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20200805_FFVP_ParcsNat_BPa_aixm45.xml"},
     "FFVP-Birds":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
@@ -101,20 +101,18 @@ def poaffMergeFiles() -> None:
 
     #B-2/ Construction des sorties GeoJSON
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")                #Sortie complète des zones
-    makeKml(oJsArea.oOutGeoJSON, "all")                                     #Sortie du ficher en KML
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr")                #Sortie des zones IFR
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "vfr")                #Sortie des zones VFR
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "cfd")                #Sortie spécifique vol-libre pour affichage dans la CFD (VictorB et https://flyxc.app)
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")                 #Sortie spécifique vol-libre
-    makeKml(oJsArea.oOutGeoJSON, "ff")                                      #Sortie du ficher en KML
     oJsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson)                  #Sorties par zonage géographique
 
-    #D-1/ Consolidation des espaces-aériens Openair
+    #C-1/ Consolidation des espaces-aériens Openair
     oOpArea = OpenairArea(oLog, oAsCat)                                     #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
         oOpArea.mergeOpenairAirspacesFile(sKey, oFile)                      #Consolidation des fichiers Openair
 
-    #D-2/ Construction des sorties Openair
+    #C-2/ Construction des sorties Openair
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "all")                #Sortie complète des zones
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ifr")                #Sortie des zones IFR
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "vfr")                #Sortie des zones VFR
@@ -124,18 +122,35 @@ def poaffMergeFiles() -> None:
     return
 
 def makeKml(oGeo, sContext:str) -> None:
-    sKmlFile = globalAsGeojson.replace(".geojson", ".kml")
+    oLog.info("makeKml() {0}".format(sContext), outConsole=True)
+    sSrcFile:str = globalAsGeojson      #Default = '-all'
     if sContext=="ff":
-        sKmlFile = sKmlFile.replace("-all", "-freeflight")
+        sSrcFile:str = sSrcFile.replace("-all", "-freeflight")
+    sTrcFile:str = sSrcFile.replace(".geojson", "-Optimized.geojson")
+    sKmlFile:str = sSrcFile.replace(".geojson", ".kml")
     
-    #C-1/ Construction d'une sortie KML sur la base d'un GeoJSON
-    oTrunc = GeojsonTrunc(oLog=oLog, oGeo=oGeo)                             #Simplification du GeoJSON réceptionné
-    oKml = Geojson2Kml(oLog=oLog, oGeo=oTrunc.oOutGeo)                      #Construction du KML du GeoJSON simplifié
+    #D-1/ Simplification du GeoJSON par optimisation du tracé
+    oTrunc:GeojsonTrunc = None
+    if oGeo==None:
+        oTrunc = GeojsonTrunc(oLog=oLog)
+        oTrunc.truncateGeojsonFile(sSrcFile, sTrcFile)
+    else:
+        oTrunc = GeojsonTrunc(oLog=oLog, oGeo=oGeo)
+    oTrunc = None   #Free
+    
+    #D-2/ Construction d'une sortie KML sur la base d'un GeoJSON
+    oKml:Geojson2Kml = None
+    if oGeo==None:
+        oKml = Geojson2Kml(oLog=oLog)
+        oKml.readGeojsonFile(sTrcFile)
+    else:
+        oKml = Geojson2Kml(oLog=oLog, oGeo=oTrunc.oOutGeo)
     oKml.createKmlDocument("Paragliding Openair Frensh Files", "Cartographies aériennes France - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/")
     oKml.makeAirspacesKml()
     oKml.writeKmlFile(sKmlFile, bExpand=0)
+    oKml = None   #Free
     
-    #C-2/ Construction du KMZ avec compression de données
+    #D-3/ Construction du KMZ avec compression de données
     sKmzFile = sKmlFile.replace(".kml", ".kmz")
     oZip = zipfile.ZipFile(sKmzFile, 'w', zipfile.ZIP_DEFLATED)
     oZip.write(sKmlFile)
@@ -197,6 +212,8 @@ if __name__ == '__main__':
         oLog.critical(sAbortTreatment, outConsole=True)
     else:
         poaffMergeFiles()                                                   #Consolidation des fichiers
+        makeKml(None, "all")                                                #Sortie du ficher en KML
+        makeKml(None, "ff")                                                 #Sortie du ficher en KML
         #if not(testMode):
         #    oWeb = PoaffWebPage(oLog, outPath)
         #    oWeb.createPoaffWebPage(None)                                   #Preparation pour publication

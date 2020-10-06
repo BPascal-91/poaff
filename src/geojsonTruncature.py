@@ -18,10 +18,10 @@ import poaffCst
 class GeojsonTrunc:
      
     def __init__(self, oLog=None, oGeo:dict=None)-> None:
-        self.oLog = None
+        self.oLog:bpaTools.Logger = None
         if oLog:
             bpaTools.initEvent(__file__, oLog)
-            self.oLog:bpaTools.Logger = oLog        #Log file
+            self.oLog = oLog
         self.iDecimal = 3
         self.oInpGeo:dict = None                    #GeoJSON input data
         self.oOutGeo:dict = None                    #GeoJSON output data
@@ -32,20 +32,22 @@ class GeojsonTrunc:
 
     def setGeo(self, oGeo:dict=None)-> None:
         if oGeo:
+            if self.oLog:
+                self.oLog.info("setGeo()", outConsole=True)
             self.oInpGeo:dict = oGeo
             self.oOutGeo:dict = deepcopy(oGeo)
         return    
 
     def truncateGeojsonFile(self, fileSrc:str, fileDst:str, iDecimal=3) -> None:
         if self.oLog:
-            self.oLog.info("Read file - " + fileSrc, outConsole=False)
+            self.oLog.info("truncateGeojsonFile() - Read file - " + fileSrc, outConsole=False)
         oGeoJSON:dict = bpaTools.readJsonFile(fileSrc)
         self.setGeo(oGeoJSON)
         self.iDecimal = iDecimal
         self.truncateGeojsonFeature()
         bpaTools.writeJsonFile(fileDst, self.oOutGeo)
         if self.oLog:
-            self.oLog.info("Write file - " + fileDst, outConsole=False)
+            self.oLog.info("truncateGeojsonFile() - Write file - " + fileDst, outConsole=False)
         return
     
     def truncateGeojsonFeature(self, oGeoJSON:dict=None) -> None:
@@ -68,7 +70,7 @@ class GeojsonTrunc:
         lSizeSrc:int = len(str(self.oInpGeo))
         lSizeDst:int = len(str(self.oOutGeo))
         lCompress:int = int((1-(lSizeDst/lSizeSrc))*100)
-        sCompress:str = "GeoJSON compressé à {0}%".format(lCompress)
+        sCompress:str = "GeoJSON compressed at {0}%".format(lCompress)
         if self.oLog:
             self.oLog.info(sCompress, outConsole=True)
         else:

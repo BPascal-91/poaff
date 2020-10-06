@@ -240,6 +240,7 @@ class PoaffWebPage:
             sBuffStr:str = "; ".join(aPubDates[0:-1])
             sBuffStr += "; <b>" + aPubDates[-1] + "</b>"
             self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@webPublicationDates@@", sBuffStr)
+            self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@webPublicationLastDate@@", str(aPubDates[-1]))
             
             sNewWebPage:str = "index.htm"
             sMsg = "Creating Web file - {}".format(sNewWebPage)
