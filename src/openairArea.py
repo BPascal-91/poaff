@@ -360,7 +360,8 @@ class OpenairArea:
             if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
                #self.oLog.info("  --> Openair airspace consolidation {0}".format(sGlobalKey), outConsole=False)
                sUId = oGlobalCat["UId"]
-               if "excludeAirspaceNotFfArea" in oGlobalCat:
+               #Depuis le 06/10 ; Préserver les zones particulières de type Point
+               if oGlobalCat.get("excludeAirspaceNotFfArea", False)==True and oGlobalCat.get("geometryType", "")!="Point":
                    None     #Ne pas inclure cette zone sans bordure
                elif sUId in self.oOpenair:
                    oAs:OpenairZone = self.oOpenair[sUId]

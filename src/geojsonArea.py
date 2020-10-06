@@ -219,7 +219,8 @@ class GeojsonArea:
                 idx+=1
                 oAsProp = oAs[poaffCst.cstGeoProperties]
                 sUId = oAsProp["UId"]
-                if "excludeAirspaceNotFfArea" in oAsProp:
+                #Depuis le 06/10 ; Préserver les zones particulières de type Point
+                if oAs.get("excludeAirspaceNotFfArea", False)==True and oAs.get("geometryType", "")!="Point":
                    None     #Ne pas inclure cette zone sans bordure
                 else:
                     #self.oLog.debug("!!! Load index {0}".format(sUId), outConsole=False)

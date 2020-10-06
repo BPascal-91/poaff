@@ -178,10 +178,19 @@ class AsCatalog:
 
     #Suppression physique de zones concidérées comme fausse à la source / Les zones exclus ne sont pas reprises dans le catalogue final
     def isValidArea(self, sKeyFile:str, oAs:dict) -> bool:
-        ret:bool = True                                                  #Default value
-        if oAs["groupZone"]:                           return False     #Exclure les zones de regroupement
-        if oAs.get("excludeAirspaceNotCoord",False):   return False     #Exclure les zones sans précision de coordonnées
-        if oAs.get("excludeAirspaceNotFfArea",False):  return False      #Exclure les zones sans précision de coordonnées
+        ret:bool = True                                                 #Default value
+        
+        #Exclure les zones de regroupement
+        if oAs["groupZone"]:
+            return False     
+        
+        #Exclure les zones sans précision de coordonnées
+        if oAs.get("excludeAirspaceNotCoord",False):
+            return False
+
+        #Depuis le 06/10 ; Préserver les zones particulières de type Point
+        if oAs.get("excludeAirspaceNotFfArea", False)==True and oAs.get("geometryType", "")!="Point":
+           return False
 
         if sKeyFile == "BPa-Test4Clean":                #Suppression manuelle de zones
             if oAs["id"] in ["LFD18B1"]:                #Test de suppression manuelle d'une zone en mer - [Q] 18 B1 (id=LFD18B1)
