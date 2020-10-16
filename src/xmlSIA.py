@@ -45,6 +45,8 @@ class XmlSIA:
         self.oLog = oLog
         self.sKeyFile:str = None
         self.doc:BeautifulSoup = None
+        self.root:BeautifulSoup = None
+        self.situation:BeautifulSoup = None
         self.oFrequecies:dict = {}
         return
 
@@ -59,10 +61,11 @@ class XmlSIA:
         #    f_in.readline()  # skipping header and letting soup create its own header
         #self.doc = BeautifulSoup(f_in.read(), 'xml', from_encoding='ISO-8859-1')
         
-        root = self.doc.find("SiaExport")
-        self.srcVersion = root['Version']
-        self.srcOrigin = root['Origine']
-        self.srcCreated = root['Date']
+        self.root = self.doc.find("SiaExport", recursive=False)
+        self.srcVersion = self.root['Version']
+        self.srcOrigin = self.root['Origine']
+        self.srcCreated = self.root['Date']
+        self.situation = self.root.find("Situation", recursive=False)
         return
     
     def syncFrequecies(self, oCat:dict) -> None:
@@ -164,15 +167,23 @@ class XmlSIA:
 	#</Frequence>   
     def loadFrequecies(self) -> None:
         sTitle = "Airspaces frequencies"
+        
+        sXmlTag = "FrequenceS"
+        oFreqS = self.situation.find(sXmlTag, recursive=False)
+        if not oFreqS:
+            sMsg = "Missing tags {0} - {1}".format(sXmlTag, sTitle)
+            self.oLog.warning(sMsg, outConsole=True)
+            return
+        
         sXmlTag = "Frequence"
-        if not self.doc.find(sXmlTag):
+        if not oFreqS.find(sXmlTag, recursive=False):
             sMsg = "Missing tags {0} - {1}".format(sXmlTag, sTitle)
             self.oLog.warning(sMsg, outConsole=True)
             return
 
         sMsg = "Indexing {0} - {1}".format(sXmlTag, sTitle)
         self.oLog.info(sMsg)
-        oList = self.doc.find_all(sXmlTag)
+        oList = oFreqS.find_all(sXmlTag, recursive=False)
         barre = bpaTools.ProgressBar(len(oList), 20, title=sMsg)
         idx = 0
         #oFreqKey:dict = {}
