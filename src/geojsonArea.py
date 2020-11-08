@@ -8,6 +8,7 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
+cstFreeFlightZoneExt    = "zoneExt"
 cstDeltaExtended        = "deltaExtended"
 cstWithoutLocation      = "withoutGeoLocation"
 
@@ -29,6 +30,7 @@ class GeojsonArea:
         self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
         self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
         self.saveGeoJsonAirspacesFile(sFile, "all", cstDeltaExtended)
+        self.saveGeoJsonAirspacesFile(sFile, "ff", cstFreeFlightZoneExt)
         return
 
     def saveGeoJsonAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
@@ -137,10 +139,9 @@ class GeojsonArea:
                         if bIsArea: break
                     bIsArea = not bIsArea
                 elif sAreaKey == cstDeltaExtended:
-                    if "deltaExt" in oGlobalCat:
-                        bIsArea = oGlobalCat["deltaExt"]
-                    else:
-                        bIsArea = False
+                    bIsArea = oGlobalCat.get("deltaExt", False)
+                elif sAreaKey == cstFreeFlightZoneExt:
+                    bIsArea = oGlobalCat.get("freeFlightZoneExt", False)
                 elif sAreaKey in oGlobalCat:
                     bIsArea = oGlobalCat[sAreaKey]
                 else:

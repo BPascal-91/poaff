@@ -31,9 +31,9 @@ cstTemplateWebPage:str      = "__template__Index-Main.htm"
 
 aTypeFiles:list =   [ ["-all"       , "Cartographie complète de l'espace aérien (IFR + VFR)"], \
                       ["-ifr"       , "Cartographie de l'espace aérien IFR (secteurs d'information radio et zones de haute altitude)"], \
-                      ["-vfr"       , "Cartographie de l'espace aérien VFR (zones situées en dessous le niveau FL115)"], \
+                      ["-vfr"       , "Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL175/5334m)"], \
                       ["-ffvl-cfd"  , "Cartographie spécifique pour injection dans l'outillage de la CFD FFVL"], \
-                      ["-freeflight", "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL115)"]]
+                      ["-freeflight", "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL175 + filtres et compléments)"]]
 
 class PoaffWebPage:
 
@@ -175,8 +175,8 @@ class PoaffWebPage:
                         srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
                         dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
                         if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                            #Duplication du fichier "LastVersion" de la France étendue
-                            if sAreaKey == "geoFrenchExt":
+                            #Duplication des fichiers "LastVersion" de la France
+                            if sAreaKey in ["geoFrench","geoFrenchExt","geoCorse","geoLaReunion","geoPolynesieFr"]:
                                 dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
                                 if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                                     self.aCatalogFiles.append(dstFileName2b + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + aTypeFile[1])
@@ -210,8 +210,8 @@ class PoaffWebPage:
                             srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
                             dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
                             if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                                #Duplication du fichier "LastVersion" de la France étendue
-                                if sAreaKey == "geoFrenchExt":
+                                #Duplication des fichiers "LastVersion" de la France
+                                if sAreaKey in ["geoFrench","geoFrenchExt"]:
                                     dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
                                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                                         self.aCatalogFiles.append(dstFileName2b + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + aTypeFile[1])
@@ -282,7 +282,7 @@ class PoaffWebPage:
                 sDayFiles += "<li>" + self.makeLink4File(dstFileName, sDescription) + "</li>"
 
                 #Duplication du fichier "LastVersion" de la France étendue
-                if sAreaKey == "geoFrenchExt":
+                if sAreaKey in ["geoFrench", "geoFrenchExt"]:
                     dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
                     if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2):
                         self.aCatalogFiles.append(dstFileName2 + ";" + self.sHeadFileDate[:-1] + ";" + self.sHeadFileDate[:-1] + ";" + sTypeFile)
@@ -296,7 +296,7 @@ class PoaffWebPage:
         return
 
     def makeLink4File(self, sFile:str, sTitle:str) -> str:
-        cstStdLync:str  = '<a title="@@title@@" target="newPage" href="files/@@file@@">@@file@@</a>'
+        cstStdLync:str  = '<a title="@@title@@" target="newPage" href="download.php?file=files/@@file@@">@@file@@</a>'
         sNewLink:str    = cstStdLync.replace("@@title@@", sTitle)
         sNewLink        = sNewLink.replace("@@file@@", sFile)
         return sNewLink
