@@ -123,12 +123,14 @@ class Geojson2Kml:
                 sUpperM:str = oAsPro.get("upperM", 9999)
                 sLowerM:str = oAsPro.get("lowerM", 0)
                 sDesc:str = ""
+
                 if "lowerMin" in oAsPro:
                     sDesc += oAsPro["lowerMin"] + "|"
-                sDesc += oAsPro["lower"] + " / " + oAsPro["upper"]
+                sDesc += oAsPro.get("lower","SFC") + " / " + oAsPro.get("upper","FL999")
                 if "upperMax" in oAsPro:
                     sDesc += "|" + oAsPro["upperMax"]
                 sDesc += " ({0}m / {1}m)".format(sLowerM , sUpperM)
+
                 if "desc" in oAsPro:
                     sDesc += "<br/><br/>" + oAsPro["desc"]
                 oTypeZone:dict = self.oKmlTmp.get(sTypeZone, {})
@@ -157,13 +159,13 @@ class Geojson2Kml:
                 sTitle = "KML generator"
                 if self.oLog:
                     self.oLog.info(sTitle, outConsole=False)
-                    
+
                 self.createKmlStyle(self.oKmlDoc, "transRedPoly",    "ff1400FF", "7f0000ff")
                 self.createKmlStyle(self.oKmlDoc, "transPurplePoly", "ff1400FF", "7fff00ff")
                 self.createKmlStyle(self.oKmlDoc, "transBluePoly",   "ff1400FF", "7fff0000")
                 self.createKmlStyle(self.oKmlDoc, "transGreenPoly",  "ffff0000", "4f00ff00")
                 self.createKmlStyle(self.oKmlDoc, "transYellowPoly", "ff000000", "4f00ffff")
-                
+
                 barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
                 idx = 0
                 for sKeyType, oTypeZone in self.oKmlTmp.items():

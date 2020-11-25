@@ -2,7 +2,7 @@
 
 try:
     import bpaTools
-except ImportError:    
+except ImportError:
     ### Include local modules/librairies  ##
     import os
     import sys
@@ -28,14 +28,14 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
     oLog.info("loadAirspacesCatalog - file source: {0}".format(sFile))
     oJson = bpaTools.readJsonFile(sFile)
     oContents = oJson[poaffCst.cstGeoFeatures]
-    
+
     oCatZones:dict = dict()
     for oZone in oContents:
         oNewPropZone:dict = dict()
         oPropsZone =oZone[poaffCst.cstGeoProperties]
         #for key,val in oPropsZone.items():
         #    oLog.info("{0} --> {1}".format(key, val))
-        
+
         if context == "aixmParser":
             aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
             for oKey in aKey:
@@ -52,7 +52,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
             for oKey in aKey:
                 oVal = oPropsZone[oKey]
                 oVal = oVal.replace("  ", " ")      #Cleanning
-                
+
                 #Normalisation des Class ou Category des zones
                 if oKey=="category":
                     #Transcodage pour Normalisation & Complétude de données
@@ -79,7 +79,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                         oPropsZone.update({"category":oVal})
                         oNewPropZone.update({"type":"R"})
                         oNewPropZone.update({"codeActivity":"GLIDER"})
-                
+
                 #Cleanning; Transcodage & Complétude de données au niveau du nommage
                 elif oKey=="name":
                     #Cleaning du nommage de zones
@@ -88,8 +88,8 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                     oVal=oVal.replace("LFR ", "LFR")
                     #oVal = splitDescription(oVal, "TMA", oNewPropZone)
                     #oVal = splitDescription(oVal, "CTR", oNewPropZone)
-                    #oVal = splitDescription(oVal, "CTA", oNewPropZone)   
-                    
+                    #oVal = splitDescription(oVal, "CTA", oNewPropZone)
+
                     if oVal[0:4]=="Axe ":
                         oPropsZone.update({"category":"W"})
                         oNewPropZone.update({"category":"W"})
@@ -103,7 +103,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                     #    oVal = "LFR" + oVal[2:]
                     #else:
                     #    oVal = oVal[11:]
-                    
+
                     """
                     #Cleaning des nommage de zones; exemples :
                     # "Agen2 119.15" --> a tranformer en "Agen 2 119.15"
@@ -121,7 +121,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                         iIdx+=1
                     oVal = oNewVal
                     """
-                    
+
                 #Cleanning de valeur
                 if oKey=="bottom" or oKey=="top":
                     oVal=oVal.replace("FL ", "FL")
@@ -130,7 +130,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
                     oVal=oVal.replace("GND", "SFC")
                     pos = oVal.find("SFC")
                     if pos>1: oVal=oVal.replace("SFC", "AGL")
-                
+
                 #Stockage du nouveau couple: clé/valeur
                 oNewPropZone.update({oKey:oVal})
 
@@ -144,21 +144,21 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
 def writeTextFile(sFile="", oText=None):
     if sFile!="":
         oLog.info("Write file {0}".format(sFile), outConsole=True)
-        with open(sFile, "w", encoding="cp1252") as output:
+        with open(sFile, "w", encoding="cp1252", errors="replace") as output:
             output.write(oText)
     return
 
 
 def saveCalalogCSV(sFileName:str, oCatalog) -> None:
     csv = ""
-    
+
     #Order keys; for header in CSV file
     #aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
     oCols = {"category":0, "type":0, "codeActivity":0, "name":0, "bottom":0, "top":0, "bottom_m":0,"top_m":0, "alt":0, "Ids":0}
     for key0,val0 in oCatalog.items():
         for key1,val1 in val0.items():
             oCols.update({key1:0})
-            
+
     #List all columns in order of the global index on columns
     for colKey,colVal in oCols.items():
         csv += '"{0}";'.format(colKey)
@@ -205,7 +205,7 @@ if __name__ == '__main__':
 
     saveCalalogCSV(deltaPath + "aixmpCatalog.csv", oCat1)
     saveCalalogCSV(deltaPath + "flyxcCatalog.csv", oCat2)
-    
+
     print()
     oLog.Report()
     oLog.closeFile

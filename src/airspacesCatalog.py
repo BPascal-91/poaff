@@ -36,7 +36,7 @@ class AsCatalog:
             return self.oGlobalCatalog[cstKeyCatalogCatalog]    #Liste des zones consolidés
         else:
             return {}                                           #Liste vide
-    
+
     def saveCatalogFiles(self, sFile:str=None) -> bool:
         if sFile:   self.sFileCatalog = sFile
         bpaTools.writeJsonFile(self.sFileCatalog, self.oGlobalCatalog)
@@ -58,7 +58,7 @@ class AsCatalog:
         self.oGlobalCatalogFiles.update({sKeyFile:oCatalogFile})                            #Enregistrement de la description du fichier analysé
         self.oGlobalCatalogHeader.update({cstKeyCatalogSrcFiles:self.oGlobalCatalogFiles})  #Enregistrement de la nouvelle liste des fichiers sources
         return
-    
+
     def mergeJsonCatalogFile(self, sKeyFile:str, oFile:dict) -> None:
         if not oFile[poaffCst.cstSpExecute]:       #Flag pour prise en compte du traitement de fichier
             return
@@ -95,10 +95,10 @@ class AsCatalog:
             self.isCleanArea4FreeFlight(sKeyFile, oAs)
             self.isSpecialArea4FreeFlight(sKeyFile, oAs)
             oAs.update({"nameV":aixmReader.getVerboseName(oAs)})
-            
+
             #if oAs["id"] in ["FMEE1"]:
             #    print("zzz.zzz")
-            
+
             if self.isValidArea(sKeyFile, oAs):                                             #Exclure certaines zones
                 oAs.update({cstKeyCatalogKeySrcFile:sKeyFile})                              #Ajout de la réfénce au fichier source
                 sNewKey = str(oAs["id"]).strip()                                            #Nouvel identifiant de référence pour le catalogue global
@@ -127,7 +127,7 @@ class AsCatalog:
                         self.oLog.debug("Delta add area in global catalog - ({0}){1}".format(sKeyFile, sNewKey, outConsole=False))
                     else:
                         #self.oLog.info("Ignored area (existing in global catalog) - ({0}){1}".format(sKeyFile, sNewKey, outConsole=False))
-                        None                    
+                        None
                 else:
                     self.oLog.error("Process type error - {0}".format(oFile[poaffCst.cstSpProcessType], outConsole=True))
 
@@ -152,7 +152,7 @@ class AsCatalog:
         lIdx:int
         for lIdx in range(10):       #Contrôle sur occurence de 10 doublons envisagés
             sNewKey:str = sKey
-            if lIdx > 0: 
+            if lIdx > 0:
                 sNewKey += cstDeduplicateSeparator + str(lIdx)
             if sNewKey in oGlobalAreas:
                 oExistObj = oGlobalAreas[sNewKey]
@@ -179,11 +179,11 @@ class AsCatalog:
     #Suppression physique de zones concidérées comme fausse à la source / Les zones exclus ne sont pas reprises dans le catalogue final
     def isValidArea(self, sKeyFile:str, oAs:dict) -> bool:
         ret:bool = True                                                 #Default value
-        
+
         #Exclure les zones de regroupement
         if oAs["groupZone"]:
-            return False     
-        
+            return False
+
         #Exclure les zones sans précision de coordonnées
         if oAs.get("excludeAirspaceNotCoord",False):
             return False
@@ -239,17 +239,17 @@ class AsCatalog:
                 #(Eurocontrol)[D] TMA BALE PARTIE DELEG.ZURICH-AZ1 D (id=LFSB19D) en doublon avec (SIA)id=LFSB50.20
 
             #Suppression de zones non-utile
-            elif oAs["id"] in ["LECM C","LECMFIR_E","LECBFIR_E","LSAZ","LER152","LER153"]:
+            elif oAs["id"] in ["LER152","LER153"]:
                 bClean = True
-                #[C] ZURICH (CTA / id=LSAZ)
                 #### Parc en Espagne, deja intégré dans les parcs naturels via integration FFVP
                 #[R] PARQUE NACIONAL DE ORDESA Y MONTE PERDIDO NORTE (HUESCA) (id=LER152)
                 #[R] PARQUE NACIONAL DE ORDESA Y MONTE PERDIDO SUR (HUESCA) (id=LER153)
-                #LECBFIR_E - E BARCELONA FIR
-                #LECMFIR_E - E MADRID FIR
-                #LECM C - PART MADRID FIR CLASS C
+                    #(nonExclus-le-20201109) [C] ZURICH (CTA / id=LSAZ)
+                    #(nonExclus-le-20201109) LECBFIR_E - E BARCELONA FIR
+                    #(nonExclus-le-20201109) LECMFIR_E - E MADRID FIR
+                    #(nonExclus-le-20201109) LECM C - PART MADRID FIR CLASS C
 
-                
+
             #Suppression de zones non-utile, exemple en mer ou autres cas...
             elif oAs["id"] in ["LEVASC11","EBBU RMZ","EBBU TMZ","LFR13B1","LFD18B1","LFD18A5","LFD214","LFD16D","LFD18B2","LFD31","LFD32","OCA4521.20","EISOA","LICTARR2","DTKA","LID40A","LID40B","LID91","LID91BIS","LFMN3","LFD54C1","LFD54C2","LFD54B1","LFD54B2","LFD54WC","LFD143B","LFML11","LFD54WB","LFD121","LFD142","LFD108","LFD143A","LFR217/2","CTA47782","LSAG","LFR191A",R"LFR108C","LECP_A","LECP","LFD33","LFD16A","LFD16B","LFD16C","LFD16E","EGD008A","EGD008B","EGD003","EGD004","EGJJ1S","CTA11561","EGJA-1","EGJJN","EGJJ1N","EGJJ2","CTA11562","EGTE5","EGTE4","EGD013","EGD017","EGD023","EGVF5","EGVF4","EGVF3","EGD036","EGD038","EGD039","EGD040","EGWO6","EGWO2","EGWO1","EGWO3","LID67","LFD67","CTA4351A.2","FM50"]:
                 bClean = True

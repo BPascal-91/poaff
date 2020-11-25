@@ -36,8 +36,11 @@ cstGeoFeature       = "Feature"
 cstGeoProperties    = "properties"
 cstGeoGeometry      = "geometry"
 cstGeoPoint         = "Point"
+cstGeoMultiPoint    = "MultiPoint"
 cstGeoLine          = "LineString"
+cstGeoMultiLine     = "MultiLineString"
 cstGeoPolygon       = "Polygon"
+cstGeoMultiPolygon  = "MultiPolygon"
 cstGeoCoordinates   = "coordinates"
 
 ###  Specific GeoJSON structure  ###

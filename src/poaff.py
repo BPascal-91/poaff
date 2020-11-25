@@ -4,7 +4,7 @@ import zipfile
 aixmParserLocalSrc  = "../../aixmParser/src/"
 try:
     import bpaTools
-except ImportError:    
+except ImportError:
     ### Include local modules/librairies  ##
     import os
     import sys
@@ -42,7 +42,7 @@ globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cst
 
 
 ####  Liste des fichiers a traiter  ####
-testMode = False     #True or  False
+testMode = True     #True or  False
 scriptProcessing = {
     "BPa-TestRefAlt":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestReferentielAltitude_aixm45.xml"},
     "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4CleaningCatalog_aixm45.xml"},
@@ -52,8 +52,8 @@ scriptProcessing = {
     "BPa-TestXmlSIA":       {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestFrequency_xml_SIA-FR.xml"},
     "xmlSIA":               {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_xml_SIA-FR_BPa.xml"},
     "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_aixm4.5_SIA-FR.xml"},
-    "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-FR_BPa.xml"},
-    #"EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-Euro_BPa.xml"},
+    #"EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-FR_BPa.xml"},
+    "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-Euro_BPa.xml"},
     "FFVP-Parcs":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20201023_FFVP_ParcsNat_BPa_aixm45.xml"},
     "FFVP-Birds":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
     "BPa-ParcCevennes":     {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20190401_PascalW_ParcCevennes_aixm45.xml"},
@@ -131,16 +131,16 @@ def makeKml(oGeo, sContext:str) -> None:
         sSrcFile:str = sSrcFile.replace("-all", "-freeflight-zoneExt")
     sTrcFile:str = sSrcFile.replace(".geojson", "-optimized.geojson")
     sKmlFile:str = sSrcFile.replace(".geojson", ".kml")
-    
+
     #D-1/ Simplification du GeoJSON par optimisation du tracé
     oTrunc:GeojsonTrunc = None
     if oGeo==None:
         oTrunc = GeojsonTrunc(oLog=oLog)
-        oTrunc.truncateGeojsonFile(sSrcFile, sTrcFile)
+        oTrunc.truncateGeojsonFile(sSrcFile, sTrcFile, iDecimal=3)          #iDecimal=2 for Low resolution map; 3 for standard quality or 4 for higth quility)
     else:
         oTrunc = GeojsonTrunc(oLog=oLog, oGeo=oGeo)
     oTrunc = None   #Free
-    
+
     #D-2/ Construction d'une sortie KML sur la base d'un GeoJSON
     oKml:Geojson2Kml = None
     if oGeo==None:
@@ -152,7 +152,7 @@ def makeKml(oGeo, sContext:str) -> None:
     oKml.makeAirspacesKml()
     oKml.writeKmlFile(sKmlFile, bExpand=0)
     oKml = None   #Free
-    
+
     #D-3/ Construction du KMZ avec compression de données
     sKmzFile = sKmlFile.replace(".kml", ".kmz")
     oZip = zipfile.ZipFile(sKmzFile, 'w', zipfile.ZIP_DEFLATED)

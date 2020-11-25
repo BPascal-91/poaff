@@ -2,6 +2,45 @@
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
 <AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2020-07-19T19:53:01.597452" effective="2020-07-19T19:53:01.597452">
 	<Ase>
+		<AseUid mid="group-0">
+			<codeType>P</codeType>
+			<codeId>TestGroup</codeId>
+		</AseUid>
+		<txtName>Test-Group (sans plancher, ni plafond)</txtName>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="zone-1">
+			<codeType>D</codeType>
+			<codeId>TestZone1</codeId>
+		</AseUid>
+		<txtName>Test-Zone1 (sans plancher)</txtName>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>3000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="zone-2">
+			<codeType>D</codeType>
+			<codeId>TestZone2</codeId>
+		</AseUid>
+		<txtName>Test-Zone2 (sans plafond)</txtName>
+		<codeDistVerLower>ALT</codeDistVerLower>
+		<valDistVerLower>1000</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
 		<AseUid mid="mid-Test1">
 			<codeType>R</codeType>
 			<codeId>Test1</codeId>
@@ -152,6 +191,51 @@
 		<uomDistVerMnm>FT</uomDistVerMnm>
 		<txtRmk>un test</txtRmk>
 	</Ase>
+	<Abd>
+		<AbdUid mid="group-0">
+			<AseUid mid="group-0">
+				<codeType>P</codeType>
+				<codeId>TestGroup</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>473811.00N</geoLatCen>
+			<geoLongCen>0013040.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>10</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="zone-1">
+			<AseUid mid="zone-1">
+				<codeType>D</codeType>
+				<codeId>TestZone1</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>473811.00N</geoLatCen>
+			<geoLongCen>0023040.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>10</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="zone-2">
+			<AseUid mid="zone-2">
+				<codeType>D</codeType>
+				<codeId>TestZone2</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>473811.00N</geoLatCen>
+			<geoLongCen>0033040.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>10</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
 	<Abd>
 		<AbdUid mid="mid-Test1">
 			<AseUid mid="mid-Test1">
