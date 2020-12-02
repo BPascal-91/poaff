@@ -14,10 +14,11 @@
 	</Ase>
 	<Ase>
 		<AseUid mid="zone-1">
-			<codeType>D</codeType>
+			<codeType>PROTECT</codeType>
 			<codeId>TestZone1</codeId>
 		</AseUid>
 		<txtName>Test-Zone1 (sans plancher)</txtName>
+		<codeActivity>FAUNA</codeActivity>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
 		<uomDistVerUpper>FT</uomDistVerUpper>
@@ -28,7 +29,7 @@
 	</Ase>
 	<Ase>
 		<AseUid mid="zone-2">
-			<codeType>D</codeType>
+			<codeType>ZSM</codeType>
 			<codeId>TestZone2</codeId>
 		</AseUid>
 		<txtName>Test-Zone2 (sans plafond)</txtName>
@@ -42,9 +43,10 @@
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test1">
-			<codeType>R</codeType>
+			<codeType>RAS</codeType>
 			<codeId>Test1</codeId>
 		</AseUid>
+		<txtLocalType>TMZ</txtLocalType>
 		<txtName>Test1</txtName>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
@@ -60,9 +62,10 @@
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test2">
-			<codeType>R</codeType>
+			<codeType>RAS</codeType>
 			<codeId>Test2</codeId>
 		</AseUid>
+		<txtLocalType>RMZ</txtLocalType>
 		<txtName>Test2</txtName>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
@@ -78,9 +81,10 @@
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test3">
-			<codeType>R</codeType>
+			<codeType>D-OTHER</codeType>
 			<codeId>Test3</codeId>
 		</AseUid>
+		<txtLocalType>ZIT</txtLocalType>
 		<txtName>Test3</txtName>
 		<codeDistVerUpper>HEI</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
@@ -114,7 +118,7 @@
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test5">
-			<codeType>R</codeType>
+			<codeType>CTR</codeType>
 			<codeId>Test5</codeId>
 		</AseUid>
 		<txtName>Test5</txtName>
@@ -209,7 +213,7 @@
 	<Abd>
 		<AbdUid mid="zone-1">
 			<AseUid mid="zone-1">
-				<codeType>D</codeType>
+				<codeType>PROTECT</codeType>
 				<codeId>TestZone1</codeId>
 			</AseUid>
 		</AbdUid>
@@ -224,7 +228,7 @@
 	<Abd>
 		<AbdUid mid="zone-2">
 			<AseUid mid="zone-2">
-				<codeType>D</codeType>
+				<codeType>ZSM</codeType>
 				<codeId>TestZone2</codeId>
 			</AseUid>
 		</AbdUid>
@@ -239,7 +243,7 @@
 	<Abd>
 		<AbdUid mid="mid-Test1">
 			<AseUid mid="mid-Test1">
-				<codeType>R</codeType>
+				<codeType>RAS</codeType>
 				<codeId>Test1</codeId>
 			</AseUid>
 		</AbdUid>
@@ -254,7 +258,7 @@
 	<Abd>
 		<AbdUid mid="mid-Test2">
 			<AseUid mid="mid-Test2">
-				<codeType>R</codeType>
+				<codeType>RAS</codeType>
 				<codeId>Test2</codeId>
 			</AseUid>
 		</AbdUid>
@@ -269,7 +273,7 @@
 	<Abd>
 		<AbdUid mid="mid-Test3">
 			<AseUid mid="mid-Test3">
-				<codeType>R</codeType>
+				<codeType>D-OTHER</codeType>
 				<codeId>Test3</codeId>
 			</AseUid>
 		</AbdUid>
@@ -299,7 +303,7 @@
 	<Abd>
 		<AbdUid mid="mid-Test5">
 			<AseUid mid="mid-Test5">
-				<codeType>R</codeType>
+				<codeType>CTR</codeType>
 				<codeId>Test5</codeId>
 			</AseUid>
 		</AbdUid>
