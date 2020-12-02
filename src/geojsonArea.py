@@ -27,10 +27,10 @@ class GeojsonArea:
     def saveGeoJsonAirspacesFile4Area(self, sFile:str, sContext="ff") -> None:
         for sAreaKey in self.oGeoRefArea.AreasRef.keys():
             self.saveGeoJsonAirspacesFile(sFile, sContext, sAreaKey)
-        self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
-        self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
-        self.saveGeoJsonAirspacesFile(sFile, "all", cstDeltaExtended)
-        self.saveGeoJsonAirspacesFile(sFile, "ff", cstFreeFlightZoneExt)
+        #self.saveGeoJsonAirspacesFile(sFile, sContext, cstWithoutLocation)
+        #self.saveGeoJsonAirspacesFile(sFile, "all", cstWithoutLocation)
+        #self.saveGeoJsonAirspacesFile(sFile, "all", cstDeltaExtended)
+        #self.saveGeoJsonAirspacesFile(sFile, "ff", cstFreeFlightZoneExt)
         return
 
     def saveGeoJsonAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str=None) -> None:
@@ -45,10 +45,10 @@ class GeojsonArea:
         idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
             idx+=1
-            
+
             #if oGlobalCat["id"] in ["TMA16169","TMA16170"]:
             #    print(oGlobalCat["id"])
-            
+
             #Filtrage des zones par typologie de sorties
             bIsInclude:bool = False
             oFinalCat:dict = oGlobalCat
@@ -63,11 +63,15 @@ class GeojsonArea:
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
                 bIsIncludeLoc:bool = True
-                if (sAreaKey == "geoFrench") and ("ExtOfFrensh" in oGlobalCat):
-                    bIsIncludeLoc = not oGlobalCat["ExtOfFrensh"]      						#Pour Exclure toutes zones hors de France
+                if sAreaKey!=None:
+                    sKey4Find:str = sAreaKey.replace("geo","ExtOf")
+                    if sAreaKey[:9]=="geoFrench":                      #Spec for all french territories
+                        sKey4Find = "ExtOfFrench"
+                    if sKey4Find in oGlobalCat:
+                        bIsIncludeLoc = not oGlobalCat[sKey4Find]       #Exclusion de zone
                 bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 #Relevage du plafond de carte pour certaines zones situées en France
-                if "freeFlightZoneExt" in oGlobalCat:
+                if bIsIncludeLoc and ("freeFlightZoneExt" in oGlobalCat):
                     aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
                     bIsExtAlt4Loc:bool = False
                     for sLoc in aFrLocation:
@@ -80,8 +84,8 @@ class GeojsonArea:
                 sFile = sFile.replace("-all", "-freeflight")
             elif sContext == "cfd":
                 bIsIncludeLoc:bool = True
-                if "ExtOfFrensh" in oGlobalCat:
-                    bIsIncludeLoc = not oGlobalCat["ExtOfFrensh"]      						#Pour Exclure toutes zones hors de France
+                if "ExtOfFrench" in oGlobalCat:
+                    bIsIncludeLoc = not oGlobalCat["ExtOfFrench"]      						#Pour Exclure toutes zones hors de France
                 bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 if "use4cfd" in oGlobalCat:
                     bIsInclude = bIsInclude or oGlobalCat["use4cfd"]
@@ -96,7 +100,7 @@ class GeojsonArea:
                 oSingleCat.update({"name":oGlobalCat["nameV"]})
                 oSingleCat.update({"category":oGlobalCat["class"]})
                 oSingleCat.update({"type":oGlobalCat["type"]})
-                if "codeActivity" in oGlobalCat:    oSingleCat.update({"codeActivity":oGlobalCat["codeActivity"]})				
+                if "codeActivity" in oGlobalCat:    oSingleCat.update({"codeActivity":oGlobalCat["codeActivity"]})
                 oSingleCat.update({"alt":"{0} {1}".format(aixmReader.getSerializeAlt(oGlobalCat), aixmReader.getSerializeAltM(oGlobalCat))})
                 oSingleCat.update({"bottom":aixmReader.getSerializeAlt(oGlobalCat,"Low")})
                 oSingleCat.update({"top":aixmReader.getSerializeAlt(oGlobalCat,"Upp")})
@@ -124,11 +128,13 @@ class GeojsonArea:
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
             if sContext == "cfd":
-                #06/08/2020, demande de Martin pour la sortie "CFD". Besoin d'une vision mondiale avec les zones interne située exclusivement en France métropole
-                None   #Aucun filtrage geographique
-            elif sAreaKey in ["geoFrenchNESW","geoCorse"] and oGlobalCat["id"]=="LTA13071":
-                #Supprimer cett zone de la carte Corse --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
-                bIsArea = False
+                bIsArea = oGlobalCat["geoFrenchAll"]        #Filtrage sur la totalité des territoires Français
+
+            #Maintenir ou Supprimer la LTA-France1 des cartes non-concernées par le territoire Français --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
+            elif oGlobalCat["id"]=="LTA13071":
+                if not sAreaKey in [None, "geoFrench","geoFrenchAll"]:
+                    bIsArea = False
+
             elif bIsInclude and sAreaKey:
                 if sAreaKey == cstWithoutLocation:
                     #Identification des zones non-retenues dans aucun des filtrages géographique paramétrés

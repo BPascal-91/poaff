@@ -13,6 +13,7 @@ cstKeyCatalogContent = "content"
 cstKeyCatalogNbAreas = "numberOfAreas"
 cstKeyCatalogSrcFiles = "srcFiles"
 cstKeyCatalogSrcFile = "srcFile"
+cstKeyCatalogSrcOwner = "srcOwner"
 cstKeyCatalogSrcOrigin = "srcOrigin"
 cstKeyCatalogSrcVersion = "srcVersion"
 cstKeyCatalogSrcCreated = "srcCreated"
@@ -45,9 +46,10 @@ class AsCatalog:
         bpaTools.writeTextFile(sFile, csv)
         return
 
-    def addSrcFile(self, sKeyFile:str, sFile:str, sOrigin:str, sVersion:str, sCreated:str) -> None:
-        oCatalogFile:dict = {}                                      #Description du fichier analysé
+    def addSrcFile(self, sKeyFile:str, sFile:str, sOwner:str, sOrigin:str, sVersion:str, sCreated:str) -> None:
+        oCatalogFile:dict = {}                                   #Description du fichier analysé
         oCatalogFile.update({cstKeyCatalogSrcFile:sFile})        #Nom du fichier analysé
+        oCatalogFile.update({cstKeyCatalogSrcOwner:sOwner})      #Référence au propriétaire
         oCatalogFile.update({cstKeyCatalogSrcOrigin:sOrigin})    #Origine du fichier analysé
         oCatalogFile.update({cstKeyCatalogSrcVersion:sVersion})  #Version du fichier analysé
         oCatalogFile.update({cstKeyCatalogSrcCreated:sCreated})  #Horodatage de la création du fichier analysé
@@ -70,7 +72,10 @@ class AsCatalog:
 
         oHeadFile = ofileCatalog[poaffCst.cstGeoHeaderFile]                                                #Entête concernant le fichier analysé
 
-        self.oGlobalCatalogHeader:dict = {}                                                              #Entête du catalogue gloabal
+        if cstKeyCatalogSrcFiles in self.oGlobalCatalogHeader:
+            self.oGlobalCatalogFiles = self.oGlobalCatalogHeader[cstKeyCatalogSrcFiles]     #Récupération de la liste des fichiers sources
+        else:
+            self.oGlobalCatalogFiles:dict = {}                                              #Création de la liste des fichiers sources
         if self.oGlobalCatalog=={}:                                                                      #Catalogue vde, donc initialisation du catalogue gloabal
             self.oGlobalCatalog.update({poaffCst.cstGeoType:ofileCatalog[poaffCst.cstGeoType]})              #Typage du catalogue
             self.oGlobalCatalogHeader.update({cstKeyCatalogSoftware:oHeadFile[cstKeyCatalogSoftware]})   #Référence au soft de construction
@@ -82,6 +87,7 @@ class AsCatalog:
 
         self.addSrcFile(sKeyFile, \
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmFile"], \
+                        oFile[poaffCst.cstSpSrcOwner], \
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmOrigin"], \
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmVersion"], \
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmCreated"])
@@ -217,26 +223,9 @@ class AsCatalog:
         #Fonctionnalité d'Exclusion de zones pour épurer le périmètre (non-concernées ou en mer...)
         elif sKeyFile in ["EuCtrl","SIA"]:
 
-            #Exclusion volontaire pour différentes causes
-            if sKeyFile=="EuCtrl" and (oAs["id"] in ["EBS27","LSGG1","LSGG2","LSGG3","LSGG4","LSGG4.1","LSGG6","LSGG7","LSGG8","LSGG9","LSGG10","LSGG","LFSB1F","LFSB19C","LFSB19D"]):
+            #### Suppression de doublons entre fichier SIA-FR et fourniture Suisse via Eurocontrol
+            if sKeyFile=="EuCtrl" and (oAs["id"] in ["LSGG","LSGG1","LSGG2","LSGG3","LSGG4","LSGG4.1","LSGG6","LSGG7","LSGG8","LSGG9","LSGG10","LFSB1F","LFSB19C","LFSB19D"]):
                 bClean = True
-                #### Très mauvais tracé (il manque les bordure de frontières Blegique-PaysBas)
-                #[W] LOW FLYING AREA GOLF ONE (R / GLIDER / SeeNotam / id=EBS27)
-                #### Suppression de doublons entre fichier SIA-FR et fourniture Suisse via Eurocontrol
-                #[D] GENEVA (CTR / id=LSGG)
-                #[C] GENEVE TMA1 (TMA / id=LSGG1)
-                #[C] GENEVE TMA2 (TMA / id=LSGG2)
-                #[C] GENEVE TMA3 (TMA / id=LSGG3)
-                #[C] GENEVE TMA4 (TMA / id=LSGG4)
-                #[C] GENEVE TMA4.1 (TMA / id=LSGG4.1)
-                #[C] GENEVE TMA6 (TMA / id=LSGG6)
-                #[C] GENEVE TMA7 (TMA / id=LSGG7)
-                #[C] GENEVE TMA8 (TMA / id=LSGG8)
-                #[C] GENEVE TMA9 (TMA / id=LSGG9)
-                #[C] GENEVE TMA10 (TMA / id=LSGG10)
-                #(Eurocontrol)[D] CTR BALE FRANCAISE (id=LFSB1F) est en doublon avec (SIA)id=LFSB1 (id sans le 'F')
-                #(Eurocontrol)[C] TMA BALE PARTIE DELEG.ZURICH-AZ1 C (id=LFSB19C) en doublon avec (SIA)id=LFSB50
-                #(Eurocontrol)[D] TMA BALE PARTIE DELEG.ZURICH-AZ1 D (id=LFSB19D) en doublon avec (SIA)id=LFSB50.20
 
             #Suppression de zones non-utile
             elif oAs["id"] in ["LER152","LER153"]:
@@ -244,88 +233,12 @@ class AsCatalog:
                 #### Parc en Espagne, deja intégré dans les parcs naturels via integration FFVP
                 #[R] PARQUE NACIONAL DE ORDESA Y MONTE PERDIDO NORTE (HUESCA) (id=LER152)
                 #[R] PARQUE NACIONAL DE ORDESA Y MONTE PERDIDO SUR (HUESCA) (id=LER153)
-                    #(nonExclus-le-20201109) [C] ZURICH (CTA / id=LSAZ)
-                    #(nonExclus-le-20201109) LECBFIR_E - E BARCELONA FIR
-                    #(nonExclus-le-20201109) LECMFIR_E - E MADRID FIR
-                    #(nonExclus-le-20201109) LECM C - PART MADRID FIR CLASS C
-
 
             #Suppression de zones non-utile, exemple en mer ou autres cas...
-            elif oAs["id"] in ["LEVASC11","EBBU RMZ","EBBU TMZ","LFR13B1","LFD18B1","LFD18A5","LFD214","LFD16D","LFD18B2","LFD31","LFD32","OCA4521.20","EISOA","LICTARR2","DTKA","LID40A","LID40B","LID91","LID91BIS","LFMN3","LFD54C1","LFD54C2","LFD54B1","LFD54B2","LFD54WC","LFD143B","LFML11","LFD54WB","LFD121","LFD142","LFD108","LFD143A","LFR217/2","CTA47782","LSAG","LFR191A",R"LFR108C","LECP_A","LECP","LFD33","LFD16A","LFD16B","LFD16C","LFD16E","EGD008A","EGD008B","EGD003","EGD004","EGJJ1S","CTA11561","EGJA-1","EGJJN","EGJJ1N","EGJJ2","CTA11562","EGTE5","EGTE4","EGD013","EGD017","EGD023","EGVF5","EGVF4","EGVF3","EGD036","EGD038","EGD039","EGD040","EGWO6","EGWO2","EGWO1","EGWO3","LID67","LFD67","CTA4351A.2","FM50"]:
+            elif oAs["id"] in ["EGWO2","LFD18B1","LFD18A5","LFD18B2","LFD214","LFD16B","LFD16D","LFD31","LFD54B1","LFD54B2","LFD143B",
+                    "LFML11","LFD54WB","LFR217/2","CTA47782","LFR191A","LFR108C","EGJJ2","CTA11562","LFR225","LFMD2","LFMN2","LFD54B3",
+                    "LFMT17","LFMT17.20","LFR157","LFPG7.3","LFPG7.4"]:
                 bClean = True
-                #### Zone en mer ou autres...
-                #[Q] SORT (LLEIDA) (ASCENT / id=LEVASC11)
-                #[A] PALMA TM (id=LECP_A)
-                #[C] PALMA TMA (RMZ) (TMA / id=LECP)
-                #[R] BRUSSELS FIR (RMZ / EQUIPMENT / id=EBBU RMZ)
-                #[P] BRUSSELS FIR (TMZ / EQUIPMENT / id=EBBU TMZ)
-                #[Q] 18 B1 (id=LFD18B1)
-                #[Q] 18 A5 (id=LFD18A5)
-                #[Q] 214 (SeeNotam / id=LFD214)
-                #[Q] 16 D (SeeNotam / id=LFD16D)
-                #[Q] 18 B2 (id=LFD18B2)
-                #[Q] 31 D (id=LFD31)
-                #[Q] 32 (id=LFD32)
-                #[Q] 33 (id=LFD33)
-                #[A] SHANNON OCEANIC TRANSITION AREA (SOTA) (id=EISOA)
-                #[D] ZONA '2' (CTA / id=LICTARR2)
-                #[C] TUNIS CTA NORTH WEST (CTA / id=DTKA)
-                #[Q] LI D40/A - DECIMOMANNU (id=LID40A)
-                #[Q] LI D40/B - CAGLIARI (id=LID40B)
-                #[Q] LI D91 - MAR LIGURE (id=LID91)
-                #[Q] LI D91/BIS - LIGURIA (id=LID91BIS)
-                #[D] NICE 3 (TMA / id=LFMN3)
-                #[Q] 54 C1 (id=LFD54C1)
-                #[Q] 54 C2 (id=LFD54C2)
-                #[Q] 54 B1 (id=LFD54B1)
-                #[Q] 54 B2 (id=LFD54B2)
-                #[Q] 54 WC (id=LFD54WC)
-                #[Q] 143 B (id=LFD143B)
-                #[D] PROVENCE 11 (TMA / id=LFML11)
-                #[Q] 54 WB (id=LFD54WB)
-                #[Q] 121 (id=LFD121)
-                #[Q] 142 (id=LFD142)
-                #[Q] 108 E (id=LFD108)
-                #[Q] 143 A (id=LFD143A)
-                #[R] 217 /2 (id=LFR217/2)
-                #[D] RHONE 2 (CTA / id=CTA47782)
-                #[C] GENEVA (CTA / id=LSAG)
-                #[R] 191 A (SeeNotam / id=LFR191A)
-                #[R] 108 C (id=LFR108C)
-                #[Q] 16 A (SeeNotam / id=LFD16A)
-                #[Q] 16 B (SeeNotam / id=LFD16B)
-                #[Q] 16 C (SeeNotam / id=LFD16C)
-                #[Q] 16 E (SeeNotam / id=LFD16E)
-                #[Q] PLYMOUTH (id=EGD008A)
-                #[Q] PLYMOUTH (id=EGD008B)
-                #[Q] PLYMOUTH (id=EGD003)
-                #[Q] PLYMOUTH (id=EGD004)
-                #[C] CHANNEL ISLANDS CTA 1 SOUTH (CTA / id=EGJJ1S)
-                #[D] ILES ANGLO-NORMANDES 1 (CTA / id=CTA11561)
-                #[D] CHANNEL ISLANDS CTR NORTH (CTR / id=EGJA-1)
-                #[C] CHANNEL ISLANDS TMA NORTH (TMA / id=EGJJN)
-                #[C] CHANNEL ISLANDS CTA 1 NORTH (CTA / id=EGJJ1N)
-                #[C] CHANNEL ISLANDS CTA 2 (CTA / id=EGJJ2)
-                #[D] ILES ANGLO-NORMANDES 2 (CTA / id=CTA11562)
-                #[C] BERRY HEAD CTA 5 (CTA / id=EGTE5)
-                #[C] BERRY HEAD CTA 4 (CTA / id=EGTE4)
-                #[Q] LYME BAY (id=EGD013)
-                #[Q] PORTLAND (id=EGD017)
-                #[Q] PORTLAND (id=EGD023)
-                #[C] PORTSMOUTH CTA 5 (CTA / id=EGVF5)
-                #[C] PORTSMOUTH CTA 4 (CTA / id=EGVF4)
-                #[C] PORTSMOUTH CTA 3 (CTA / id=EGVF3)
-                #[Q] PORTSMOUTH (id=EGD036)
-                #[Q] PORTSMOUTH (id=EGD038)
-                #[Q] PORTSMOUTH (id=EGD039)
-                #[Q] PORTSMOUTH (id=EGD040)
-                #[C] WORTHING CTA 6 (CTA / id=EGWO6)
-                #[C] WORTHING CTA 2 (CTA / id=EGWO2)
-                #[C] WORTHING CTA 1 (CTA / id=EGWO1)
-                #[C] WORTHING CTA 3 (CTA / id=EGWO3)
-                #[Q] LI D67 - SOLENZARA (FRANCIA - FRANCE) (SeeNotam / id=LID67)
-                #[Q] 67 (SeeNotam / id=LFD67)
-                #[Q] 50 (SeeNotam / id=FM50)
 
         if bClean:
             oAs.update({"freeFlightZone":False})
@@ -338,201 +251,158 @@ class AsCatalog:
     def isSpecialArea4FreeFlight(self, sKeyFile:str, oAs:dict) -> None:
 
         #Test de fonctionnalité d'Inclusion volontaire de certaines zones du territoire Français
-        if sKeyFile == "BPa-Test4Clean":
-            if oAs["id"] in ["LFD16E"]:
-                oAs.update({"ExtOfFrensh":True})       #Exclusion volontaire
+        if sKeyFile in ["BPa-Test4Clean","BPa-Test4AppDelta1"]:
+            if oAs["id"] in ["LFD16E","EBS02","LECBFIR_E"]:
+                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire
 
-        #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire Français
-        elif sKeyFile in ["EuCtrl","SIA"]:
-            if oAs["id"] in ["LIEA","LICTASA2","LICTASA4","LICTASA5","LICTASA7","LICTASA6","LIP218","LIP170","LIMJ2","LICTAMM9","LIR64BIS","LIMF3","LIMF4","LIMF5","LSR22","LSVLAVAUX","LSVBEGNINS","EBOS1","LS-R4A","EUC25SLP","LFSB04S","LFSB03S1","LFSB03S","LFSB03S2","LSR75_1","LSR75_2","LFSB88","LFSB25D","LFSB82","LFSB23D","LSR33","LSXGOESGEN","LSR76","LFSB02D","LFSB02A","LFSB40.20","LFSB40","LFSB18C","LFSB18D","LFSB70","LFSB21C","LSZH8","EDTFPJA","EDTF","EDSBCLDH","ED0004","ELS02-2","EBS80","EBR41","EBS136","EBLFA01","EBR06B","EBS153","EBS92","EBCI","EBR22","EBCI1","EBSOUTH1","EBCV","EBBR2", "EBBR3A","EBS103","EBR70","EBS120","EBS109","EBS14","EBS73","EBS105","EBS113","EB1","EBCBA1C","EBS180","EBR08","EBR24A","EUC25SL2","LED67","LED8","LEBL_C","LEBL_D","LEPP","LICTAMM4","LICTAMM7","LIR64","LSR24","LSR23","LSR21","LSR81","LSR80","LSR26","LSGG5","LSR28","LSAG","EUC25SL1","LSR27","LSR29","LFSB85","LFSB24D","LFSB80","LFSB22C","LFSB02S","LFSB60.20","LFSB60","LFSB20C","LFSB20D","LFSB3","LFSB01S","LFSB1S","LFSB2","LFSB1D1","LFSB01A","LFSB01D1","LFSB30","LFSB30.20","LFSB17C","LFSB17D","LFSB20.20","LFSB20","LFSB16C","LFSB16D","EDTG","EDTGPJA","LFSBNORD","LFSB15C","EDTLPJA","EDTL","LFST30","EDSBCLDG","EDSBCLDE","EDSBCLDB","LFST1.1","EDSBCLDC","EDSB1","EDSBCLDA","EDSBCLDD","EDSBCLDF","EDRZPJA","EDRZRMZ","EDR205C","EDDR1","EDRJPJA","ETXUTE","EDR205D","ELLX2F2","ELLX2F1","ELLXCLDB","ELLX","ELLX1A","ELLX5","EBS63","EBS154","EBSOUTH3","EBLFA06","EBHTA06","EBS161","EBS177","EBD26","EBLFA04","EBHTA04A","EBS86","EBS29","EBS33-1","EBD29","EBFS","EBS128","EBS61","EBS87","EBS65","EBS02","EBS182","LFQQ2","EBHTA10A","EBLFA11","EBHTA10C","EBKT TMZ","EBKT RMZ","EBS30","EBR25","EBR24B","EBHTA10D"]:
-                oAs.update({"ExtOfFrensh":True})       #Exclusion volontaire sur bas de l'Id
-                #LIEA - CTR ALGHERO
-                #LICTASA2 - CTA ZONA '2'D
-                #LICTASA4 - CTA ZONA '4'
-                #LICTASA5 - CTA ZONA '5'
-                #LICTASA7 - CTA ZONA '7'
-                #LICTASA6 - CTA ZONA '6'
-                #LIP218 - P LI P218 - SANREMO
-                #LIP170 - P LI P170 - IMPERIA
-                #LIMJ2 - CTR ZONA/ZONE '2'
-                #LICTAMM9 - CTA ZONA '9'
-                #LIR64BIS - R LI R64/BIS - BARGE
-                #LIMF3 - CTR ZONA/ZONE '3'
-                #LIMF4 - CTR ZONA/ZONE '4'
-                #LIMF5 - CTR ZONA/ZONE '5'
-                #LSR22 - R BERNER OBERLAND
-                #LSVLAVAUX - Q LAVAUX (ANTIHAIL)
-                #LSVBEGNINS - Q BEGNINS (ANTIHAIL)
-                #LS-R4A - R LAC DE NEUCHATEL
-                #EUC25SLP - CBA EUC25SLP
-                #LFSB04S - TMA BALE 04 SUISSE
-                #LFSB03S1 - TMA BALE PARTIE 03 SUISSE 1
-                #LFSB03S - TMA BALE 03 SUISSE
-                #LFSB03S2 - TMA BALE PARTIE 03 SUISSE 2
-                #LSR75_2 - R T DITTINGEN WEST (GLIDER)
-                #LSR75_1 - R T DITTINGEN WEST (GLIDER)
-                #LFSB88 - TMA BALE DELEG.ZURICH-AZ4 T3
-                #LFSB25D - TMA BALE PARTIE DELEG.ZURICH-AZ4 T3 D
-                #LFSB82 - TMA BALE DELEG.ZURICH-AZ4 T1
-                #LFSB23D - TMA BALE PARTIE DELEG.ZURICH-AZ4 T1 D
-                #LSR33 - R BALSTHAL
-                #LSXGOESGEN - PROTECT GOESGEN (IND-NUCLEAR)
-                #LSR76 - R T DITTINGEN EAST (GLIDER)
-                #LFSB02D - TMA BALE 02 ALLEMANDE
-                #LFSB02A - TMA BALE 02 ALLEMANDE
-                #LFSB40.20 - TMA BALE DELEG.LANGEN SW2.20
-                #LFSB40 - TMA BALE DELEG.LANGEN SW2
-                #LFSB18C - TMA BALE PARTIE DELEG.LANGEN SW2 C
-                #LFSB18D - TMA BALE PARTIE DELEG.LANGEN SW2 D
-                #LFSB70 - TMA BALE DELEG.ZURICH-AZ3
-                #LFSB21C - TMA BALE PARTIE DELEG.ZURICH-AZ3 C
-                #LSZH8 - TMA ZURICH TMA SECTOR 8
-                #EDTFPJA - Q FREIBURG/BADEN-WUERTTEMBERG (PARACHUTE)
-                #EDTF - PROTECT FREIBURG I.BR.
-                #EDSBCLDH - D KARLSRUHE/BADEN-BADEN H
-                #ED0004 - PROTECT RHEINSTETTEN
-                #ELS02-2 - R KONZ / KONEN GLIDER SECTOR SOUTH (GLIDER)
-                #EBS80 - Q WOLKRANGE (SPORT)
-                #EBR41 - R LAGLAND-ARLON (MILOPS / SeeNotam)
-                #EBS136 - Q LOUETTE-SAINT-DENIS (SPORT)
-                #EBLFA01 - Q LOW FLYING ARDENNES AREA 01 (MILOPS)
-                #EBR06B - PART FLORENNES
-                #EBS153 - Q MERBES-LE-CHATEAU (SPORT)
-                #EBS92 - Q HAULCHIN (SPORT)
-                #EBCI - CTR CHARLEROI (ATS)
-                #EBR22 - R CASTEAU (OTHER)
-                #EBCI1 - TMA CHARLEROI TMA ONE (ATS)
-                #EBSOUTH1 - CTA BRUSSELS CTA SOUTH ONE (ATS)
-                #EBCV - CTR CHIEVRES (ATS)
-                #EBBR2 - TMA BRUSSELS TMA TWO (ATS)
-                #EBBR3A - TMA BRUSSELS TMA THREE A (ATS)
-                #EBS103 - Q POTTES (SPORT)
-                #EBR70 - R POTTES (TRG / SeeNotam)
-                #EBS120 - Q DOTTIGNIES (SPORT)
-                #EBS109 - Q MOORSELE (SPORT)
-                #EBS14 - Q MOORSELE (PARACHUTE)
-                #EBS73 - Q HOUTHEM (SPORT)
-                #EBS105 - Q VLAMERTINGE (SPORT)
-                #EBS113 - Q HOOGSTADE (SPORT)
-                #EB1 - CBA 1
-                #EBCBA1C - CBA CROSS BORDER AREA ONE CHARLIE (MILOPS)
-                #EBS180 - Q KOKSIJDE (SPORT)
-                #EBR24A - R KOKSIJDE (MILOPS)
-                #EBR08 - R KOKSIJDE (MILOPS)
-                #EUC25SL2 - CBA EUC25SL2
-                #EBHTA10A - Q COASTAL HELICOPTER TRAINING AREA (MILOPS / SeeNotam)
-                #EBLFA11 - Q KOKSIJDE TRAINING AREA (MILOPS)
-                #EBOS1 - TMA OOSTENDE TMA ONE (ATS)
-                #EBHTA10C - Q IEPER HELICOPTER TRAINING AREA (MILOPS / SeeNotam)
-                #EBKT TMZ - TMZ TRANSPONDER MANDATORY ZONE KORTRIJK (EQUIPMENT)
-                #EBKT RMZ - RMZ RADIO MANDATORY ZONE KORTRIJK (EQUIPMENT)
-                #EBS30 - R LOW FLYING AREA GOLF TWO WEST (GLIDER / SeeNotam)
-                #EBR25 - R KOKSIJDE CLIMB-OUT (JETCLIMB)
-                #EBR24B - R KOKSIJDE LET-DOWN (MILOPS)
-                #EBHTA10D - Q TOURNAI HELICOPTER TRAINING AREA (MILOPS / SeeNotam)
-                #LFQQ2 - TMA LILLE 2 App(120.275)
-                #EBS182 - R TOURNAI/MAUBRAY (GLIDER)
-                #EBS02 - Q BELOEIL (BALLOON)
-                #EBS65 - Q THUMAIDE (SPORT)
-                #EBS128 - Q HAVAY (SPORT)
-                #EBS61 - Q GRANDRIEU (SPORT)
-                #EBS87 - Q MACON (SPORT)
-                #EBFS - TMA FLORENNES (ATS / SeeNotam)
-                #EBFS - CTA FLORENNES (ATS / SeeNotam)
-                #EBD29 - Q ARDENNES 07 (MILOPS / SeeNotam)
-                #EBS33-1 - R LOW FLYING AREA GOLF FIVE WEST (GLIDER / SeeNotam)
-                #EBS29 - R LOW FLYING AREA GOLF TWO SOUTH (GLIDER / SeeNotam)
-                #EBS86 - Q MAZEE (SPORT)
-                #EBHTA04A - Q HELICOPTER TRAINING AREA ARDENNES 04A (MILOPS / SeeNotam)
-                #EBLFA04 - Q LOW FLYING ARDENNES AREA 04 (MILOPS)
-                #EBD26 - Q ARDENNES 05 (MILOPS / SeeNotam)
-                #EBS177 - R MILFAG14 - LIBIN GLIDING AREA (GLIDER)
-                #EBS161 - R BERTRIX (GLIDER / SeeNotam)
-                #EBHTA06 - Q HELICOPTER TRAINING AREA ARDENNES 06 (MILOPS / SeeNotam)
-                #EBLFA06 - Q LOW FLYING ARDENNES AREA 06 (MILOPS)
-                #EBSOUTH3 - CTA BRUSSELS CTA SOUTH THREE (ATS)
-                #EBS154 - Q SAINT-VINCENT (SPORT)
-                #EBS63 - Q VILLERS-LA-LOUE (SPORT)
-                #ELLX5 - TMA LUXEMBOURG TMA FIVE (ATS)
-                #ELLX1A - TMA LUXEMBOURG TMA ONE A (ATS)
-                #ELLX - CTR LUXEMBOURG (ATS)
-                #ELLXCLDB -D LUXEMBOURG B
-                #ELLX2F1 - TMA LUXEMBOURG TMA TWO F1 (ATS)
-                #ELLX2F2 - TMA LUXEMBOURG TMA TWO F2 (ATS)
-                #EDR205D - R TRA LAUTER 1 D
-                #ETXUTE - PROTECT ARA UTE (REFUEL)
-                #EDRJPJA - Q SAARLOUIS-DUEREN/SAARLAND (PARACHUTE)
-                #EDDR1 - CTR SAARBRUECKEN
-                #EDR205C - R TRA LAUTER 1 C
-                #EDRZRMZ - RMZ ZWEIBRUECKEN
-                #EDRZPJA - Q ZWEIBRUECKEN/RHEINLAND-PFALZ (PARACHUTE)
-                #EDSBCLDF - D KARLSRUHE/BADEN-BADEN F
-                #EDSBCLDD - D KARLSRUHE/BADEN-BADEN D
-                #EDSBCLDA - D KARLSRUHE/BADEN-BADEN A
-                #EDSB1 - CTR KARLSRUHE/BADEN-BADEN
-                #EDSBCLDC - D KARLSRUHE/BADEN-BADEN C
-                #LFST1.1 - TMA STRASBOURG 1.1 App(120.700)
-                #EDSBCLDB - D KARLSRUHE/BADEN-BADEN B
-                #EDSBCLDE - D KARLSRUHE/BADEN-BADEN E
-                #EDSBCLDG - D KARLSRUHE/BADEN-BADEN G
-                #LFST30 - CTR STRASBOURG DELEG. STUTTGART
-                #EDTL - CTR LAHR
-                #EDTLPJA - Q LAHR/BADEN-WUERTTEMBERG (PARACHUTE)
-                #LFSB15C - TMA BALE PARTIE DELEG.LANGEN NORD C
-                #LFSBNORD - TMA BALE DELEG.LANGEN NORD
-                #EDTGPJA - Q BREMGARTEN/BADEN-WUERTTEMBERG (PARACHUTE)
-                #EDTG - PROTECT BREMGARTEN
-                #LFSB16D - TMA BALE PARTIE DELEG.LANGEN S-E D
-                #LFSB16C - TMA BALE PARTIE DELEG.LANGEN S-E C
-                #LFSB20 - TMA BALE DELEG.LANGEN S-E
-                #LFSB20.20 - TMA BALE DELEG.LANGEN S-E.20
-                #LFSB17D - TMA BALE PARTIE DELEG.LANGEN SW1 D
-                #LFSB17C - TMA BALE PARTIE DELEG.LANGEN SW1 C
-                #LFSB30.20 - TMA BALE DELEG.LANGEN SW1.20
-                #LFSB30 - TMA BALE DELEG.LANGEN SW1
-                #LFSB01D1 - TMA BALE 01 ALLEMANDE
-                #LFSB01A - TMA BALE 01 ALLEMANDE
-                #LFSB1D1 - CTR BALE ALLEMANDE
-                #LFSB2 - CTR BALE ALLEMANDE Twr(118.300)
-                #LFSB1S - CTR BALE SUISSE
-                #LFSB01S - TMA BALE 01 SUISSE
-                #LFSB3 - CTR BALE SUISSE Twr(118.300)
-                #LFSB20D - TMA BALE PARTIE DELEG.ZURICH-AZ2 D
-                #LFSB20C - TMA BALE PARTIE DELEG.ZURICH-AZ2 C
-                #LFSB60 - TMA BALE DELEG.ZURICH-AZ2.20
-                #LFSB60.20 - TMA BALE DELEG.ZURICH-AZ2.20
-                #LFSB02S - TMA BALE 02 SUISSE
-                #LFSB22C - TMA BALE PARTIE DELEG.ZURICH-AZ4 C
-                #LFSB80 - TMA BALE DELEG.ZURICH-AZ4
-                #LFSB24D - TMA BALE PARTIE DELEG.ZURICH-AZ4 T2 D
-                #LFSB85 - TMA BALE DELEG.ZURICH-AZ4 T2
-                #LSR29 - R TAVANNES
-                #LSR27 - R NEUCHATEL
-                #EUC25SL1 - CBA EUC25SL1
-                #LSAG - CTA GENEVA
-                #LSR28 - R YVERDON
-                #LSGG5 - TMA GENEVE TMA5
-                #LSR81 - R T LE BRASSUS (GLIDER)
-                #LSR80 - R T VALLORBE (GLIDER)
-                #LSR26 - R CHARBONNIERES
-                #LSR21 - R UNTERWALLIS N
-                #LSR23 - R UNTERWALLIS S
-                #LSR24 - R WALLIS S
-                #LIR64 - R LI R64 - CUNEO
-                #LICTAMM7 - CTA ZONA '7'
-                #LICTAMM4 - CTA ZONA '4'
-                #LEPP - CTA PAMPLONA
-                #LEBL_C - C BARCELONA TMA
-                #LEBL_D - D BARCELONA TMA
-                #LED8 - Q JAIZQUIBEL (GUIPUZCOA)
-                #LED67 - Q SAN CLEMENTE SASEBAS (GERONA)
+        #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
+        if sKeyFile in ["EuCtrl","SIA"]:
+            if oAs["id"] in ["LECM C","LEBL_D","LEBL_C","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
+                  "LSR21","LSGG5","LSAZ","LSR81","LSR80","LSR26","LSR28","LSR27","EUC25SL1","EUC25SL2","LSR29","LFSB22C","LFSB80","LFSB24D",
+                  "LFSB85","LFSB02S","LSR75_2","LSR75_1","LFSB1S","LFSB3","LFSB2","LFSB17D","LFSB17C","LFSB30.20","LFSB30","LFSB16D","LFSB16C",
+                  "LFSB20","LFSB01A","LFSB01S","LFSB01D1","LFSB1D1","LFSB03S2","LFSB03S","LFSB03S1","LFSB04S","LFSB20.20","LFSB15C","LFSBNORD",
+                  "EDTG","EDTGPJA","EDTL","EDSBCLDE","LFST1.1","EDSB1","EDSBCLDC","EDSBCLDA","EDSBCLDD","EDSBCLDF","EDR205C","EDRZRMZ",
+                  "EDRZPJA","EDR205D","EDDR1","EDRJPJA","ELLXCLDB","EBBU TMZ","EBBU RMZ","ELLX1A","EBS27","EBS29","EBD29","EBS33-1","EBS177",
+                  "EBD26","EBS161","ELLX5","EBSOUTH3","EBHTA06","EBHTA04A","EBFS","EBS02","EBS30","EBHTA10D","EBS182","LFQQ2","EBHTA10C",
+                  "EBKT TMZ","EBKT RMZ","EBR25","EBHTA10A","EBOS1","EBLFA11","EBR24B","ETXUTE","LFST30","LFST3","ELLX2F1","ELLX2F2",
+                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","LFD54WA"]:
+                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur bas de l'Id
 
-        #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire Français
-        elif sKeyFile=="FFVP-Parcs":
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: PWC France-Alpes, périmètre de performances (geoPWCFrenchAlps)
+            if oAs["id"] in ["LSR23","LSAG","LFLL04","LFLL03","LFLL04.20","LFLL02","LFD54WA","LFLL12"]:
+                oAs.update({"ExtOfPWCFrenchAlps":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire: Massif des Alpes (geoAlps)
+            if oAs["id"] in ["LHCC"]:
+                oAs.update({"ExtOfAlps":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Austria / Autriche (geoAustria)
+            if oAs["id"] in ["EDNYTMZB","EDNYTMZA","LSAZ","LSR43","LSR3","LSR54","LSR56","LS-VSE19","LS-VSE18","LJDO1_D","LJDO","LJDT",
+                  "LJDT2_D","LJLT","LJMU_D","LJMU","LJMB2_D","LJMT","LHCC","LHB16","LHB22","LHD52","LHSLESMO","LHB18","LHB20","LZBB",
+                  "LZBB-WEST","LZIB4","LZIB","LZIB2","LZR01","LKTB","LKTB4","LKR4","LKKV","LKR1","LOWSCLDA","LOWS2","LOWSCLDB","LOWSCLDD",
+                  "EDR142"]:
+                oAs.update({"ExtOfAustria":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Belgium / Belgique (geoBelgium)
+            if oAs["id"] in ["EBUL607","EBFN","EBSASKI A","EHL179","EBR24A","LFQQ","LFQQ1","LFQQ2","LFQQ3","LFQQ4","LFQQ4.1","LFQQ5","EBR18B",
+                  "LFCBA16B","LFP38","EBR18A","ELLX1A","ELLX4","TMA16214","ELLX1B","ELS06","ELS05","EDR165A","EDR117","EBEHBKTMA","EHBK1-1",
+                  "EHBK2","EHSRMZBK","EHBK1","EHBK1","EHMCD-1","EHMCD-1_B","EBL179","EHSRMZBDA","EBBL2","EHSRMZBL","EHEH4","EHEH3","EHEH1","EHEH2",
+                  "EHGR","EHSRMZGR","EHV-REGTEH","EHAMS2","EHV-SCHIJF","EHAMS1","EHSTMZ-G1","EHWO","EHSRMZWO","EHB-51","EBLG1-2","EBEAST4A-2",
+                  "EBEIJSDEN","EHMCD-2","EHMCD-2_B"]:
+                oAs.update({"ExtOfBelgium":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Czechia / Tchéquie (geoCzechia)
+            if oAs["id"] in ["EPCTA05","EPX181","EPR26","EPR13","EPDLG01","LOWW8","LOWW6","LZBB-WEST","LZIB4","LZBB","LZ_GLIDER5","LZR02",
+                  "LZR01","LZBB-EAST","LZZI1","LZZI2","LZ_GLIDER7","EPKK5","EPCTA04"]:
+                oAs.update({"ExtOfCzechia":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Denmark / Danemark (geoDenmark)
+            if oAs["id"] in ["EDR201E"]:
+                oAs.update({"ExtOfDenmark":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: ? (geoGermany)
+            if oAs["id"] in ["EHSTMZ-EEL","EHAME1","EHB-01","EHSTMZ-C1","EHMCC-1_B","EHMCC-1","EHB-26","EHATZTW","EHSRMZTW","EHSTMZ-E",
+                  "EHMCE_D","EHAME2","EHMCE","EHB-27","EHB-33","EHMCD-1","EHMCD-1_B","EDLV2","EHSRMZLV","EBBU TMZ","EBBU RMZ","EBS27",
+                  "EHBK1-1","EHBK2","EBEHBKTMA","EHSRMZBK","EHBK1","EBLG5","EBS31","EBD29","EBS29","EBS33-2","EBEAST5","EBS189","EBR04",
+                  "EBLFA03","EBS178","EBHTA03B","ELLX1B","ELS05","ELS08","ELLX1A","ELLX3","TMA16213","LFR45N3","LFJL4","LFR163B","LFST10",
+                  "LFJL5","LFJL5.1","EDDR-F","LFSTMZ001","LFR122","LFR150D2","LFST9","LFR150D1","LFR228B","LFR228A","EDRZ2","LFST8",
+                  "LFST-BADF","LFST-BADD","LFST-BADA","EDSB2","LFST-BADC","EDSB-F","LFST1","LFST-BADB","LFST-BADE","LFST1","LFR199","LFR322",
+                  "LFR323","LFST7","LFSB09","LFSB10","LFSB08","LFSB03F","LFP36","LFSB01F","LFSB1","LFSB1S","LSZH13","LSR70","LSVTGN","EDNY2",
+                  "LOCE","LOHPGBREGE","LOSTMZWIW","LOSTMZWIE","LOWI5","LOHPGKOESS","LOWS1","LOWS","LOHPGUNTER","LOTRALOWSN","LKKV","LKR1",
+                  "LKMT","EPCTA05","EPDLG01","LKR2","EPSC4","EPSC3","EPSCRC","EPX003","EPSCRE","EPSC5","EDAH2"]:
+                oAs.update({"ExtOfGermany":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Hungary / Hongrie (geoHungary)
+            if oAs["id"] in ["LDZO_D","LDZA1","LJMB2_D","LJMT","LJMU_D","LJMU","LDD103","LDD104","LDD109","LDD114","LDD119","LDD129","LDD128",
+                  "LDOS","LYBT","LRBU2","LRAR1","LRAR1","LRAR","LROD","LRSM","UKLVWD","UKLVWC","UKLU","LZBB-EAST","LZR55","LZBB","LZKZ1","LZKZ",
+                  "LZKZ3","LZBB-WEST","LZIB4","LZIB1","LZIB","LOWW3","LOWW2","LOSTMZWW","LOTRASPIS","LOTRASPISH","LOR16","LOWW5","LOWW7",
+                  "LOTRAPINKA","LZR10","LZRUTOL"]:
+                oAs.update({"ExtOfHungary":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Ireland / Irlande (geoIreland)
+            #if oAs["id"] in ["aucune zone a exclure de l'Irlande"]:
+            #    oAs.update({"ExtOfIreland":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Italy / Italie (geoItaly)
+            if oAs["id"] in ["LTA130736.","LTA130735.","LTA130731","LFR221A","LFR19630","LFR19610","LFR196A2","LFMN14","LFMN13","LFR30B",
+                  "LSAG","LSR24","LSR32","LSAZ","LSZL6","LSR62","LSR54","LSR55","LS-R11A","LSR56","LOCE","LJDT","LJDT2_D","LJDO1_D","LJDO",
+                  "LJPZ","LJPZ"]:
+                oAs.update({"ExtOfItaly":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Jersey Guernsey (geoJerseyGuernsey)
+            #if oAs["id"] in ["aucune zone a exclure de l'Jersey/Guernsey"]:
+            #    oAs.update({"ExtOfJerseyGuernsey":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Liechtenstein (geoLiechtenstein)
+            if oAs["id"] in ["LSAZ","LSR54","LSR3"]:
+                oAs.update({"ExtOfLiechtenstein":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Luxembourg (geoLuxembourg)
+            if oAs["id"] in ["EDR205D","EDR205A","ELLXCLDB","ELS02-1","ELLX2C2","ELLXCLDA","EBS31","EBS29","EBS27","EBLFA03","EBS178","EBD29",
+                  "EBHTA03B","EBLFA02","EBHTA03A","EBS33-1","EBHTA07","EBSOUTH3","ELLX5","ELLX4","TMA16214","LFR45N3","ELLX3","TMA16213"]:
+                oAs.update({"ExtOfLuxembourg":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Netherlands / Pays-Bas (geoNetherlands)
+            if oAs["id"] in ["EHSRMZNSAA","EHSTMZNSAA","EBBU TMZ","EBBU RMZ","EBOS2","EBOS1","EBHTA10A","EBS27","EBHTA10B","EBBR3A","EBBR2",
+                  "EBBR3B","EBS168","EBS28","EBS168","EBHTA14A","EBBR7","EBBL1","EBBL1","EBBL","EBR05B","EBBL2","EBR05C","EBBL3","EBS165",
+                  "EBLG3","EBEAST3","EBLG1-1","EBLG2-1","EBEAST4A-1","EHBK1-3","EBEAST4B","EHBK1-2","EHBK2","EBLG5","ETNG","EHBK2","EDDLCLCX",
+                  "EDLVTMZC","EDLV1","EDLVTMZD","EDLVTMZB","EDLVCLD","EDLSPJA","EDR202D","EDR202A","EDR202E"]:
+                oAs.update({"ExtOfNetherlands":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Poland / Pologne (geoPoland)
+            if oAs["id"] in ["EDAH1","EDR76A","LKMT","LKR3","EPR13","LKTSA42","LKTSA43","LKTSA44","LKTSA46","LKTSA49","LKMT3","LKMT1","LKMT2",
+                  "LZBB-EAST","LZBB","LZ_GLIDER7","LZTT4","LZR55","UKLU","UKLVWD","UKLVWC","UKLVED","UKLVEC","UMBB1","UMMS","UMMG1","UMMG2",
+                  "EYVC","EYSFRA","EYVLL","EYVLE","UMKK"]:
+                oAs.update({"ExtOfPoland":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Portugal (geoPortugal)
+            if oAs["id"] in ["LECM C","LED123","LER86B","LER86A","LER71C","LER71A (1)","LECGL","LECG"]:
+                oAs.update({"ExtOfPortugal":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Slovakia / Slovaquie (geoSlovakia)
+            if oAs["id"] in ["LOTRASPIC","LOTRASPICH","LOGLDSPITZ","LOWW2","LOTRASPIS","LOTRASPISH","LHSLESMO","LHCC","LOTRASPIN","LOTRASPINH",
+                  "LHBPTMAW","LHBP2A","LHSG113/V","LHSG113/S","LHSG111","LHB19A","LHBPTMAE","LHB26","LHSG110","LHSG112","LHSG114","LHBP7","LHB31",
+                  "LHCCNORTHL","LZKZ2","LHB03","UKLVWD","UKLVWC","UKLU","UKLU","EPWWADIZ3","EPR10","EPX178","EPR27","EPKK5","EPR15","EPR19","EPR8",
+                  "LKMT","LKTB","LKTB3","LOWW6","LOWW4","LOWW3"]:
+                oAs.update({"ExtOfSlovakia":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Slovenia / Slovénie (geoSlovenia)
+            if oAs["id"] in ["LICTAPP7","LDZO_D","LDX81","LDPL6","LDZA3","LDD173","LDZA1","LDD160","LDD159","LDD191","LDD192","LDD190","LDD187",
+                  "LDD186","LDD185","LDD184","LDX51","LDD108","LDD107","LDD101","LDD103","LHCC","LHB16","LOWG2","LOHPGPETZ1"]:
+                oAs.update({"ExtOfSlovenia":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Spain / Espagne (geoSpain)
+            if oAs["id"] in ["LFMT14","LFMT18","LFMT18.20","LTA130753","LTA130752","LTA130751","LFBZ9.2","LFBZ9.1","LFBZ1","LFR266","LPR24C",
+                  "LPABG01","LPAMU01","LPFR_B"]:
+                oAs.update({"ExtOfSpain":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Switzerland / Suisse (geoSwitzerland)
+            if oAs["id"] in ["TMA161645","LFR158A","EUC25FE","LFSB07","LFSB04F","LFSB03F","LFSB02F","LFSB1","LFSB01F","LFSB18D","LFSB18C","LFSB40",
+                  "LFSB40.20","LFSB02D","LFSB02A","LFSB01D2","LFSB1D2","LFSB01A","LFSB2","LFSB01D1","LFSB1D1","LSZH9","EDNYTMZA","EDNY1","LOCE",
+                  "LOR18","LICTAMM1","LITMAMM5","LTA130736.","LFR30B","LTA130737","LTA130737.","",""]:
+                oAs.update({"ExtOfSwitzerland":True})       #Exclusion volontaire sur base de l'Id
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: United-Kingdom / Royaume-Uni (geoUnitedKingdom)
+            #if oAs["id"] in ["aucune zone a exclure de l'United-Kingdom"]:
+            #    oAs.update({"ExtOfUnitedKingdom":True})       #Exclusion volontaire sur base de l'Id
+
+        #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires
+        if sKeyFile=="FFVP-Parcs":
             if oAs["UId"] in ["GrandParadis","Ordessa"]:
-                oAs.update({"ExtOfFrensh":True})       #Exclusion volontaire sur base de l'UId
-                #UId='GrandParadis' - ZSM Grand Paradis
-				#UId='Ordessa' - ZSM Ordessa
+                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'UId
+
+            if oAs["UId"] in ["Vanoise","GdeSassiere","Mercantour","Contamines"]:
+                oAs.update({"ExtOfItaly":True})       #Exclusion volontaire sur base de l'UId
+
+            if oAs["UId"] in ["Pyrennees"]:
+                oAs.update({"ExtOfSpain":True})       #Exclusion volontaire sur base de l'UId
+
+            if oAs["UId"] in ["Sixt"]:
+                oAs.update({"ExtOfSwitzerland":True})       #Exclusion volontaire sur base de l'UId
+
+        if sKeyFile=="FFVP-Birds":
+            if oAs["nameV"] in ["ZSM Mercantour-Ubaye Bird Protection Tampon"]:
+                oAs.update({"ExtOfItaly":True})       #Exclusion volontaire sur base du nommage verbeux
 
         #Fonctionnalité spécifique pour exclusion standard et intégratrion spécifique pour la CFD
         #Les zones suivantes sont utilisées pour un affichage quasi-exaustif ou garantie des caulculs-automatisés

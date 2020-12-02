@@ -23,6 +23,7 @@ cstLastVersionFileName      = "LastVersion_"
 ### scriptProcessing constantes  ###
 cstSpExecute      = "Execute"                         #Identification du Flag d'execution des traitements
 cstSpSrcFile      = "srcFile"                         #Identification du fichier source
+cstSpSrcOwner     = "srcOwner"                        #Identification du propriétaire du fichier source
 cstSpOutPath      = "outPath"                         #Identification du dossier de sorties
 cstSpProcessType  = "processType"                     #Typage du processus de consolidation des données
 cstSpPtAdd        = "processType-AppendData"          #Consolidation des données par simple ajout (empilage des données sans contrôle de présence)

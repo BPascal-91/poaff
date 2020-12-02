@@ -95,23 +95,22 @@ class OpenairArea:
         if sContext=="cfd":
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo")
         elif sContext=="ff":
-            #Pour les sorties "-gpsWithTopo" traiter que "geoFrench" et "geoFrenchExt" mais pas les sous-découpages Français qui ne sont nécessaire que pour les petits GPS sans topo ni carte-mémoire..
-            #donc ne pas générer : geoFrenchNorth, geoFrenchSouth, geoFrenchNESW, geoFrenchVosgesJura, geoFrenchPyrenees, geoFrenchAlps
-            aToken = ["geoFrench", "geoFrenchExt"]
-            if sAreaKey[:len(aToken[0])] == aToken[0]:
-                bIsInclude = bool(sAreaKey in aToken)
-            else:
-                bIsInclude = True
+            #Pour les sorties "-gpsWithTopo", ne jamais générer: geoFrenchNorth, geoFrenchSouth, geoFrenchNESW, geoFrenchVosgesJura, geoFrenchPyrenees, geoFrenchAlps
+            aToken = ["geoFrenchNorth", "geoFrenchSouth", "geoFrenchNESW", "geoFrenchVosgesJura", "geoFrenchPyrenees", "geoFrenchAlps"]
+            bIsInclude = not bool(sAreaKey in aToken)
             if bIsInclude:
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo",    None,        sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
-            #Générer tous les fichiers pour les sorties "-gpsWithoutTopo"
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSAT", sAreaKey)
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSUN", sAreaKey)
-            self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptHOL", sAreaKey)
+            #Pour les sorties "-gpsWithoutTopo", ne jamais générer: All, geoFrenchAll (car trop lourd pour la mémoire des petits GPS)
+            aToken = ["","geoFrenchAll"]
+            bIsInclude = not bool(sAreaKey in aToken)
+            if bIsInclude:
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSAT", sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSUN", sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptHOL", sAreaKey)
         else:    #context == "all", "ifr" or "vfr"
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo",    None,        sAreaKey)
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)
@@ -135,7 +134,7 @@ class OpenairArea:
 
             #if oGlobalCat["id"] in ["TMA16169","TMA16170"]:
             #    print(oGlobalCat["id"])
-                
+
             #Filtrage des zones par typologie de sorties
             bIsInclude:bool = False
             if   sContext == "ifr":
@@ -149,11 +148,15 @@ class OpenairArea:
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
                 bIsIncludeLoc:bool = True
-                if (sAreaKey == "geoFrench") and ("ExtOfFrensh" in oGlobalCat):
-                    bIsIncludeLoc = not oGlobalCat["ExtOfFrensh"]      						#Pour Exclure toutes zones hors de France
+                if sAreaKey!="":
+                    sKey4Find:str = sAreaKey.replace("geo","ExtOf")
+                    if sAreaKey[:9]=="geoFrench":                      #Spec for all french territories
+                        sKey4Find = "ExtOfFrench"
+                    if sKey4Find in oGlobalCat:
+                        bIsIncludeLoc = not oGlobalCat[sKey4Find]       #Exclusion de zone
                 bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 #Relevage du plafond de carte pour certaines zones situées en France
-                if "freeFlightZoneExt" in oGlobalCat:
+                if bIsIncludeLoc and ("freeFlightZoneExt" in oGlobalCat):
                     aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
                     bIsExtAlt4Loc:bool = False
                     for sLoc in aFrLocation:
@@ -166,8 +169,8 @@ class OpenairArea:
                 sFile = sFile.replace("-all", "-freeflight")
             elif sContext == "cfd":
                 bIsIncludeLoc:bool = True
-                if "ExtOfFrensh" in oGlobalCat:
-                    bIsIncludeLoc = not oGlobalCat["ExtOfFrensh"]      						#Pour Exclure toutes zones hors de France
+                if "ExtOfFrench" in oGlobalCat:
+                    bIsIncludeLoc = not oGlobalCat["ExtOfFrench"]      						#Pour Exclure toutes zones hors de France
                 bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 if "use4cfd" in oGlobalCat:
                     bIsInclude = bIsInclude or oGlobalCat["use4cfd"]
@@ -189,18 +192,19 @@ class OpenairArea:
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
             if sContext == "cfd":
-                #06/08/2020, demande de Martin pour la sortie "CFD". Besoin d'une vision mondiale avec les zones interne située exclusivement en France métropole
-                None   #Aucun filtrage geographique
+                bIsArea = oGlobalCat["geoFrenchAll"]        #Filtrage sur la totalité des territoires Français
+
             elif bIsInclude and sAreaKey:
                 if sAreaKey in oGlobalCat:
                     bIsArea = oGlobalCat[sAreaKey]
                 else:
                     bIsArea = False
-                if bIsArea and oGlobalCat["id"]=="LTA13071":        #Cas spécifique de la zone '[D] FRANCE 1 (LTA / id=LTA13071)' [FL115-FL195]
-                    if sAreaKey in ["geoFrenchNESW","geoCorse"]:
-                        bIsArea = False     #Ne pas afficher cette zone incohérente pour ces régions
-                    else:
+                #Maintenir ou Supprimer la LTA-France1 des cartes non-concernées par le territoire Français --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
+                if bIsArea and oGlobalCat["id"]=="LTA13071":
+                    if sAreaKey=="" or (sAreaKey in ["geoFrench","geoFrenchAll"]):
                         sAddHeader = "'{0}' {1} - Symbolisation de la surface 'S' - Afin de simplifier cette carte, vous pouvez éventuellement supprimer cette couche limite du vol-libre (hors masifs-montagneux...)".format(oGlobalCat["nameV"], aixmReader.getSerializeAlt(oGlobalCat))
+                    else:
+                        bIsArea = False     #Ne pas afficher cette zone incohérente pour ces régions
 
             #Filtrage des zones par jour d'activation
             if bIsInclude and bIsArea and exceptDay:
@@ -256,7 +260,7 @@ class OpenairArea:
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oOutOpenair)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
             oTools = aixmReader.AixmTools(None)
-            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, sAddHeader) 
+            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, sAddHeader)
             sOutOpenair += sHeader
             for oOp in oOutOpenair:
                 sOutOpenair += oOp.serializeArea(gpsType) + "\n"

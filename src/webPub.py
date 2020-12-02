@@ -111,7 +111,7 @@ class PoaffWebPage:
                             sComplementaryFiles += self.makeLink4File(dstFileName2, aTypeFile[1] + " / " + oAreaRef[2]) + " | "
                 else:
                     sComplementaryFiles += self.makeLink4File(dstFileName, aTypeFile[1]) + " | "
-                
+
                 if aTypeFile[0]=="-all":
                     #Complément du fichier optimisé 'global@airspaces-all-optimized.geojson'
                     srcFileName2 = str(srcFileName).replace(aTypeFile[0], aTypeFile[0] + "-optimized")
@@ -125,7 +125,7 @@ class PoaffWebPage:
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
                         sToken = str("@@file@@GeoJSON-airspaces-freeflight-optimized@@")
                         self.publishFile(dstFileName2, sToken, "Fichier optimisé - " + aTypeFile[1])
-        
+
         self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@GeoJSON-airspaces-othersfileslist@@", sComplementaryFiles)
 
         #### 3b/ KML files
@@ -255,7 +255,7 @@ class PoaffWebPage:
             sBuffStr += "; <b>" + aPubDates[-1] + "</b>"
             self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@webPublicationDates@@", sBuffStr)
             self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@webPublicationLastDate@@", str(aPubDates[-1]))
-            
+
             sNewWebPage:str = "index.htm"
             sMsg = "Creating Web file - {}".format(sNewWebPage)
             self.oLog.info(sMsg, outConsole=True)
@@ -281,7 +281,7 @@ class PoaffWebPage:
                     sDescription:str = sTypeFile + " / " + sDayDesc + " [" + sGpsType + "/" + sDayKey[1:] + "]"
                 sDayFiles += "<li>" + self.makeLink4File(dstFileName, sDescription) + "</li>"
 
-                #Duplication du fichier "LastVersion" de la France étendue
+                #Duplication du fichier "LastVersion" de la France
                 if sAreaKey in ["geoFrench", "geoFrenchExt"]:
                     dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
                     if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2):

@@ -4,7 +4,7 @@ from copy import deepcopy
 
 try:
     import bpaTools
-except ImportError:    
+except ImportError:
     ### Include local modules/librairies  ##
     import os
     import sys
@@ -16,7 +16,7 @@ except ImportError:
 import poaffCst
 
 class GeojsonTrunc:
-     
+
     def __init__(self, oLog=None, oGeo:dict=None)-> None:
         self.oLog:bpaTools.Logger = None
         if oLog:
@@ -28,7 +28,7 @@ class GeojsonTrunc:
         if oGeo:
             self.setGeo(oGeo)
             self.truncateGeojsonFeature()
-        return    
+        return
 
     def setGeo(self, oGeo:dict=None)-> None:
         if oGeo:
@@ -36,12 +36,15 @@ class GeojsonTrunc:
                 self.oLog.info("setGeo()", outConsole=True)
             self.oInpGeo:dict = oGeo
             self.oOutGeo:dict = deepcopy(oGeo)
-        return    
+        return
 
     def truncateGeojsonFile(self, fileSrc:str, fileDst:str, iDecimal=3) -> None:
         if self.oLog:
             self.oLog.info("truncateGeojsonFile() - Read file - " + fileSrc, outConsole=False)
         oGeoJSON:dict = bpaTools.readJsonFile(fileSrc)
+        if not oGeoJSON:
+            self.oLog.warning("truncateGeojsonFile() - Empty source file - " + fileSrc, outConsole=False)
+            return
         self.setGeo(oGeoJSON)
         self.iDecimal = iDecimal
         self.truncateGeojsonFeature()
@@ -49,7 +52,7 @@ class GeojsonTrunc:
         if self.oLog:
             self.oLog.info("truncateGeojsonFile() - Write file - " + fileDst, outConsole=False)
         return
-    
+
     def truncateGeojsonFeature(self, oGeoJSON:dict=None) -> None:
         sTitle = "GeoJSON airspaces truncate"
         if not oGeoJSON:
@@ -84,7 +87,7 @@ class GeojsonTrunc:
             oCoords:list = oGeo[poaffCst.cstGeoCoordinates]         #get coordinates of geometry
         elif oGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
             oCoords:list = oGeo[poaffCst.cstGeoCoordinates][0]      #get coordinates of geometry
-    
+
         if len(oCoords)>1:
             oTruncCoords:list = np.around(oCoords, decimals=self.iDecimal)
             oNewCoords:list = []
@@ -93,13 +96,13 @@ class GeojsonTrunc:
                 if (oPt[0]!=oPrevPoint[0]) or (oPt[1]!=oPrevPoint[1]):
                     oNewCoords.append([oPt[0],oPt[1]])
                 oPrevPoint = oPt
-            
+
             if oGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoLine).lower():
                 oGeo[poaffCst.cstGeoCoordinates] = oNewCoords
             elif oGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
                 oGeo[poaffCst.cstGeoCoordinates][0] = oNewCoords
         return
-    
+
 
 if __name__ == '__main__':
     sPath = "../output/Tests/"
@@ -109,4 +112,3 @@ if __name__ == '__main__':
     #oTrunc.truncateGeojsonFile(sPath + "__testAirspaces-freeflight.geojson",   sPath + "___truncateFile4.geojson",  iDecimal=4)
     oTrunc.truncateGeojsonFile(sPath + "__testAirspaces-freeflight.geojson",   sPath + "___truncateFile3.geojson",  iDecimal=3)
     oTrunc.truncateGeojsonFile(sPath + "__testAirspaces-freeflight.geojson",   sPath + "___truncateFile2.geojson",  iDecimal=2)
-    

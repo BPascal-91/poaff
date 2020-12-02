@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import zipfile
 
 aixmParserLocalSrc  = "../../aixmParser/src/"
@@ -6,7 +7,7 @@ try:
     import bpaTools
 except ImportError:
     ### Include local modules/librairies  ##
-    import os
+    #import os
     import sys
     module_dir = os.path.dirname(__file__)
     sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
@@ -42,26 +43,27 @@ globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cst
 
 
 ####  Liste des fichiers a traiter  ####
-testMode = True     #True or  False
+testMode = False     # True or  False
 scriptProcessing = {
-    "BPa-TestRefAlt":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestReferentielAltitude_aixm45.xml"},
-    "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4CleaningCatalog_aixm45.xml"},
-    "BPa-Test4AppDelta1":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta1_aixm45.xml"},
-    "BPa-Test4AppDelta2":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta2_aixm45.xml"},
-    "BPa-Test4AppDelta3":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4kml_aixm45.xml"},
-    "BPa-TestXmlSIA":       {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestFrequency_xml_SIA-FR.xml"},
-    "xmlSIA":               {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_xml_SIA-FR_BPa.xml"},
-    "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_aixm4.5_SIA-FR.xml"},
-    #"EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-FR_BPa.xml"},
-    "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-Euro_BPa.xml"},
-    "FFVP-Parcs":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20201023_FFVP_ParcsNat_BPa_aixm45.xml"},
-    "FFVP-Birds":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"},
-    "BPa-ParcCevennes":     {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20190401_PascalW_ParcCevennes_aixm45.xml"},
-    "BPa-ParcChampagne":    {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200810_BPa_ParcsNat_ChampagneBourgogne_aixm45.xml"},
-    "BPa-ParcBaieDeSomme":  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200729_SergeR_ParcNat_BaieDeSomme_aixm45.xml"},
-    "BPa-ParcHourtin":      {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200729_SergeR_ParcNat_Hourtin_aixm45.xml"},
-    "BPa-Birds":            {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200510_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"},
-    "BPa-ZonesComp":        {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20201108_BPa_ZonesComplementaires_aixm45.xml"}
+    "BPa-TestRefAlt":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestReferentielAltitude_aixm45.xml"     ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-Test4Clean":       {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4CleaningCatalog_aixm45.xml"        ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-Test4AppDelta1":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta1_aixm45.xml"           ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-Test4AppDelta2":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4AppendDelta2_aixm45.xml"           ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-Test4AppDelta3":   {poaffCst.cstSpExecute:    testMode , poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_Test4kml_aixm45.xml"                    ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-TestXmlSIA":       {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/Tests/",  poaffCst.cstSpSrcFile:"../input/Tests/99999999_BPa_TestFrequency_xml_SIA-FR.xml"           ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "xmlSIA":               {poaffCst.cstSpExecute:None         , poaffCst.cstSpProcessType:None,                     poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_xml_SIA-FR_BPa.xml"                  ,poaffCst.cstSpSrcOwner:"https://www.sia.aviation-civile.gouv.fr"},
+    "SIA":                  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/SIA/",    poaffCst.cstSpSrcFile:"../input/SIA/20201008-20201104_aixm4.5_SIA-FR.xml"                  ,poaffCst.cstSpSrcOwner:"https://www.sia.aviation-civile.gouv.fr"},
+    #"EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-FR_BPa.xml"           ,poaffCst.cstSpSrcOwner:"https://www.eurocontrol.int"},
+    "EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201105_aixm4.5_Eurocontrol-Euro_BPa.xml"          ,poaffCst.cstSpSrcOwner:"https://www.eurocontrol.int"},
+    #"EuCtrl":               {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAddDelta, poaffCst.cstSpOutPath:"../output/EuCtrl/", poaffCst.cstSpSrcFile:"../input/EuCtrl/20201203_aixm4.5_Eurocontrol-Monde.xml"            ,poaffCst.cstSpSrcOwner:"https://www.eurocontrol.int"},
+    "FFVP-Parcs":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20201023_FFVP_ParcsNat_BPa_aixm45.xml"                ,poaffCst.cstSpSrcOwner:"https://www.ffvp.fr"},
+    "FFVP-Birds":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"                ,poaffCst.cstSpSrcOwner:"https://www.ffvp.fr"},
+    "BPa-ParcCevennes":     {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20190401_PascalW_ParcCevennes_aixm45.xml"              ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-ParcChampagne":    {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200810_BPa_ParcsNat_ChampagneBourgogne_aixm45.xml"   ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-ParcBaieDeSomme":  {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200729_SergeR_ParcNat_BaieDeSomme_aixm45.xml"        ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-ParcHourtin":      {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200729_SergeR_ParcNat_Hourtin_aixm45.xml"            ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-Birds":            {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20200510_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml" ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-ZonesComp":        {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20201108_BPa_ZonesComplementaires_aixm45.xml"          ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"}
 }
 
 
@@ -77,12 +79,9 @@ def poaffMergeFiles() -> None:
     oLog.info("\n" + sModuleTitle, outConsole=True)
     print(u"\u2594"*len(sModuleTitle))
 
-    #A-1/ Consolidation des catalogues (avec premier pré-filtrage qd nécessaire)
-    oAsCat = AsCatalog(oLog)                                                #Gestion des catalogues
-    for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
-        oAsCat.mergeJsonCatalogFile(sKey, oFile)                            #Consolidation des fichiers catalogues
+    oAsCat = AsCatalog(oLog)    #Gestion des catalogues
 
-    #A-2/ Consolidation des Fréquences radio dans le catalogue global
+    #A1a/ Chargement initial du fichier contenant les Fréquences radio
     oFreq = XmlSIA(oLog)
     if testMode:
         sKey = "BPa-TestXmlSIA"
@@ -90,58 +89,60 @@ def poaffMergeFiles() -> None:
         sKey = "xmlSIA"
     sFile = scriptProcessing[sKey][poaffCst.cstSpSrcFile]
     oFreq.openFile(appPath + sFile, sKey)
-    oAsCat.addSrcFile(sKey, sFile, oFreq.srcOrigin, oFreq.srcVersion, oFreq.srcCreated)
+    oAsCat.addSrcFile(sKey, sFile, scriptProcessing[sKey][poaffCst.cstSpSrcOwner], oFreq.srcOrigin, oFreq.srcVersion, oFreq.srcCreated)
+
+    #A2/ Consolidation des catalogues (avec premier pré-filtrage qd nécessaire)
+    for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
+        oAsCat.mergeJsonCatalogFile(sKey, oFile)                            #Consolidation des fichiers catalogues
+
+    #A1b/ Consolidation des Fréquences radio dans le catalogue global
     oFreq.loadFrequecies()
     oFreq.syncFrequecies(oAsCat.getContent())
     oAsCat.saveCatalogFiles(globalCatalog)                                  #Sérialisation du catalogue global
 
-    #B-1/ Consolidation des espaces-aériens GeoJSON
+    #B1/ Consolidation des espaces-aériens GeoJSON
     oJsArea = GeojsonArea(oLog, oAsCat)                                     #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
         oJsArea.mergeGeoJsonAirspacesFile(sKey, oFile)                      #Consolidation des fichiers GeoJSON
 
-    #B-2/ Construction des sorties GeoJSON
-    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")                #Sortie complète des zones
+    #B2/ Construction des sorties GeoJSON
+    #oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all")                #Sortie complète des zones
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr")                #Sortie des zones IFR
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "vfr")                #Sortie des zones VFR
     oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "cfd")                #Sortie spécifique vol-libre pour affichage dans la CFD (VictorB et https://flyxc.app)
-    oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")                 #Sortie spécifique vol-libre
+    #oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff")                 #Sortie spécifique vol-libre
     oJsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson)                  #Sorties par zonage géographique
 
-    #C-1/ Consolidation des espaces-aériens Openair
+    #C1/ Consolidation des espaces-aériens Openair
     oOpArea = OpenairArea(oLog, oAsCat)                                     #Gestion des zones
     for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
         oOpArea.mergeOpenairAirspacesFile(sKey, oFile)                      #Consolidation des fichiers Openair
 
-    #C-2/ Construction des sorties Openair
-    oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "all")                #Sortie complète des zones
+    #C2/ Construction des sorties Openair
+    #oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "all")                #Sortie complète des zones
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ifr")                #Sortie des zones IFR
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "vfr")                #Sortie des zones VFR
     oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "cfd")                #Sortie spécifique vol-libre pour validation des traces CFD (KevinB et https://flyxc.app)
-    oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ff")                 #Sortie spécifique vol-libre
+    #oOpArea.saveOpenairAirspacesFile(globalAsOpenair, "ff")                 #Sortie spécifique vol-libre
     oOpArea.saveOpenairAirspacesFile4Area(globalAsOpenair)                  #Sorties par zonage géographique
     return
 
 def makeKml(oGeo, sContext:str) -> None:
     oLog.info("makeKml() {0}".format(sContext), outConsole=True)
     sSrcFile:str = globalAsGeojson      #Default = '-all'
-    if sContext=="ff":
-        sSrcFile:str = sSrcFile.replace("-all", "-freeflight")
-    elif sContext=="ffExt":
-        sSrcFile:str = sSrcFile.replace("-all", "-freeflight-zoneExt")
+    sSrcFile:str = sSrcFile.replace("-all", sContext)
     sTrcFile:str = sSrcFile.replace(".geojson", "-optimized.geojson")
     sKmlFile:str = sSrcFile.replace(".geojson", ".kml")
 
-    #D-1/ Simplification du GeoJSON par optimisation du tracé
+    #D1/ Simplification du GeoJSON par optimisation du tracé
     oTrunc:GeojsonTrunc = None
     if oGeo==None:
         oTrunc = GeojsonTrunc(oLog=oLog)
         oTrunc.truncateGeojsonFile(sSrcFile, sTrcFile, iDecimal=3)          #iDecimal=2 for Low resolution map; 3 for standard quality or 4 for higth quility)
     else:
         oTrunc = GeojsonTrunc(oLog=oLog, oGeo=oGeo)
-    oTrunc = None   #Free
 
-    #D-2/ Construction d'une sortie KML sur la base d'un GeoJSON
+    #D2/ Construction d'une sortie KML sur la base d'un GeoJSON
     oKml:Geojson2Kml = None
     if oGeo==None:
         oKml = Geojson2Kml(oLog=oLog)
@@ -151,13 +152,15 @@ def makeKml(oGeo, sContext:str) -> None:
     oKml.createKmlDocument("Paragliding Openair Frensh Files", "Cartographies aériennes France - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/")
     oKml.makeAirspacesKml()
     oKml.writeKmlFile(sKmlFile, bExpand=0)
-    oKml = None   #Free
+    oKml = None     #Free
+    oTrunc = None   #Free
 
-    #D-3/ Construction du KMZ avec compression de données
-    sKmzFile = sKmlFile.replace(".kml", ".kmz")
-    oZip = zipfile.ZipFile(sKmzFile, 'w', zipfile.ZIP_DEFLATED)
-    oZip.write(sKmlFile)
-    oZip.close()
+    #D3/ Construction du KMZ avec compression de données
+    if os.path.exists(sKmlFile):
+        sKmzFile = sKmlFile.replace(".kml", ".kmz")
+        oZip = zipfile.ZipFile(sKmzFile, 'w', zipfile.ZIP_DEFLATED)
+        oZip.write(sKmlFile)
+        oZip.close()
     return
 
 def parseFile(sKey:str, oFile:dict) -> bool:
@@ -215,9 +218,7 @@ if __name__ == '__main__':
         oLog.critical(sAbortTreatment, outConsole=True)
     else:
         poaffMergeFiles()                                                   #Consolidation des fichiers
-        makeKml(None, "all")                                                #Sortie du ficher en KML
-        makeKml(None, "ff")                                                 #Sortie du ficher en KML
-        makeKml(None, "ffExt")                                              #Sortie du ficher en KML
+        makeKml(None, "-freeflight-geoFrench")                              #Sortie du ficher en KML
         #if not(testMode):
         #    oWeb = PoaffWebPage(oLog, outPath)
         #    oWeb.createPoaffWebPage(None)                                   #Preparation pour publication
