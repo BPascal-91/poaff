@@ -1,0 +1,6 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "Antilles", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "Antilles-Francaises.json", "creationDatetime": "2020-08-02T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[-60.94467, 17.55804], [-59.24728, 12.79615], [-59.73343, 12.35652], [-61.73157, 11.85164], [-62.46696, 12.16327], [-62.78488, 13.01033], [-63.47015, 18.45657], [-60.94467, 17.55804]]
+]}}]}
+	

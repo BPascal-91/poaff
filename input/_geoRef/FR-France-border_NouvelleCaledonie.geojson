@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "NouvelleCaledonie", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "Nouvelle-Caledonie.json", "creationDatetime": "2020-08-02T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[165.2635, -19.79878], [167.23143, -20.26455], [168.32526, -21.1336], [168.28989, -21.93868], [167.68263, -22.81196], [166.8282, -22.95327], [163.86687, -20.95031], [163.38416, -19.39935], [165.2635, -19.79878]]
+]}}]}

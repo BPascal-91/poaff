@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "StPierreMiquelon", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "SaintPierre-et-Miquelon.json", "creationDatetime": "2020-08-02T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[-56.27385, 47.13023], [-56.11043, 46.74579], [-56.30424, 46.74568], [-56.42732, 46.80246], [-56.4371, 47.11587], [-56.37093, 47.15831], [-56.27385, 47.13023]]
+]}}]}

@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "Mayotte", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "Mayotte.json", "creationDatetime": "2020-08-02T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[45.30622, -12.72066], [45.2894, -13.01353], [45.01886, -13.01587], [45.00444, -12.60225], [45.30622, -12.72066]]
+]}}]}

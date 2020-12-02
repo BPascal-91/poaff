@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "PolynesieFr", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "Polynesie-Francaise.json", "creationDatetime": "2020-08-02T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[-149.076, -17.70319], [-149.05952, -17.92415], [-149.26277, -18.10829], [-149.73656, -18.14027], [-150.7449, -17.84411], [-151.89056, -17.03344], [-152.19785, -16.74731], [-152.37482, -16.51457], [-152.34444, -16.34613], [-152.1011, -16.13245], [-151.74104, -16.09938], [-149.49109, -16.8814], [-149.076, -17.70319]]
+]}}]}

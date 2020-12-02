@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "FrenchVosgesJura", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "French-Vosges-and-Jura.xct", "creationDatetime": "2020-06-07T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[8.06798, 49.209702], [8.6585, 48.93079], [8.60082, 47.9855], [7.91692, 47.093681], [6.20512, 45.35088], [5.45358, 45.321678], [4.99319, 45.71595], [5.25068, 46.904961], [5.72086, 47.85424], [6.37231, 48.666882], [7.19818, 49.225948], [8.06798, 49.209702]]
+]}}]}

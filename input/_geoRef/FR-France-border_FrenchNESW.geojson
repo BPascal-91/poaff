@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "FrenchNESW", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "French-NE-SW.xct", "creationDatetime": "2020-08-02T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[2.09366, 51.264622], [-2.4382, 47.17025], [-2.4382, 47.17025], [-1.72683, 43.428139], [-1.72683, 43.428139], [3.20122, 42.460091], [3.20122, 42.460091], [6.84422, 49.378479], [6.84422, 49.378479], [2.09366, 51.264622], [2.09366, 51.264622]]
+]}}]}
