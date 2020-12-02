@@ -9,7 +9,12 @@ __pycache__/
 # Local resources
 output/
 input/BPa
+dataGouv-fr
 input/EuCtrl
+input/FFVL
 input/FFVP
 input/SIA
+input/Tests
+
+
 
