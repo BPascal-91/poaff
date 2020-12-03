@@ -236,8 +236,8 @@ class AsCatalog:
 
             #Suppression de zones non-utile, exemple en mer ou autres cas...
             elif oAs["id"] in ["EGWO2","LFD18B1","LFD18A5","LFD18B2","LFD214","LFD16B","LFD16D","LFD31","LFD54B1","LFD54B2","LFD143B",
-                    "LFML11","LFD54WB","LFR217/2","CTA47782","LFR191A","LFR108C","EGJJ2","CTA11562","LFR225","LFMD2","LFMN2","LFD54B3",
-                    "LFMT17","LFMT17.20","LFR157","LFPG7.3","LFPG7.4"]:
+                    "LFML11","LFD54WB","LFR217/2","CTA47782","LFR191A","LFR108C","EGJJ2","CTA11562","LFR225","LFMD2","LFD54B3",
+                    "LFR157","LFPG7.3","LFPG7.4","LFD54WA"]:
                 bClean = True
 
         if bClean:
@@ -256,6 +256,11 @@ class AsCatalog:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire
 
         #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
+        if sKeyFile in ["EuCtrl"]:
+            if oAs["id"] in ["LFST3"]:
+                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur bas de l'Id
+
+        #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
         if sKeyFile in ["EuCtrl","SIA"]:
             if oAs["id"] in ["LECM C","LEBL_D","LEBL_C","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
                   "LSR21","LSGG5","LSAZ","LSR81","LSR80","LSR26","LSR28","LSR27","EUC25SL1","EUC25SL2","LSR29","LFSB22C","LFSB80","LFSB24D",
@@ -264,12 +269,12 @@ class AsCatalog:
                   "EDTG","EDTGPJA","EDTL","EDSBCLDE","LFST1.1","EDSB1","EDSBCLDC","EDSBCLDA","EDSBCLDD","EDSBCLDF","EDR205C","EDRZRMZ",
                   "EDRZPJA","EDR205D","EDDR1","EDRJPJA","ELLXCLDB","EBBU TMZ","EBBU RMZ","ELLX1A","EBS27","EBS29","EBD29","EBS33-1","EBS177",
                   "EBD26","EBS161","ELLX5","EBSOUTH3","EBHTA06","EBHTA04A","EBFS","EBS02","EBS30","EBHTA10D","EBS182","LFQQ2","EBHTA10C",
-                  "EBKT TMZ","EBKT RMZ","EBR25","EBHTA10A","EBOS1","EBLFA11","EBR24B","ETXUTE","LFST30","LFST3","ELLX2F1","ELLX2F2",
-                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","LFD54WA"]:
+                  "EBKT TMZ","EBKT RMZ","EBR25","EBHTA10A","EBOS1","EBLFA11","EBR24B","ETXUTE","LFST30","ELLX2F1","ELLX2F2",
+                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","EBS87"]:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur bas de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: PWC France-Alpes, périmètre de performances (geoPWCFrenchAlps)
-            if oAs["id"] in ["LSR23","LSAG","LFLL04","LFLL03","LFLL04.20","LFLL02","LFD54WA","LFLL12"]:
+            if oAs["id"] in ["LSR23","LSAG","LFLL04","LFLL03","LFLL04.20","LFLL02","LFLL12"]:
                 oAs.update({"ExtOfPWCFrenchAlps":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire: Massif des Alpes (geoAlps)

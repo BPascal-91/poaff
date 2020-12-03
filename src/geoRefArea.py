@@ -40,7 +40,7 @@ class GeoRefArea:
         self.PolynesieFr:dict          = bpaTools.readJsonFile(self.inputPath + "FR-France-border_PolynesieFr.geojson")
         self.NouvelleCaledonie:dict    = bpaTools.readJsonFile(self.inputPath + "FR-France-border_NouvelleCaledonie.geojson")
         self.FrenchAll:dict            = self.makeFrenchAllTerritories()
-        self.PWCFrenchAlps:dict        = bpaTools.readJsonFile(self.inputPath + "FR_PWC-FranceAlpes_PerimetreDePerformances.geojson")
+        self.PWCFrenchAlps:dict        = bpaTools.readJsonFile(self.inputPath + "FR-PWC-FranceAlpes_PerimetreDePerformances.geojson")
         self.Alps:dict                 = bpaTools.readJsonFile(self.inputPath + "Alps-border_Alps.geojson")
         self.Netherlands:dict          = bpaTools.readJsonFile(self.inputPath + "NL-Netherlands-border_allAreas.geojson")
         self.Belgium:dict              = bpaTools.readJsonFile(self.inputPath + "BE-Belgium-border_allAreas.geojson")
