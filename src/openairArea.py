@@ -75,14 +75,14 @@ class OpenairZone:
 
 class OpenairArea:
 
-    def __init__(self, oLog, oAsCat) -> None:
+    def __init__(self, oLog:bpaTools.Logger, oAsCat:AsCatalog, partialConstruct:bool) -> None:
         bpaTools.initEvent(__file__, oLog)
         self.oLog:bpaTools.Logger       = oLog      #Log file
         self.oAsCat:AsCatalog           = oAsCat    #Catalogue des zones
         self.oGlobalOpenair:dict        = {}        #Liste globale des zones
         self.oOpenair:dict              = {}        #Liste temporaire des zones
         self.oZone:OpenairZone          = None      #Zone active
-        self.oGeoRefArea                = geoRefArea.GeoRefArea()
+        self.oGeoRefArea                = geoRefArea.GeoRefArea(partialConstruct)
         self.newZone()
         return
 
@@ -160,7 +160,7 @@ class OpenairArea:
                     aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
                     bIsExtAlt4Loc:bool = False
                     for sLoc in aFrLocation:
-                        if oGlobalCat[sLoc]:
+                        if oGlobalCat.get(sLoc, False):
                             bIsExtAlt4Loc = True
                             break
                     if bIsExtAlt4Loc:
@@ -192,7 +192,7 @@ class OpenairArea:
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
             if sContext == "cfd":
-                bIsArea = oGlobalCat["geoFrenchAll"]        #Filtrage sur la totalité des territoires Français
+                bIsArea = oGlobalCat.get("geoFrenchAll", False)        #Filtrage sur la totalité des territoires Français
 
             elif bIsInclude and sAreaKey:
                 if sAreaKey in oGlobalCat:

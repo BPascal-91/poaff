@@ -391,7 +391,7 @@ class AsCatalog:
             #if oAs["id"] in ["aucune zone a exclure de l'United-Kingdom"]:
             #    oAs.update({"ExtOfUnitedKingdom":True})       #Exclusion volontaire sur base de l'Id
 
-        #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires
+        #Fonctionnalité d'Exclusion volontaire de certains Parcs naturels
         if sKeyFile=="FFVP-Parcs":
             if oAs["UId"] in ["GrandParadis","Ordessa"]:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'UId
@@ -405,9 +405,16 @@ class AsCatalog:
             if oAs["UId"] in ["Sixt"]:
                 oAs.update({"ExtOfSwitzerland":True})       #Exclusion volontaire sur base de l'UId
 
+        #Fonctionnalité d'Exclusion volontaire de certaines zones de protection d'oiseaux
         if sKeyFile=="FFVP-Birds":
             if oAs["nameV"] in ["ZSM Mercantour-Ubaye Bird Protection Tampon"]:
                 oAs.update({"ExtOfItaly":True})       #Exclusion volontaire sur base du nommage verbeux
+
+        #Fonctionnalité d'Exclusion volontaire de certaines zones de protection d'oiseaux
+        if sKeyFile=="BPa-ZonesComp":
+            if oAs["id"] in ["CdR-Neige"]:
+                oAs.update({"ExtOfPWCFrenchAlps":True})       #Exclusion volontaire sur base de l'Id
+
 
         #Fonctionnalité spécifique pour exclusion standard et intégratrion spécifique pour la CFD
         #Les zones suivantes sont utilisées pour un affichage quasi-exaustif ou garantie des caulculs-automatisés

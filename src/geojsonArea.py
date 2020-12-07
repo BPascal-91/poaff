@@ -14,14 +14,14 @@ cstWithoutLocation      = "withoutGeoLocation"
 
 class GeojsonArea:
 
-    def __init__(self, oLog, oAsCat)-> None:
+    def __init__(self, oLog:bpaTools.Logger, oAsCat:AsCatalog, partialConstruct:bool)-> None:
         bpaTools.initEvent(__file__, oLog)
         self.oLog:bpaTools.Logger       = oLog                      #Log file
         self.oAsCat:AsCatalog           = oAsCat                    #Catalogue des zones
         self.oIdxGeoJSON:dict           = {}                        #Index de construction GeoJSON
         self.oGlobalGeoJSON:dict        = {}                        #Liste globale des zones
         self.oOutGeoJSON:dict           = {}                        #Sortie finale GeoJSON
-        self.oGeoRefArea                = geoRefArea.GeoRefArea()   #Zonnages géographique
+        self.oGeoRefArea                = geoRefArea.GeoRefArea(partialConstruct)
         return
 
     def saveGeoJsonAirspacesFile4Area(self, sFile:str, sContext="ff") -> None:
@@ -75,7 +75,7 @@ class GeojsonArea:
                     aFrLocation = ["geoFrenchAlps", "geoFrenchVosgesJura", "geoFrenchPyrenees"]
                     bIsExtAlt4Loc:bool = False
                     for sLoc in aFrLocation:
-                        if oGlobalCat[sLoc]:
+                        if oGlobalCat.get(sLoc, False):
                             bIsExtAlt4Loc = True
                             break
                     if bIsExtAlt4Loc:
@@ -128,7 +128,7 @@ class GeojsonArea:
             #Filtrage des zones par régionalisation
             bIsArea:bool = True
             if sContext == "cfd":
-                bIsArea = oGlobalCat["geoFrenchAll"]        #Filtrage sur la totalité des territoires Français
+                bIsArea = oGlobalCat.get("geoFrenchAll", False)        #Filtrage sur la totalité des territoires Français
 
             #Maintenir ou Supprimer la LTA-France1 des cartes non-concernées par le territoire Français --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
             elif oGlobalCat["id"]=="LTA13071":

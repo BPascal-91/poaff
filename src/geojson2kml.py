@@ -38,11 +38,13 @@ class Geojson2Kml:
 
     def writeKmlFile(self, fileDst:str, bExpand=0) -> None:
         if not self.oGeo:
-            self.oLog.warning("writeKmlFile() - Empty source geometry - File not created - " + fileDst, outConsole=False)
+            sMsg:str = " file {0} - Empty source geometry".format(fileDst)
+            self.oLog.warning("Unwritten" + sMsg, outConsole=False)
+            bpaTools.deleteFile(fileDst)
             return
 
         self.oKml.write(fileDst, bExpand=bExpand)
-        sMsg = "Write file - " + fileDst
+        sMsg:str = "Write file - " + fileDst
         if self.oLog:
             self.oLog.info(sMsg, outConsole=False)
         else:

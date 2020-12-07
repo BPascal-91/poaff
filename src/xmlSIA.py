@@ -27,19 +27,19 @@ def getMasterFrequecy(oFreqs:dict, sTypeZone:str="") -> str:
             if sFreqType in oFreqs:
                 sFreq = oFreqs[sFreqType][0]
                 if len(oFreqs[sFreqType]) == 3:
-                    sPhone = oFreqs[sFreqType][2]                
+                    sPhone = oFreqs[sFreqType][2]
                 break
     if sFreq!=None:
         if sFreq[-1]=="*":
             sFreq = sFreq[:-1]
-        sFreq = sFreqType[0].upper() + sFreqType[1:].lower() + "(" + sFreq 
+        sFreq = sFreqType[0].upper() + sFreqType[1:].lower() + "(" + sFreq
         if sPhone!=None:
             sFreq += " / " + sPhone
         sFreq += ")"
     return sFreq
 
 class XmlSIA:
-    
+
     def __init__(self, oLog):
         bpaTools.initEvent(__file__, oLog)
         self.oLog = oLog
@@ -60,14 +60,14 @@ class XmlSIA:
         #with open(sSrcFile, 'r', encoding='iso-8859-1') as f_in:
         #    f_in.readline()  # skipping header and letting soup create its own header
         #self.doc = BeautifulSoup(f_in.read(), 'xml', from_encoding='ISO-8859-1')
-        
+
         self.root = self.doc.find("SiaExport", recursive=False)
         self.srcVersion = self.root['Version']
         self.srcOrigin = self.root['Origine']
         self.srcCreated = self.root['Date']
         self.situation = self.root.find("Situation", recursive=False)
         return
-    
+
     def syncFrequecies(self, oCat:dict) -> None:
         sTitle = "Airspaces frequencies"
         sMsg = "Synchronyse {0}".format(sTitle)
@@ -76,13 +76,13 @@ class XmlSIA:
         idx = 0
         for sAsKey, oFreqs in self.oFrequecies.items():
             idx+=1
-            
+
             #OLD - Organiser les frequences radio par un tri alphabétique des typologies
             #oNewFrequencies:dict = {}
             #aFreqKeySort = sorted(oFreqs.keys())
             #for sFreqKey in aFreqKeySort:
             #    oNewFrequencies.update({sFreqKey:oFreqs[sFreqKey]})
-            
+
             #NEW - Organiser les frequences radio par la priorisation des typologies
             oNewFrequencies:dict = {}
             aFreqKeySort = sorted(oFreqs.keys())
@@ -92,13 +92,13 @@ class XmlSIA:
                         oNewFrequencies.update({sFreqKey:oFreqs[sFreqKey]})
             for sFreqKey in aFreqKeySort:
                 if not (sFreqKey in oNewFrequencies):
-                    oNewFrequencies.update({sFreqKey:oFreqs[sFreqKey]})                    
-   
+                    oNewFrequencies.update({sFreqKey:oFreqs[sFreqKey]})
+
             #Localisation principale
             sGUID:str = sAsKey
             self.affecFrequecies(oCat, sGUID, oNewFrequencies)
             self.syncGUIDdoublons(oCat, sGUID, oNewFrequencies)
-                    
+
             #Complement de recherche pour extension de zone
             #Exp: LFBD + LFBD1-1 + LFBD1-2 + LFBD2-1 + LFBD2-2 ../.. + LFBD7 + LFBD7.10 + LFBD7.20 + ../.. + LFBD10
             #Exp: LFLC + LFLC1 + LFLC1.20 + LFLC2.1 + LFLC2.1.20
@@ -110,7 +110,7 @@ class XmlSIA:
                 self.syncGUIDdoublons(oCat, sGUID1, oNewFrequencies)
                 self.syncGUID0(oCat, sGUID1, oNewFrequencies, "-")
                 self.syncGUID0(oCat, sGUID1, oNewFrequencies, ".")
-                
+
             #else:
             #    self.oLog.error("syncFrequecies() - Airspace not found {0} - {1}".format(sAsKey, oFreqs), outConsole=False)
             barre.update(idx)
@@ -121,7 +121,7 @@ class XmlSIA:
     def syncGUIDdoublons(self, oCat:dict, sGUID:str, oNewFrequencies) -> None:
         for lIdx in range(1, 10):
             sGUID0:str = sGUID + "@@-" + str(lIdx)     #Ajout indice de déblonnage de clé locale
-            self.affecFrequecies(oCat, sGUID0, oNewFrequencies)        
+            self.affecFrequecies(oCat, sGUID0, oNewFrequencies)
         return
 
     #Ajout indice sur clé locale pour localiser les extentions des zone
@@ -141,7 +141,7 @@ class XmlSIA:
             sGUID0:str = sGUID + sSep + str(lIdx)
             self.affecFrequecies(oCat, sGUID0, oNewFrequencies)
             sGUID0 += "0"
-            self.affecFrequecies(oCat, sGUID0, oNewFrequencies)                    
+            self.affecFrequecies(oCat, sGUID0, oNewFrequencies)
         return
 
     def affecFrequecies(self, oCat:dict, sGUID:str, oNewFrequencies) -> None:
@@ -159,22 +159,22 @@ class XmlSIA:
             #    if sDesc.find(sFreq) < 0:
             #        self.oLog.warning("syncFrequecies() - Data Quality - MasterFrequency not found in Description GUIf={0} - MasterFrequency={1} - [{2}] - Description={3}".format(sAsKey, sFreq, oFreqs, sDesc), outConsole=False)
         return
-    
+
 	#<Frequence pk="14660" lk="[LF][RK][TWR CAEN Tour][134.525]">
 	#	<Service pk="1760" lk="[LF][RK][TWR CAEN Tour]"/>
     #	<Frequence>134.525</Frequence>
 	#	<HorCode>HO</HorCode>
-	#</Frequence>   
+	#</Frequence>
     def loadFrequecies(self) -> None:
         sTitle = "Airspaces frequencies"
-        
+
         sXmlTag = "FrequenceS"
         oFreqS = self.situation.find(sXmlTag, recursive=False)
         if not oFreqS:
             sMsg = "Missing tags {0} - {1}".format(sXmlTag, sTitle)
             self.oLog.warning(sMsg, outConsole=True)
             return
-        
+
         sXmlTag = "Frequence"
         if not oFreqS.find(sXmlTag, recursive=False):
             sMsg = "Missing tags {0} - {1}".format(sXmlTag, sTitle)
@@ -189,6 +189,7 @@ class XmlSIA:
         #oFreqKey:dict = {}
         #oHorCode:dict = {}
         #oRemarque:dict = {}
+        oAixmTools = aixmReader.AixmTools(None)
         for o in oList:
             idx+=1
             if len(o)>1:                                            #Exclure les tags interne de type '<Frequence>360.125</Frequence>'
@@ -199,7 +200,7 @@ class XmlSIA:
                     aLocKey:list = sLocKey.split("]")
                     if len(aLocKey)>=3:                             #Exclure les Frequences sans référence exp - <Frequence lk="null[122.100]" pk="300054">
                         sAsKey:str = aLocKey[0] + aLocKey[1]        #AirspaceKey  = 'LFRK'
-                        aFreqKey:list = aLocKey[2].split(" ")            
+                        aFreqKey:list = aLocKey[2].split(" ")
                         sFreqKey:str = aFreqKey[0]                  #FrequenceKey = 'TWR','APP' etc...
                         bExclude:bool = bool(sFreqKey in ["VDF","UAC","UTA","SRE","CEV","PAR"])   #Exclure certains typage de fréquences
                         if not bExclude and o.Remarque:     #Exclure certaines fréquences non utiles
@@ -231,7 +232,7 @@ class XmlSIA:
                                 sFreq += "*"                            #(*) = Horaire non permanent
                             aDetFreq:list = [sFreq]
                             if o.Remarque:
-                                sRem:str = aixmReader.AixmTools(None).getField(o, "Remarque", "ret")["ret"]
+                                sRem:str = oAixmTools.getField(o, "Remarque", "ret")["ret"]
                                 aDetFreq.append(sRem)
                                 sPhone:str = self.getPhoneNumber(sRem)
                                 if sPhone:
@@ -266,7 +267,7 @@ class XmlSIA:
                 break
             lIdx+=1
         return sNewKey
-    
+
     def getPhoneNumber(self, sStr:str) -> str:
         sRet:str = ""
         lPos:int = sStr.lower().find("tel")
@@ -279,5 +280,4 @@ class XmlSIA:
                 elif sRet and (not sChar in [" ","."]):
                     break
         return sRet
-    
-    
+

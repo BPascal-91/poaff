@@ -17,7 +17,7 @@ import poaffCst
 
 class GeoRefArea:
 
-    def __init__(self)-> None:
+    def __init__(self, partialConstruct:bool)-> None:
         appPath = bpaTools.getFilePath(__file__)
         self.inputPath = appPath + "../input/_geoRef/"
 
@@ -63,50 +63,62 @@ class GeoRefArea:
         self.JerseyGuernsey:dict       = bpaTools.readJsonFile(self.inputPath + "UK-JerseyGuernsey-border_allAreas.geojson")
         self.Ireland:dict              = bpaTools.readJsonFile(self.inputPath + "IE-Ireland-border_allAreas.geojson")
 
-        #Lotissement des bordures à traiter
-        self.AreasRef = {
-                #"geoTestPolygon":          [self.aTestPolygon          , None          , "Test avec plusieurs zones ajourée/combinée"],
-                #"geoTestMultiPolygon":     [self.aTestMultiPolygon     , None          , "Test une seule multi-zone ajourée/combinée"],
-                #"geoFrenchExt":            [self.aFrenchExt            , None          , "France métropolitaine légèrement étandue aux frontières"],
-                "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français"],
-                "geoFrench":                [self.FrenchHR              , None          , "France métropolitaine"],
-                "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord"],
-                "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud"],
-                "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)"],
-                "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura"],
-                "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées"],
-                "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes"],
-                "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances"],
-                "geoCorse":                 [self.Corse                 , None          , "Corse"],
-                "geoLaReunion":             [self.LaReunion             , None          , "La Réunion"],
-                "geoGuyaneFr":              [self.GuyaneFr              , None          , "Guyane Française"],
-                "geoStPierreEtMiquelon":    [self.StPierreMiquelon      , None          , "Saint Pierre et Miquelon"],
-                "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises (Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade)"],
-                "geoMayotte":               [self.Mayotte               , None          , "Mayotte"],
-                "geoPolynesieFr":           [self.PolynesieFr           , None          , "Polynesie Française (Tahiti)"],
-                "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "Nouvelle Calédonie"],
-                "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes, avec France, Italie, Suisse et Autriche"],
-                "geoNetherlands":           [self.Netherlands           , None          , "Netherlands / Pays-Bas"],
-                "geoBelgium":               [self.Belgium               , None          , "Belgium / Belgique"],
-                "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg"],
-                "geoGermany":               [self.Germany               , None          , "Germany / Allemagne"],
-                "geoPoland":                [self.Poland                , None          , "Poland / Pologne"],
-                "geoCzechia":               [self.Czechia               , None          , "Czechia / Tchéquie"],
-                "geoSlovakia":              [self.Slovakia              , None          , "Slovakia / Slovaquie"],
-                "geoHungary":               [self.Hungary               , None          , "Hungary / Hongrie"],
-                "geoAustria":               [self.Austria               , None          , "Austria / Autriche"],
-                "geoSlovenia":              [self.Slovenia              , None          , "Slovenia / Slovénie"],
-                "geoSwitzerland":           [self.Switzerland           , None          , "Switzerland / Suisse"],
-                "geoLiechtenstein":         [self.Liechtenstein         , None          , "Liechtenstein"],
-                "geoDenmark":               [self.Denmark               , None          , "Denmark / Danemark"],
-                "geoAndorra":               [self.Andorra               , None          , "Andorra / Andorre"],
-                "geoSpain":                 [self.Spain                 , None          , "Spain / Espagne"],
-                "geoPortugal":              [self.Portugal              , None          , "Portugal"],
-                "geoItaly":                 [self.Italy                 , None          , "Italy / Italie"],
-                "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom / Royaume-Uni"],
-                "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Jersey-Guernsey"],
-                "geoIreland":               [self.Ireland               , None          , "Ireland / Irlande"],
-                }
+        if partialConstruct:
+            #Pour acceleration des tests en mises au points
+            self.AreasRef = {
+                    "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français"],
+                    "geoFrench":                [self.FrenchHR              , None          , "France métropolitaine"],
+                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura"],
+                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées"],
+                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes"],
+                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances"]
+                    }
+        else:
+            #Lotissement nominal des bordures à traiter
+            self.AreasRef = {
+                    #"geoTestPolygon":          [self.aTestPolygon          , None          , "Test avec plusieurs zones ajourée/combinée"],
+                    #"geoTestMultiPolygon":     [self.aTestMultiPolygon     , None          , "Test une seule multi-zone ajourée/combinée"],
+                    #"geoFrenchExt":            [self.aFrenchExt            , None          , "France métropolitaine légèrement étandue aux frontières"],
+                    "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français"],
+                    "geoFrench":                [self.FrenchHR              , None          , "France métropolitaine"],
+                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord"],
+                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud"],
+                    "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)"],
+                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura"],
+                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées"],
+                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes"],
+                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances"],
+                    "geoCorse":                 [self.Corse                 , None          , "Corse"],
+                    "geoLaReunion":             [self.LaReunion             , None          , "La Réunion"],
+                    "geoGuyaneFr":              [self.GuyaneFr              , None          , "Guyane Française"],
+                    "geoStPierreEtMiquelon":    [self.StPierreMiquelon      , None          , "Saint Pierre et Miquelon"],
+                    "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises (Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade)"],
+                    "geoMayotte":               [self.Mayotte               , None          , "Mayotte"],
+                    "geoPolynesieFr":           [self.PolynesieFr           , None          , "Polynesie Française (Tahiti)"],
+                    "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "Nouvelle Calédonie"],
+                    "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes, avec France, Italie, Suisse et Autriche"],
+                    "geoNetherlands":           [self.Netherlands           , None          , "Netherlands / Pays-Bas"],
+                    "geoBelgium":               [self.Belgium               , None          , "Belgium / Belgique"],
+                    "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg"],
+                    "geoGermany":               [self.Germany               , None          , "Germany / Allemagne"],
+                    "geoPoland":                [self.Poland                , None          , "Poland / Pologne"],
+                    "geoCzechia":               [self.Czechia               , None          , "Czechia / Tchéquie"],
+                    "geoSlovakia":              [self.Slovakia              , None          , "Slovakia / Slovaquie"],
+                    "geoHungary":               [self.Hungary               , None          , "Hungary / Hongrie"],
+                    "geoAustria":               [self.Austria               , None          , "Austria / Autriche"],
+                    "geoSlovenia":              [self.Slovenia              , None          , "Slovenia / Slovénie"],
+                    "geoSwitzerland":           [self.Switzerland           , None          , "Switzerland / Suisse"],
+                    "geoLiechtenstein":         [self.Liechtenstein         , None          , "Liechtenstein"],
+                    "geoDenmark":               [self.Denmark               , None          , "Denmark / Danemark"],
+                    "geoAndorra":               [self.Andorra               , None          , "Andorra / Andorre"],
+                    "geoSpain":                 [self.Spain                 , None          , "Spain / Espagne"],
+                    "geoPortugal":              [self.Portugal              , None          , "Portugal"],
+                    "geoItaly":                 [self.Italy                 , None          , "Italy / Italie"],
+                    "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom / Royaume-Uni"],
+                    "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Jersey-Guernsey"],
+                    "geoIreland":               [self.Ireland               , None          , "Ireland / Irlande"],
+                    }
+
         self.oShapeZoneRef = None
         self.oShapeZone = None
         return
@@ -277,5 +289,5 @@ class GeoRefArea:
 
 
 if __name__ == '__main__':
-    o = GeoRefArea()
+    o = GeoRefArea(True)
     o.tstInclusions()       #Tests de cette bibliothèque
