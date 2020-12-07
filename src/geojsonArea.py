@@ -4,6 +4,7 @@ from copy import deepcopy
 import bpaTools
 import poaffCst
 import aixmReader
+import aixm2json
 import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
@@ -154,9 +155,11 @@ class GeojsonArea:
                     bIsArea = False
 
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalGeoJSON):
-               oAs = self.oGlobalGeoJSON[sGlobalKey]
-               oArea = {poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties:oFinalCat, poaffCst.cstGeoGeometry:oAs}
-               oGeoFeatures.append(oArea)
+                if sContext != "cfd":
+                    aixm2json.addColorProperties(oFinalCat, self.oLog)      #Ajout des propriétés pour colorisation de la zone
+                oAs = self.oGlobalGeoJSON[sGlobalKey]
+                oArea = {poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties:oFinalCat, poaffCst.cstGeoGeometry:oAs}
+                oGeoFeatures.append(oArea)
             barre.update(idx)
         barre.reset()
 

@@ -427,6 +427,14 @@ class AsCatalog:
                 #[E] CTA PIARCO A.20 (id=CTA4351A.2)
                 #[E] OCA TAHITI.20 (id=OCA4521.20)
 
+        #Test pour test de flag sur une RTBA (SIA France, ne sont jamais activées les samedis/dimanches et jours fériés)
+        if sKeyFile in ["BPa-TestRefAlt"] and oAs["type"]=="R":
+            if oAs["id"] in ["Test4"]:
+                oAs.update({"type":"RTBA"})
+                oAs.update({"exceptSAT":True})
+                oAs.update({"exceptSUN":True})
+                oAs.update({"exceptHOL":True})
+
         #Toutes les RTBA du SIA France, ne sont jamais activées les samedis/dimanches et jours fériés
         if sKeyFile in ["EuCtrl","SIA"] and oAs["type"]=="R":
             if oAs["id"] in ["LFR45A","LFR45B","LFR45C","LFR45D","LFR45N2","LFR45N3","LFR45N4","LFR45N5.1","LFR45N5.2","LFR45S1","LFR45S2","LFR45S3","LFR45S4","LFR45S5","LFR45S6.1","LFR45S6.2","LFR45S7","LFR45NS","LFR46A","LFR46B","LFR46C","LFR46D","LFR46E1","LFR46E2","LFR46F1","LFR46F2","LFR46F3","LFR46G","LFR46N1","LFR46N2","LFR69","LFR139","LFR142","LFR143","LFR144","LFR145","LFR147","LFR165","LFR152","LFR166A","LFR166B","LFR166C","LFR56","LFR57","LFR149A","LFR149B","LFR149D","LFR149E","LFR193A","LFR193B","LFR590A","LFR590B","LFR191A","LFR191B","LFR191C","LFR589A","LFR589B","LFR591","LFR592","LFR593A","LFR593B"]:
