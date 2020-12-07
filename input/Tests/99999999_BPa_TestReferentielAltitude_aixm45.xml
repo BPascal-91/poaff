@@ -15,22 +15,25 @@
 	<Ase>
 		<AseUid mid="zone-1">
 			<codeType>PROTECT</codeType>
-			<codeId>TestZone1</codeId>
+			<codeId>LFSX9.1</codeId>
 		</AseUid>
-		<txtName>Test-Zone1 (sans plancher)</txtName>
+		<txtName>Test-Zone1 ("sans plancher" + "tests d'accentuations")</txtName>
 		<codeActivity>FAUNA</codeActivity>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
 		<uomDistVerUpper>FT</uomDistVerUpper>
 		<Att>
 			<codeWorkHr>H24</codeWorkHr>
-			<txtRmkWorkHr>H24</txtRmkWorkHr>
+			<txtRmkWorkHr>Tests d'accentuations (txtRmkWorkHr): "à-â-é-è-î-ï-ô-ù"</txtRmkWorkHr>
 		</Att>
+		<txtRmk>Test-Zone1 (sans plancher) -  Tests d'accentuations (txtRmk): "à-â-é-è-î-ï-ô-ù"#
+SUM : - 1HR#
+Excluding the French part of SARREBRUCK CTR.</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="zone-2">
 			<codeType>ZSM</codeType>
-			<codeId>TestZone2</codeId>
+			<codeId>LFSX9.2</codeId>
 		</AseUid>
 		<txtName>Test-Zone2 (sans plafond)</txtName>
 		<codeDistVerLower>ALT</codeDistVerLower>
@@ -40,6 +43,9 @@
 			<codeWorkHr>H24</codeWorkHr>
 			<txtRmkWorkHr>H24</txtRmkWorkHr>
 		</Att>
+		<txtRmk>Test-Zone2 (sans plafond)#
+SUM : - 1HR#
+Excluding the French part of SARREBRUCK CTR.</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test1">
@@ -214,7 +220,7 @@
 		<AbdUid mid="zone-1">
 			<AseUid mid="zone-1">
 				<codeType>PROTECT</codeType>
-				<codeId>TestZone1</codeId>
+				<codeId>LFSX9.1</codeId>
 			</AseUid>
 		</AbdUid>
 		<Circle>
@@ -229,7 +235,7 @@
 		<AbdUid mid="zone-2">
 			<AseUid mid="zone-2">
 				<codeType>ZSM</codeType>
-				<codeId>TestZone2</codeId>
+				<codeId>LFSX9.2</codeId>
 			</AseUid>
 		</AbdUid>
 		<Circle>

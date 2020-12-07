@@ -329,7 +329,7 @@
 				<Frequence>129.925</Frequence>
 				<HorCode>HX</HorCode>
 				<HorTxt>HOR ATS</HorTxt>
-				<Remarque>Particulière transit/Particular to transit</Remarque>
+				<Remarque>Test d'accentuations: "à-â-é-è-î-ï-ô-ù" / Particulière transit/Particular to transit</Remarque>
 			</Frequence>
 			<Frequence pk="13151" lk="[LF][UTA FRANCE][UAC BREST Contrôle][119.825]">
 				<Service pk="1501" lk="[LF][UTA FRANCE][UAC BREST Contrôle]"/>
