@@ -27,7 +27,7 @@ class GeoRefArea:
         #self.aFrenchExt:dict           = bpaTools.readJsonFile(self.inputPath + "geoFrenchExt_border.geojson")
         self.French:dict               = bpaTools.readJsonFile(self.inputPath + "geoFrench_border.geojson")
         self.FrenchNorth:dict          = bpaTools.readJsonFile(self.inputPath + "geoFrenchNorth_border.geojson")
-        self.FrenchSouth:dict          = bpaTools.readJsonFile(self.inputPath + "geoFrenchSouth_.geojson")
+        self.FrenchSouth:dict          = bpaTools.readJsonFile(self.inputPath + "geoFrenchSouth_border.geojson")
         self.FrenchNESW:dict           = bpaTools.readJsonFile(self.inputPath + "geoFrenchNESW_border.geojson")
         self.FrenchVosgesJura:dict     = bpaTools.readJsonFile(self.inputPath + "geoFrenchVosgesJura_border.geojson")
         self.FrenchPyrenees:dict       = bpaTools.readJsonFile(self.inputPath + "geoFrenchPyrenees_border.geojson")
@@ -289,5 +289,5 @@ class GeoRefArea:
 
 
 if __name__ == '__main__':
-    o = GeoRefArea(True)
+    o = GeoRefArea(False)
     o.tstInclusions()       #Tests de cette bibliothèque
