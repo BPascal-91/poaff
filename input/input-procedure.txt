@@ -21,8 +21,9 @@
 		Se connecter dans mon DRIVE, document partagés - https://drive.google.com/drive/u/1/shared-with-me
 		Récupérer le fichier et le Renommer aux format: 20201008_aixm4.5_Eurocontrol-FR.xml
 		Placeer le fic Zip a placer ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\EuCtrl
-		Ouvrir le fichier avec Notepad++ (XMLspy plante pour Europe) et appliquer ces modification si nécessaire:
+		Ouvrir le fichier avec Notepad++ (XMLspy plante pour Europe) et appliquer les modifications si nécessaire:
 		Enregistrer sous ... meme nom avec '_BPa' à la fin
+		--> rechercher <AseUid mid="311103234">
 			<!-- Correction BPascal - inversion Upper / Lower -->
 				<codeDistVerUpper>STD</codeDistVerUpper>
 				<valDistVerUpper>195</valDistVerUpper>
@@ -30,7 +31,7 @@
 				<codeDistVerLower>HEI</codeDistVerLower>
 				<valDistVerLower>1000</valDistVerLower>
 				<uomDistVerLower>FT</uomDistVerLower>		
-			pour la zone aérienne suivante:
+			pour la zone aérienne suivante (Upper et Lower sont inversés):
 			<Ase>
 				<AseUid mid="311103234">
 					<codeType>CLASS</codeType>

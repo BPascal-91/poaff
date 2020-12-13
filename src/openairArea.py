@@ -103,8 +103,8 @@ class OpenairArea:
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
-            #Pour les sorties "-gpsWithoutTopo", ne jamais générer: All, geoFrenchAll (car trop lourd pour la mémoire des petits GPS)
-            aToken = ["","geoFrenchAll"]
+            #Pour les sorties "-gpsWithoutTopo", ne jamais générer: ""=All (car trop lourd pour la mémoire des petits GPS)
+            aToken = [""]
             bIsInclude = not bool(sAreaKey in aToken)
             if bIsInclude:
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)

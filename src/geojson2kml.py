@@ -227,10 +227,10 @@ class Geojson2Kml:
                             oCoords:list        = oZone[6]
 
                             #Red and fill
-                            if  sKeyClass in ["A","B","C","P","CTR","CTR-P","TMA","TMA-P"]:
+                            if  sKeyClass in ["A","B","C","P","CTR","CTR-P","TMA","TMA-P","TMZ","RMZ/TMZ","TMZ/RMZ"]:
                                 sStyle = "#transRedPoly"
                             #Red and No-Fill
-                            elif sKeyClass in ["TMZ","RMZ/TMZ","TMZ/RMZ","CTA","CTA-P","FIR","FIR-P","NO-FIR","PART","CLASS","SECTOR","SECTOR-C","OCA","OCA-P","OTA","OTA-P","UTA","UTA-P","UIR","UIR-P","TSA","CBA","RCA","RAS","TRA","AMA","ASR","ADIZ","POLITICAL","OTHER","AWY"]:
+                            elif sKeyClass in ["CTA","CTA-P","FIR","FIR-P","NO-FIR","PART","CLASS","SECTOR","SECTOR-C","OCA","OCA-P","OTA","OTA-P","UTA","UTA-P","UIR","UIR-P","TSA","CBA","RCA","RAS","TRA","AMA","ASR","ADIZ","POLITICAL","OTHER","AWY"]:
                                 sStyle = "#noFillRedPoly"
                             #Purple and No-fill
                             elif sKeyClass=="D" and sTypezZone=="LTA":

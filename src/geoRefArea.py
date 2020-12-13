@@ -24,50 +24,50 @@ class GeoRefArea:
         #Identification des bordures des zonages géographiques de références
         #self.aTestPolygon:dict         = bpaTools.readJsonFile(self.inputPath + "_test-Polygons.geojson")
         #self.aTestMultiPolygon:dict    = bpaTools.readJsonFile(self.inputPath + "_test-MultiPolygons.geojson")
-        #self.aFrenchExt:dict           = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchExt.geojson")
-        self.FrenchHR:dict             = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchMet_HR.geojson")
-        self.FrenchNorth:dict          = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchNorth.geojson")
-        self.FrenchSouth:dict          = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchSouth.geojson")
-        self.FrenchNESW:dict           = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchNESW.geojson")
-        self.FrenchVosgesJura:dict     = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchVosgesJura.geojson")
-        self.FrenchPyrenees:dict       = bpaTools.readJsonFile(self.inputPath + "FR-France-border_FrenchPyrenees.geojson")
-        self.Corse:dict                = bpaTools.readJsonFile(self.inputPath + "FR-France-border_Corse.geojson")
-        self.LaReunion:dict            = bpaTools.readJsonFile(self.inputPath + "FR-France-border_LaReunion.geojson")
-        self.GuyaneFr:dict             = bpaTools.readJsonFile(self.inputPath + "FR-France-border_GuyaneFr.geojson")
-        self.StPierreMiquelon:dict     = bpaTools.readJsonFile(self.inputPath + "FR-France-border_StPierreMiquelon.geojson")
-        self.AntillesFr:dict           = bpaTools.readJsonFile(self.inputPath + "FR-France-border_AntillesFr.geojson")
-        self.Mayotte:dict              = bpaTools.readJsonFile(self.inputPath + "FR-France-border_Mayotte.geojson")
-        self.PolynesieFr:dict          = bpaTools.readJsonFile(self.inputPath + "FR-France-border_PolynesieFr.geojson")
-        self.NouvelleCaledonie:dict    = bpaTools.readJsonFile(self.inputPath + "FR-France-border_NouvelleCaledonie.geojson")
+        #self.aFrenchExt:dict           = bpaTools.readJsonFile(self.inputPath + "geoFrenchExt_border.geojson")
+        self.French:dict               = bpaTools.readJsonFile(self.inputPath + "geoFrench_border.geojson")
+        self.FrenchNorth:dict          = bpaTools.readJsonFile(self.inputPath + "geoFrenchNorth_border.geojson")
+        self.FrenchSouth:dict          = bpaTools.readJsonFile(self.inputPath + "geoFrenchSouth_.geojson")
+        self.FrenchNESW:dict           = bpaTools.readJsonFile(self.inputPath + "geoFrenchNESW_border.geojson")
+        self.FrenchVosgesJura:dict     = bpaTools.readJsonFile(self.inputPath + "geoFrenchVosgesJura_border.geojson")
+        self.FrenchPyrenees:dict       = bpaTools.readJsonFile(self.inputPath + "geoFrenchPyrenees_border.geojson")
+        self.Corse:dict                = bpaTools.readJsonFile(self.inputPath + "geoCorse_border.geojson")
+        self.LaReunion:dict            = bpaTools.readJsonFile(self.inputPath + "geoLaReunion_border.geojson")
+        self.GuyaneFr:dict             = bpaTools.readJsonFile(self.inputPath + "geoGuyaneFr_border.geojson")
+        self.StPierreEtMiquelon:dict   = bpaTools.readJsonFile(self.inputPath + "geoStPierreEtMiquelon_border.geojson")
+        self.AntillesFr:dict           = bpaTools.readJsonFile(self.inputPath + "geoAntillesFr_border.geojson")
+        self.Mayotte:dict              = bpaTools.readJsonFile(self.inputPath + "geoMayotte_border.geojson")
+        self.PolynesieFr:dict          = bpaTools.readJsonFile(self.inputPath + "geoPolynesieFr_border.geojson")
+        self.NouvelleCaledonie:dict    = bpaTools.readJsonFile(self.inputPath + "geoNouvelleCaledonie_border.geojson")
         self.FrenchAll:dict            = self.makeFrenchAllTerritories()
-        self.PWCFrenchAlps:dict        = bpaTools.readJsonFile(self.inputPath + "FR-PWC-FranceAlpes_PerimetreDePerformances.geojson")
-        self.Alps:dict                 = bpaTools.readJsonFile(self.inputPath + "Alps-border_Alps.geojson")
-        self.Netherlands:dict          = bpaTools.readJsonFile(self.inputPath + "NL-Netherlands-border_allAreas.geojson")
-        self.Belgium:dict              = bpaTools.readJsonFile(self.inputPath + "BE-Belgium-border_allAreas.geojson")
-        self.Luxembourg:dict           = bpaTools.readJsonFile(self.inputPath + "LU-Luxembourg-border_allAreas.geojson")
-        self.Germany:dict              = bpaTools.readJsonFile(self.inputPath + "DE-Germany-border_allAreas.geojson")
-        self.Poland:dict               = bpaTools.readJsonFile(self.inputPath + "PL-Poland-border_allAreas.geojson")
-        self.Czechia:dict              = bpaTools.readJsonFile(self.inputPath + "CZ-Czechia-border_allAreas.geojson")
-        self.Slovakia:dict             = bpaTools.readJsonFile(self.inputPath + "SK-Slovakia-border_allAreas.geojson")
-        self.Hungary:dict              = bpaTools.readJsonFile(self.inputPath + "HU-Hungary-border_allAreas.geojson")
-        self.Austria:dict              = bpaTools.readJsonFile(self.inputPath + "AT-Austria-border_allAreas.geojson")
-        self.Slovenia:dict             = bpaTools.readJsonFile(self.inputPath + "SI-Slovenia-border_allAreas.geojson")
-        self.Switzerland:dict          = bpaTools.readJsonFile(self.inputPath + "CH-Switzerland-border_allAreas.geojson")
-        self.Liechtenstein:dict        = bpaTools.readJsonFile(self.inputPath + "LI-Liechtenstein-border_allAreas.geojson")
-        self.Andorra:dict              = bpaTools.readJsonFile(self.inputPath + "AD-Andorra-border_allAreas.geojson")
-        self.Denmark:dict              = bpaTools.readJsonFile(self.inputPath + "DK-Denmark-border_allAreas.geojson")
-        self.Spain:dict                = bpaTools.readJsonFile(self.inputPath + "ES-Spain-border_allAreas.geojson")
-        self.Portugal:dict             = bpaTools.readJsonFile(self.inputPath + "PT-Portugal-border_allAreas.geojson")
-        self.Italy:dict                = bpaTools.readJsonFile(self.inputPath + "IT-Italy-border_allAreas.geojson")
-        self.UnitedKingdom:dict        = bpaTools.readJsonFile(self.inputPath + "UK-United-Kingdom-border_allAreas.geojson")
-        self.JerseyGuernsey:dict       = bpaTools.readJsonFile(self.inputPath + "UK-JerseyGuernsey-border_allAreas.geojson")
-        self.Ireland:dict              = bpaTools.readJsonFile(self.inputPath + "IE-Ireland-border_allAreas.geojson")
+        self.PWCFrenchAlps:dict        = bpaTools.readJsonFile(self.inputPath + "geoPWCFrenchAlps_border.geojson")
+        self.Alps:dict                 = bpaTools.readJsonFile(self.inputPath + "geoAlps_border.geojson")
+        self.Netherlands:dict          = bpaTools.readJsonFile(self.inputPath + "geoNetherlands_border.geojson")
+        self.Belgium:dict              = bpaTools.readJsonFile(self.inputPath + "geoBelgium_border.geojson")
+        self.Luxembourg:dict           = bpaTools.readJsonFile(self.inputPath + "geoLuxembourg_border.geojson")
+        self.Germany:dict              = bpaTools.readJsonFile(self.inputPath + "geoGermany_border.geojson")
+        self.Poland:dict               = bpaTools.readJsonFile(self.inputPath + "geoPoland_border.geojson")
+        self.Czechia:dict              = bpaTools.readJsonFile(self.inputPath + "geoCzechia_border.geojson")
+        self.Slovakia:dict             = bpaTools.readJsonFile(self.inputPath + "geoSlovakia_border.geojson")
+        self.Hungary:dict              = bpaTools.readJsonFile(self.inputPath + "geoHungary_border.geojson")
+        self.Austria:dict              = bpaTools.readJsonFile(self.inputPath + "geoAustria_border.geojson")
+        self.Slovenia:dict             = bpaTools.readJsonFile(self.inputPath + "geoSlovenia_border.geojson")
+        self.Switzerland:dict          = bpaTools.readJsonFile(self.inputPath + "geoSwitzerland_border.geojson")
+        self.Liechtenstein:dict        = bpaTools.readJsonFile(self.inputPath + "geoLiechtenstein_border.geojson")
+        self.Andorra:dict              = bpaTools.readJsonFile(self.inputPath + "geoAndorra_border.geojson")
+        self.Denmark:dict              = bpaTools.readJsonFile(self.inputPath + "geoDenmark_border.geojson")
+        self.Spain:dict                = bpaTools.readJsonFile(self.inputPath + "geoSpain_border.geojson")
+        self.Portugal:dict             = bpaTools.readJsonFile(self.inputPath + "geoPortugal_border.geojson")
+        self.Italy:dict                = bpaTools.readJsonFile(self.inputPath + "geoItaly_border.geojson")
+        self.UnitedKingdom:dict        = bpaTools.readJsonFile(self.inputPath + "geoUnitedKingdom_border.geojson")
+        self.JerseyGuernsey:dict       = bpaTools.readJsonFile(self.inputPath + "geoJerseyGuernsey_border.geojson")
+        self.Ireland:dict              = bpaTools.readJsonFile(self.inputPath + "geoIreland_border.geojson")
 
         if partialConstruct:
             #Pour acceleration des tests en mises au points
             self.AreasRef = {
                     "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français"],
-                    "geoFrench":                [self.FrenchHR              , None          , "France métropolitaine"],
+                    "geoFrench":                [self.French                , None          , "France métropolitaine"],
                     "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura"],
                     "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées"],
                     "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes"],
@@ -80,23 +80,23 @@ class GeoRefArea:
                     #"geoTestMultiPolygon":     [self.aTestMultiPolygon     , None          , "Test une seule multi-zone ajourée/combinée"],
                     #"geoFrenchExt":            [self.aFrenchExt            , None          , "France métropolitaine légèrement étandue aux frontières"],
                     "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français"],
-                    "geoFrench":                [self.FrenchHR              , None          , "France métropolitaine"],
+                    "geoFrench":                [self.French                , None          , "France métropolitaine"],
                     "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord"],
                     "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud"],
                     "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)"],
                     "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura"],
                     "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées"],
                     "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes"],
-                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances"],
+                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes", "Périmètre de performance spécifique pour l'organisation des (PWC) Coupes-du-Monde de Parapente France-Alpes \n https://federation.ffvl.fr/"],
                     "geoCorse":                 [self.Corse                 , None          , "Corse"],
                     "geoLaReunion":             [self.LaReunion             , None          , "La Réunion"],
                     "geoGuyaneFr":              [self.GuyaneFr              , None          , "Guyane Française"],
-                    "geoStPierreEtMiquelon":    [self.StPierreMiquelon      , None          , "Saint Pierre et Miquelon"],
-                    "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises (Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade)"],
+                    "geoStPierreEtMiquelon":    [self.StPierreEtMiquelon    , None          , "Saint Pierre et Miquelon"],
+                    "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises", "Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade"],
                     "geoMayotte":               [self.Mayotte               , None          , "Mayotte"],
                     "geoPolynesieFr":           [self.PolynesieFr           , None          , "Polynesie Française (Tahiti)"],
                     "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "Nouvelle Calédonie"],
-                    "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes, avec France, Italie, Suisse et Autriche"],
+                    "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes", "France, Italie, Suisse et Autriche"],
                     "geoNetherlands":           [self.Netherlands           , None          , "Netherlands / Pays-Bas"],
                     "geoBelgium":               [self.Belgium               , None          , "Belgium / Belgique"],
                     "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg"],
@@ -124,13 +124,13 @@ class GeoRefArea:
         return
 
     def makeFrenchAllTerritories(self) -> dict:
-        geoJSON:dict = copy.deepcopy(self.FrenchHR)
+        geoJSON:dict = copy.deepcopy(self.French)
         aFeatures = geoJSON[poaffCst.cstGeoFeatures]
-        aAreas:list = [self.Corse, self.LaReunion, self.GuyaneFr, self.StPierreMiquelon, self.AntillesFr, self.Mayotte, self.PolynesieFr, self.NouvelleCaledonie]
+        aAreas:list = [self.Corse, self.LaReunion, self.GuyaneFr, self.StPierreEtMiquelon, self.AntillesFr, self.Mayotte, self.PolynesieFr, self.NouvelleCaledonie]
         for gJS in aAreas:
             oFeature = gJS[poaffCst.cstGeoFeatures][0]
             aFeatures.append(oFeature)
-        #bpaTools.writeJsonFile(self.inputPath + "__FR-France-border_FrenchAllTerritories.geojson", geoJSON)
+        #bpaTools.writeJsonFile(self.inputPath + "__geoFrenchAll_border.geojson", geoJSON)
         return geoJSON
 
     #Controle de conformité de la fermeture d'une zone. Erreur levée si le premier-point de la géométrie est différent du dernier
