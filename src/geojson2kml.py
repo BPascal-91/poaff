@@ -185,20 +185,26 @@ class Geojson2Kml:
                 #   Orange - FF0080FF
                 #   Marron - FF336699
                 #   Rose - ffff00ff
-                self.createKmlStyle(self.oKmlDoc, "transRedPoly",       "ff0000ff", "6f0000ff")
+                self.createKmlStyle(self.oKmlDoc, "fillRedPoly",        "ff0000ff", "6f0000ff")
+                self.createKmlStyle(self.oKmlDoc, "transRedPoly",       "ff0000ff", "3f0000ff")
                 self.createKmlStyle(self.oKmlDoc, "noFillRedPoly",      "ff0000ff", "1f0000ff")
-                self.createKmlStyle(self.oKmlDoc, "transRedPurplePoly", "ff0000ff", "6f800080")
-                self.createKmlStyle(self.oKmlDoc, "transPurplePoly",    "ff800080", "6F800080")
+                self.createKmlStyle(self.oKmlDoc, "fillRedPurplePoly",  "ff0000ff", "6f800080")
+                self.createKmlStyle(self.oKmlDoc, "transRedPurplePoly", "ff0000ff", "3f800080")
+                self.createKmlStyle(self.oKmlDoc, "fillPurplePoly",     "ff800080", "6F800080")
+                self.createKmlStyle(self.oKmlDoc, "transPurplePoly",    "ff800080", "3F800080")
                 self.createKmlStyle(self.oKmlDoc, "noFillPurplePoly",   "ff800080", "1f800080")
-                self.createKmlStyle(self.oKmlDoc, "transOrangePoly",    "ff0080ff", "6f0080ff")
-                self.createKmlStyle(self.oKmlDoc, "transBrownPoly",     "ff004b9c", "6f004b9c")
+                self.createKmlStyle(self.oKmlDoc, "fillOrangePoly",     "ff0080ff", "6f0080ff")
+                self.createKmlStyle(self.oKmlDoc, "transOrangePoly",    "ff0080ff", "3f0080ff")
                 self.createKmlStyle(self.oKmlDoc, "noFillOrangePoly",   "ff0080ff", "1f0080ff")
-                self.createKmlStyle(self.oKmlDoc, "transBluePoly",      "ffff0000", "6fff0000")
+                self.createKmlStyle(self.oKmlDoc, "fillBrownPoly",      "ff004b9c", "6f004b9c")
+                self.createKmlStyle(self.oKmlDoc, "transBrownPoly",     "ff004b9c", "3f004b9c")
+                #self.createKmlStyle(self.oKmlDoc, "fillBluePoly",       "ffff0000", "6fff0000")
+                self.createKmlStyle(self.oKmlDoc, "transBluePoly",      "ffff0000", "3fff0000")
                 self.createKmlStyle(self.oKmlDoc, "noFillBluePoly",     "ffff0000", "1fff0000")
-                self.createKmlStyle(self.oKmlDoc, "transGreenPoly",     "ff00ff00", "4f00ff00")
+                self.createKmlStyle(self.oKmlDoc, "transGreenPoly",     "ff00ff00", "3f00ff00")
                 self.createKmlStyle(self.oKmlDoc, "noFillGreenPoly",    "ff00ff00", "1f00ff00")
                 self.createKmlStyle(self.oKmlDoc, "transYellowPoly",    "ff00ffff", "6f00ffff")
-                self.createKmlStyle(self.oKmlDoc, "noFillYellowPoly","ff00ffff", "1f00ffff")
+                #self.createKmlStyle(self.oKmlDoc, "noFillYellowPoly","ff00ffff", "1f00ffff")
 
                 barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
                 idx = 0
@@ -227,8 +233,14 @@ class Geojson2Kml:
                             oCoords:list        = oZone[6]
 
                             #Red and fill
-                            if  sKeyClass in ["A","B","C","P","CTR","CTR-P","TMA","TMA-P","TMZ","RMZ/TMZ","TMZ/RMZ"]:
-                                sStyle = "#transRedPoly"
+                            if  sKeyClass in ["P","ZIT"]:
+                                sStyle = "#fillRedPoly"
+                            #Red and fill
+                            elif  sKeyClass in ["A","B","C","CTR","CTR-P","TMA","TMA-P","TMZ","RMZ/TMZ","TMZ/RMZ"]:
+                                if sLowerM==0:
+                                    sStyle = "#fillRedPoly"
+                                else:
+                                    sStyle = "#transRedPoly"
                             #Red and No-Fill
                             elif sKeyClass in ["CTA","CTA-P","FIR","FIR-P","NO-FIR","PART","CLASS","SECTOR","SECTOR-C","OCA","OCA-P","OTA","OTA-P","UTA","UTA-P","UIR","UIR-P","TSA","CBA","RCA","RAS","TRA","AMA","ASR","ADIZ","POLITICAL","OTHER","AWY"]:
                                 sStyle = "#noFillRedPoly"
@@ -237,33 +249,54 @@ class Geojson2Kml:
                                 sStyle = "#noFillPurplePoly"
                             #Red and fill
                             elif sKeyClass in ["D","D-AMC"] and sDeclassifiable!="Yes":
-                                sStyle = "#transRedPoly"
+                                if sLowerM==0:
+                                    sStyle = "#fillRedPoly"
+                                else:
+                                    sStyle = "#transRedPoly"
                             #Purple and fill
                             elif sKeyClass in ["D","D-AMC"] and sDeclassifiable=="Yes":
-                                sStyle = "#transRedPurplePoly"
+                                if sLowerM==0:
+                                    sStyle = "#fillRedPurplePoly"
+                                else:
+                                    sStyle = "#transRedPurplePoly"
                             #Purple and fill
                             elif sKeyClass in ["R","R-AMC"] and sTypezZone!="RTBA":
-                                sStyle = "#transPurplePoly"
+                                if sLowerM==0:
+                                    sStyle = "#fillPurplePoly"
+                                else:
+                                    sStyle = "#transPurplePoly"
                             #Brown and fill
                             elif sKeyClass in ["R","R-AMC"] and sTypezZone=="RTBA":
-                                sStyle = "#transBrownPoly"
+                                if sLowerM==0:
+                                    sStyle = "#fillBrownPoly"
+                                else:
+                                    sStyle = "#transBrownPoly"
                             #Orange
                             elif sKeyClass in ["Q","GP"]:
                                 sStyle = "#noFillOrangePoly"
                             #Orange and No-Fill
                             elif sKeyClass in ["RMZ","W"]:
-                                sStyle = "#transOrangePoly"
+                                if sLowerM==0:
+                                    sStyle = "#fillOrangePoly"
+                                else:
+                                    sStyle = "#transOrangePoly"
                             #Blue
                             elif sKeyClass in ["ZSM","BIRD","PROTECT","D-OTHER","SUR","AER","TRPLA","TRVL","VOL"]:
-                                sStyle = "#noFillBluePoly"
+                                if sLowerM==0:
+                                    sStyle = "#transBluePoly"
+                                else:
+                                    sStyle = "#noFillBluePoly"
                             #Green
                             elif sKeyClass in ["E","F","G"]:
-                                sStyle = "#noFillGreenPoly"
+                                if sLowerM==0:
+                                    sStyle = "#transGreenPoly"
+                                else:
+                                    sStyle = "#noFillGreenPoly"
                             #Yellow
                             else:
                                 sStyle = "#transYellowPoly"
                                 if self.oLog:
-                                    self.oLog.warning("makeAirspacesKml() - No color for KeyClass = " + sKeyClass, outConsole=False)
+                                    self.oLog.warning("KML Color not found for Class={0}".format(sKeyClass), outConsole=False)
 
                             oPlacemark = self.createKmlFolder(oFolderClass, "Placemark", sZoneName, sVisibility=sVisiblility, sDescription=sDesc)
                             self.oKml.addTag(oPlacemark, "styleUrl", sValue=sStyle)

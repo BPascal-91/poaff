@@ -2,7 +2,6 @@
 
 import os, sys, shutil, datetime
 
-
 try:
     import bpaTools
 except ImportError:
@@ -120,13 +119,18 @@ class PoaffWebPage:
             else:
                 sFileType:str = "?"
 
+            sUrlSite:str = "http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/"
+            sUrlFile:str = sUrlSite + "files/"
+            if str(aLine[1]).find("_border")>0:
+                sUrlFile += "geoRef/"
+
             if bPartial and aLine[0]:
                 sLine += '"{0}";'.format(aLine[1])                      #Fichier
                 sLine += '"{0}";'.format(aLine[2])                      #Date de transformation
                 sLine += '"{0}";'.format(sFileType)                     #Type
                 sLine += '"{0}";'.format(aLine[3])                      #Localisation
                 sLine += '"{0}";'.format(aLine[4])                      #Description
-                sLine += '"http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/files/{0}";'.format(aLine[1])   #url
+                sLine += '"{0}{1}";'.format(sUrlFile, aLine[1])         #url
                 fCatalog.write(sLine + "\n")
 
             if (not bPartial):
@@ -134,20 +138,24 @@ class PoaffWebPage:
                 sLine += '"{0}";'.format(sFileType)                     #Type
                 sLine += '"{0}";'.format(aLine[4])                      #title
                 sLine += ";"                                            #slug
-                sLine += '"http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/files/{0}";'.format(aLine[1])   #url
+                sLine += '"{0}{1}";'.format(sUrlFile, aLine[1])         #url
                 sLine += '"pascal-bazile";'                             #organization
                 sLine += ";"                                            #organization_id
-                sLine += '"See details - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/";'     #description
-                sLine += '"monthly";'                                                                       #frequency
-                sLine += '"Licence Ouverte / Open Licence version 2.0";'                                    #license
-                sLine += '"{0}";'.format(aLine[2])                              #temporal_coverage.start
-                sLine += '"{0}";'.format(bpaTools.getDate(bpaTools.addMonths(
-                                datetime.date(int(aLine[2][0:4]), int(aLine[2][4:6]), int(aLine[2][6:8])), 1)))       #temporal_coverage.end
+                sLine += '"See details - {0}";'.format(sUrlSite)        #description
+                sLine += '"monthly";'                                   #frequency
+                sLine += '"Licence Ouverte / Open Licence version 2.0";'#license
+                if str(aLine[1]).find("_border")>0:
+                    sLine += '"{0}";'.format("")                                #temporal_coverage.start
+                    sLine += '"{0}";'.format("")                                #temporal_coverage.end
+                else:
+                    sLine += '"{0}";'.format(aLine[2])                          #temporal_coverage.start
+                    sLine += '"{0}";'.format(bpaTools.getDate(bpaTools.addMonths(
+                                        datetime.date(int(aLine[2][0:4]), int(aLine[2][4:6]), int(aLine[2][6:8])), 1)))       #temporal_coverage.end
                 sLine += ";"                                                    #spatial.granularity
                 sLine += '"{0}";'.format(aLine[3])                              #spatial.zones
-                sLine += '"False";'                                     #private
-                sLine += ";"                                            #featured
-                sLine += '"{0}";'.format(sCreatedAt)                    #created_at
+                sLine += '"False";'                                    #private
+                sLine += ";"                                           #featured
+                sLine += '"{0}";'.format(sCreatedAt)                   #created_at
                 sLine += ";"                                           #last_modified
                 sLine += '"' + sFileExt[1:] + ',aixm,openair,eurocontrol,sia-france,espace-aerien,carte-aerienne,airspace,map,3d,sports-aeriens,air-sports,delta,deltaplane,hangliding,parapente,paragliding";'  #tags
                 fCatalog.write(sLine + "\n")
@@ -215,7 +223,17 @@ class PoaffWebPage:
                     self.addFile2Catalog(True, dstFileName, self.sHeadFileDate[:-1], sTitle, sLocalization[1:])
                     self.publishFile(dstFileName, "@@file@@KMZ-airspaces-freeflight-geoFrench@@", sTitle)
 
-        #### 3/ GeoJSON files
+        #### 3a/ GeoJSON border files
+        #Déclinaison de toutes les régionalisations
+        sFormat:str = " [format GeoJSON]"
+        for sAreaKey, oAreaRef in geoRefArea.GeoRefArea(False).AreasRef.items():
+            sPath:str = 'files/geoRef/'
+            sFile:str =  sAreaKey + '_border.geojson'
+            if os.path.exists(self.publishPath + sPath + sFile):
+                sTitle:str = "Geographic border - Frontière géographique / " + oAreaRef[2] + sFormat
+                self.addFile2Catalog(False, sFile, bpaTools.getDate(bpaTools.getFileModificationDate(self.publishPath + sPath + sFile)), sTitle, sAreaKey)
+
+        #### 3b/ GeoJSON map files
         sFormat:str = " [format GeoJSON]"
         sComplementaryFiles:str = ""
         #Déclinaison de toutes les typologies de fichier racine
@@ -400,17 +418,6 @@ class PoaffWebPage:
         sComplementaryFiles:str = ""
         #Déclinaison de toutes les typologies de fichier racine
         for aTypeFile in aTypeFiles:
-            srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
-            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
-            srcFileName = srcFileName.replace(poaffCst.cstWithTopo, poaffCst.cstWithoutTopo)
-            dstFileName = dstFileName.replace(poaffCst.cstWithTopo, poaffCst.cstWithoutTopo)
-            bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName)
-            if bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
-                self.addFile2Catalog(False, dstFileName, self.sHeadFileDate[:-1], sTitle)
-                sToken = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithoutTopo + "@@").replace("-all", aTypeFile[0])
-                self.publishFile(dstFileName, sToken, sTitle)
-
             if aTypeFile[0]=="-freeflight":
                 #Déclinaison de toutes les régionalisations
                 sNewTableRows:str = ""

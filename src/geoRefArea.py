@@ -115,7 +115,7 @@ class GeoRefArea:
                     "geoPortugal":              [self.Portugal              , None          , "Portugal"],
                     "geoItaly":                 [self.Italy                 , None          , "Italy / Italie"],
                     "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom / Royaume-Uni"],
-                    "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Jersey-Guernsey"],
+                    "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Iles Anglo-Normandes de Jersey et Guernesey"],
                     "geoIreland":               [self.Ireland               , None          , "Ireland / Irlande"],
                     }
 
