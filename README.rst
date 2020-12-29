@@ -39,11 +39,13 @@ Cartographie vol-libre (FreeFlight) couvrant l'intégralité des territoires Fra
    :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrenchAll_sample_GeoJSON.jpg
    :alt: FrenchAreas
 
+
 Cartographie vol-libre (FreeFlight) couvrant la France-métropolitaine:
 
 .. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrench_sample_GeoJSON.jpg
-   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrenchAll_sample_GeoJSON.jpg
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrench_sample_GeoJSON.jpg
    :alt: French
+   
    
 Quelques autres exemples de cartographies vol-libre (FreeFlight):
 
