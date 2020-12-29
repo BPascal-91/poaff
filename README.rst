@@ -49,8 +49,8 @@ Cartographie vol-libre (FreeFlight) couvrant la France-métropolitaine:
    
 Quelques autres exemples de cartographies vol-libre (FreeFlight):
 
-.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/20201020_GlobalView-1.png
-   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/20201020_GlobalView-1.png
+.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/20201020_GlobalView-1.jpg
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/20201020_GlobalView-1.jpg
    :alt: OtherFrench
 
 
