@@ -1,6 +1,6 @@
 .. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg
    :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
-   :alt: Paragliding OpenAir FrenchFiles
+   :alt: Paragliding OpenAir French Files
 
 
 poaff - `Paragliding OpenAir French Files`_
@@ -22,6 +22,31 @@ Vous pouvez également suivre les évolutions via la page `Paragliding OpenAir F
 .. contents::
    :backlinks: none
    :local:
+
+
+Périmètre géographique couvert
+------------------------------
+.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoPOAFF_border_20201210.jpg
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoPOAFF_border_20201210.jpg
+   :alt: geoPOAFF_border
+  
+  
+Exemples de cartographies vol-libre
+-----------------------------------
+Cartographie vol-libre (FreeFlight) couvrant l'intégralité des territoires Français:
+.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrenchAll_sample_GeoJSON.jpg
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrenchAll_sample_GeoJSON.jpg
+   :alt: FrenchAreas
+
+Cartographie vol-libre (FreeFlight) couvrant la France-métropolitaine:
+.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrench_sample_GeoJSON.jpg
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/geoFrenchAll_sample_GeoJSON.jpg
+   :alt: French
+   
+Quelques autres exemples de cartographies vol-libre (FreeFlight):
+.. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/20201020_GlobalView-1.png
+   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/20201020_GlobalView-1.png
+   :alt: OtherFrench
 
 
 Installation
