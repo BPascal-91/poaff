@@ -76,18 +76,19 @@ Utilisation
 Liens externes
 --------------
 .. [1] `Paragliding OpenAir French Files`_ - On Web
-.. [2] `Paragliding OpenAir French Files (on Facebook)`_ - On Facebook
-.. [3] `Paragliding OpenAir French Files (on GitHub)`_ - Crédit `Pascal Bazile`_ - Programme de construction des cartographies `Paragliding OpenAir French Files`_ aux formats (GeoJSON_ ; `Openair New Format`_ et KML_)
-.. [4] aixmParser_ - Crédit `Pascal Bazile`_ - Programme d'interprétation du format AIXM_ pour transformations aux formats (GeoJSON_ ; `Openair New Format`_)
-.. [5] openairParser_ - Crédit `Pascal Bazile`_ - Programme d'interprétation du format Openair_ pour transformaion AIXM_
-.. [6] `Carte OACI France`_ - Scan digitalisé
-.. [7] SIA-France_ - Service de l'Information Aéronautique
-.. [8] Eurocontrol_ - A pan-European, civil-military organisation dedicated to supporting European aviation
-.. [9] AIXM_ - Aeronautical Information Exchange Modele
-.. [10] XML_ - W3C Standard
-.. [11] KML_ - Google Documentation
-.. [12] `Openair Format`_ - Openair Documentation historique
-.. [13] `Openair New Format`_ - Documentation des nouvelles évolutions du format Openair
+.. [2] `Paragliding OpenAir French Files (on OpenData)`_ - On OpenData France
+.. [3] `Paragliding OpenAir French Files (on Facebook)`_ - On Facebook
+.. [4] `Paragliding OpenAir French Files (on GitHub)`_ - Crédit `Pascal Bazile`_ - Programme de construction des cartographies `Paragliding OpenAir French Files`_ aux formats (GeoJSON_ ; `Openair New Format`_ et KML_)
+.. [5] aixmParser_ - Crédit `Pascal Bazile`_ - Programme d'interprétation du format AIXM_ pour transformations aux formats (GeoJSON_ ; `Openair New Format`_)
+.. [6] openairParser_ - Crédit `Pascal Bazile`_ - Programme d'interprétation du format Openair_ pour transformaion AIXM_
+.. [7] `Carte OACI France`_ - Scan digitalisé
+.. [8] SIA-France_ - Service de l'Information Aéronautique
+.. [9] Eurocontrol_ - A pan-European, civil-military organisation dedicated to supporting European aviation
+.. [10] AIXM_ - Aeronautical Information Exchange Modele
+.. [11] XML_ - W3C Standard
+.. [12] KML_ - Google Documentation
+.. [13] `Openair Format`_ - Openair Documentation historique
+.. [14] `Openair New Format`_ - Documentation des nouvelles évolutions du format Openair
 
 
 Crédits
@@ -99,6 +100,7 @@ Crédits
 .. _Pascal Bazile: https://github.com/BPascal-91/
 .. _Paragliding OpenAir French Files: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
 .. _Paragliding OpenAir French Files (on Facebook): https://www.facebook.com/Paragliding-OpenAir-FrenchFiles-102040114894513/
+.. _Paragliding OpenAir French Files (on OpenData): https://www.data.gouv.fr/fr/datasets/cartographies-aeriennes-dediees-a-la-pratique-du-vol-libre/
 .. _Paragliding OpenAir French Files (on GitHub): https://github.com/BPascal-91/poaff/
 .. _Carte OACI France: https://www.geoportail.gouv.fr/donnees/carte-oaci-vfr
 .. _SIA-France: https://www.sia.aviation-civile.gouv.fr/
