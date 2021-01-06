@@ -115,7 +115,9 @@ class Geojson2Kml:
                 oAsGeo = oAs[poaffCst.cstGeoGeometry]                #get geometry
 
                 #Classification pour organisation des zones
-                if (oAsPro.get("vfrZoneExt",None)==True) and (oAsPro.get("vfrZone",None) ==False):
+                if   (oAsPro.get("freeFlightZoneExt",None)==True) and (oAsPro.get("freeFlightZone",None)==False):
+                    sTypeZone:str = "vfrZoneExt"
+                elif (oAsPro.get("vfrZoneExt",None)==True) and (oAsPro.get("vfrZone",None)==False):
                     sTypeZone:str = "vfrZoneExt"
                 elif oAsPro.get("vfrZone",None)==True:
                     sTypeZone:str = "vfrZone"
@@ -133,10 +135,10 @@ class Geojson2Kml:
 
                 sDesc:str = ""
 
-                if "lowerMin" in oAsPro:
+                if oAsPro.get("lowerMin", False):
                     sDesc += oAsPro["lowerMin"] + "-"
                 sDesc += oAsPro.get("lower","SFC") + " / " + oAsPro.get("upper","FL999")
-                if "upperMax" in oAsPro:
+                if oAsPro.get("upperMax", False):
                     sDesc += "-" + oAsPro["upperMax"]
                 sDesc += " ({0}m / {1}m)".format(sLowerM , sUpperM)
 
@@ -154,7 +156,8 @@ class Geojson2Kml:
 
                 #Stockage organisationnel temporaire
                 #Nota. Exclure la LTA France dont le tracé 3D n'est pas très-bon
-                if (len(oCoords)>1) and (sNameZone.find("LTA FRANCE 1")<0):
+                #if (len(oCoords)>1) and (sNameZone.find("LTA FRANCE 1")<0):
+                if len(oCoords)>1:
                     oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, oCoords]
                     oClassZone.append(oZone)
                     oTypeZone.update({sClassZone:oClassZone})
@@ -215,7 +218,7 @@ class Geojson2Kml:
                         sVisiblility:str="1"
                         oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR", sVisiblility, "Couche de l'espace aérien VFR ; dont le plancher s'étand depuis la surface de la terre (SFC/AGL) jusqu'à l'altitude limite de la surface 'S' (FL115)")
                     elif sKeyType == "vfrZoneExt":
-                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR-Ext", sVisiblility, "Couche de l'espace aérien VFR étandue ; zones dont le plafond s'élève jusqu'à la limite maximum de FL175")
+                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR-Ext", sVisiblility, "Couche de l'espace aérien VFR étandue ; zones dont le plafond s'élève jusqu'à la limite maximum de FL195")
                     elif sKeyType == "ifrZone":
                         oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche IFR", sVisiblility, "Couche de l'espace aérien IFR ; zones hautes (UTA=UpperControlArea, OCA=OceanicControlArea, OTA=OceanicTransitionArea, ...) et autres espaces-aériens nécessaires aux transmissions radards ou radios (FIR=FlightInformationRegion, UIR=UpperFlightInformationRegion, SECTOR=ControlSector, ...")
 

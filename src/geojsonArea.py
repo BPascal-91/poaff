@@ -59,7 +59,7 @@ class GeojsonArea:
                 sFile = sFile.replace("-all", "-ifr")
             elif sContext == "vfr":
                 bIsInclude = oGlobalCat["vfrZone"]
-                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)		#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL175/5334m
+                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)		#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext == "ff":
@@ -131,8 +131,8 @@ class GeojsonArea:
             if sContext == "cfd":
                 bIsArea = oGlobalCat.get("geoFrenchAll", False)        #Filtrage sur la totalité des territoires Français
 
-            #Maintenir ou Supprimer la LTA-France1 des cartes non-concernées par le territoire Français --> [D] FRANCE 1 (LTA / id=LTA13071) [FL115-FL195]
-            elif oGlobalCat["id"]=="LTA13071":
+            #Maintenir ou Supprimer la LTA-France1 (originale ou spécifique) des cartes non-concernées par le territoire Français --> [D] LTA FRANCE 1 (Id=LTA13071) [FL115-FL195]
+            elif oGlobalCat["id"] in ["LTA13071","BpFrenchSS"]:
                 if not sAreaKey in [None, "geoFrench","geoFrenchAll"]:
                     bIsArea = False
 

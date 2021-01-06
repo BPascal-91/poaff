@@ -41,9 +41,9 @@ cstTextUnderlined:str       = '<u>{0}</u>'
 
 aTypeFiles:list =   [ ["-all"       , "Cartographie complète de l'espace aérien (IFR + VFR)"],
                       ["-ifr"       , "Cartographie de l'espace aérien IFR (secteurs d'information radio et zones de haute altitude)"],
-                      ["-vfr"       , "Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL175/5334m)"],
+                      ["-vfr"       , "Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL195/5944m)"],
                       ["-ffvl-cfd"  , "Cartographie spécifique pour injection dans l'outillage de la CFD FFVL"],
-                      ["-freeflight", "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL175 + filtres et compléments)"]]
+                      ["-freeflight", "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL195 + filtres et compléments)"]]
 
 
 class PoaffWebPage:

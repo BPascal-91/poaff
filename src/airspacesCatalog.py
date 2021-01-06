@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from copy import deepcopy
+
 import bpaTools
 import aixmReader
 import poaffCst
@@ -29,6 +31,7 @@ class AsCatalog:
         self.oLog                       = oLog
         self.oGlobalCatalogHeader:dict  = {}                                                              #Entête du catalogue gloabal
         self.oGlobalCatalog:dict        = {}
+        self.oClonesCatalog:dict        = None
         self.sFileCatalog:str           = ""
         return
 
@@ -92,21 +95,23 @@ class AsCatalog:
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmVersion"], \
                         oHeadFile[cstKeyCatalogSrcFiles]["1"]["srcAixmCreated"])
 
+        self.oClonesCatalog:dict = {}
         oGlobalAreas = self.getContent()
         oAsAreas = ofileCatalog[cstKeyCatalogCatalog]                                       #Catalogue des Espace-aériens contenus dans le fichier analysé
         barre = bpaTools.ProgressBar(len(oAsAreas), 20, title="Merge Catalog File + " + sKeyFile)
         idx = 0
         for sAsKey, oAs in oAsAreas.items():
             idx+=1
+            oAs.update({cstKeyCatalogKeySrcFile:sKeyFile})                                  #Ajout de la réfénce au fichier source
+
             self.isCleanArea4FreeFlight(sKeyFile, oAs)
             self.isSpecialArea4FreeFlight(sKeyFile, oAs)
-            oAs.update({"nameV":aixmReader.getVerboseName(oAs)})
+            oAs.update({"nameV":aixmReader.getVerboseName(oAs)})                            #Mise a jour systématique du libellé (si chgt via fct)
 
             #if oAs["id"] in ["FMEE1"]:
             #    print("zzz.zzz")
 
             if self.isValidArea(sKeyFile, oAs):                                             #Exclure certaines zones
-                oAs.update({cstKeyCatalogKeySrcFile:sKeyFile})                              #Ajout de la réfénce au fichier source
                 sNewKey = str(oAs["id"]).strip()                                            #Nouvel identifiant de référence pour le catalogue global
                 if sNewKey=="": sNewKey = self.makeNewKey()                                 #Initialisation d'une clé non vide
                 if   oFile[poaffCst.cstSpProcessType]==poaffCst.cstSpPtAdd:                 #Ajout systématique des zones (avec débloublonnage des 'id' automatisé)
@@ -139,6 +144,11 @@ class AsCatalog:
 
             barre.update(idx)
         barre.reset()
+
+        #Ajouter dans le catalogue globale les éventuelles zones clônés (durant le traitement...)
+        for sKey, oClone in self.oClonesCatalog.items():
+            oGlobalAreas.update({sKey:oClone})                                  #Ajoute la zone au catalogue global
+
         oSrcFiles = self.oGlobalCatalogHeader.pop(cstKeyCatalogSrcFiles)
         self.oGlobalCatalogHeader.update({cstKeyCatalogNbAreas:len(oGlobalAreas)})          #Nombre de zones
         self.oGlobalCatalogHeader.update({cstKeyCatalogSrcFiles:oSrcFiles})
@@ -261,7 +271,7 @@ class AsCatalog:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur bas de l'Id
 
         #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
-        if sKeyFile in ["EuCtrl","SIA"]:
+        if sKeyFile in ["EuCtrl","SIA","BPa-Test4AppDelta1"]:
             if oAs["id"] in ["LECM C","LEBL_D","LEBL_C","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
                   "LSR21","LSGG5","LSAZ","LSR81","LSR80","LSR26","LSR28","LSR27","EUC25SL1","EUC25SL2","LSR29","LFSB22C","LFSB80","LFSB24D",
                   "LFSB85","LFSB02S","LSR75_2","LSR75_1","LFSB1S","LFSB3","LFSB2","LFSB17D","LFSB17C","LFSB30.20","LFSB30","LFSB16D","LFSB16C",
@@ -423,6 +433,7 @@ class AsCatalog:
                 oAs.update({"freeFlightZone":False})
                 oAs.update({"freeFlightZoneExt":False})
                 oAs.update({"use4cfd":True})
+                oAs.update({"excludeAirspaceByFilter":True})
                 #[E] TMA LA REUNION 1 (id=FMEE1)
                 #[E] CTA PIARCO A.20 (id=CTA4351A.2)
                 #[E] OCA TAHITI.20 (id=OCA4521.20)
@@ -443,5 +454,62 @@ class AsCatalog:
                 oAs.update({"exceptSUN":True})
                 oAs.update({"exceptHOL":True})
                 #self.oLog.info("Special French-RTBA areas - ({0}){1}".format(sKeyFile, oAs["UId"], oAs["id"], outConsole=False))
+
+        #LTA - Traitements spécifiques pour construction des zones d'extention de vol libre
+        if sKeyFile in ["EuCtrl","SIA","BPa-FrenchSS","BPa-Test4AppDelta1"] and oAs["type"]=="LTA":
+
+            #Filtrage volontaire 'freeFlightZone' de la base officielle de la surface S en France (car la nouvelle 'surface S' est spécifiquement retracée par BPascal)
+            if oAs["id"] in ["LTA13071","LTA130732","LTA130733.","LTA130734.","LTA130735.","LTA130736.","LTA130737.","LTA130741."]:
+                #Id=LTA13071 - AN LTA FRANCE 1 Lower(3000FT AGL-FL115)
+                #Id=LTA130732. - AC E - AN LTA FRANCE 3 ALPES 2.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL125", "3505m/3810m", "ffExt=Yes"]
+                #Id=LTA130733. - AC E - AN LTA FRANCE 3 ALPES 3.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL145", "3505m/4419m", "ffExt=Yes"]
+                #Id=LTA130734. - AC E - AN LTA FRANCE 3 ALPES 4.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL125", "3505m/3810m", "ffExt=Yes"]
+                #Id=LTA130735. - AC E - AN LTA FRANCE 3 ALPES 5.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL175", "3505m/5334m", "ffExt=Yes"]
+                #Id=LTA130736. - AC E - AN LTA FRANCE 3 ALPES 6.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL175", "3505m/5334m", "ffExt=Yes"]
+                #Id=LTA130737. - AC E - AN LTA FRANCE 3 ALPES 7.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL135", "3505m/4114m", "ffExt=Yes"]
+                #Id=LTA130741. - AC E - AN LTA FRANCE 4.20 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL135", "3505m/4114m", "ffExt=Yes"]
+                oAs.update({"freeFlightZone":False})
+                oAs.update({"freeFlightZoneExt":False})
+                oAs.update({"excludeAirspaceByFilter":True})
+
+            #Construction volontaire 'freeFlightZone' des clônes de certaines zones pour constituer la surface S en France
+            if oAs["id"] in ["LTA130731","LTA130751","LTA130752","LTA130753"]:
+                #Id=LTA130731 - AC E - AN LTA FRANCE 3 ALPES 1 / *AAlt ["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]
+                #Id=LTA130751 - AC E - AN LTA FRANCE 5 PYRENEES 1 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]
+                #Id=LTA130752 - AC E - AN LTA FRANCE 5 PYRENEES 2 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]
+                #Id=LTA130753 - AC E - AN LTA FRANCE 5 PYRENEES 3 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]
+
+                #Phase 1.0 - Contruction du clone d'objet
+                oClone = deepcopy(oAs)
+                sNewKey:str = "BPaClone-" + oAs["UId"]
+                oClone.update({"GUId":sNewKey})
+                oClone.update({"class":"D"})
+                oClone.update({"desc":"(Pascal Bazile) Zone spécifique pour limitation de la 'Surface S en France'"})
+                oClone.update({"lowerMin":None})
+                oClone.update({"lowerValueMnm":None})
+                oClone.update({"ordinalLowerMinM":None})
+                oClone.update({"lower":oAs["upper"]})
+                oClone.update({"lowerM":oAs["upperM"]})
+                oClone.update({"lowerValue":oAs["upperValue"]})
+                oClone.update({"upper":"FL220"})
+                oClone.update({"upperM":"6706"})
+                oClone.update({"upperValue":"220"})
+                oClone.update({"nameV":aixmReader.getVerboseName(oClone)})
+                #Phase 1.1 - Exclusion volontaire 'vfrZone' des clônes de la zone d'origine
+                oClone.update({"vfrZone":False})
+                oClone.update({"vfrZoneExt":False})
+                oClone.update({"excludeAirspaceByFilter":True})
+                self.oClonesCatalog.update({sNewKey:oClone})         #Ajoute ce clône zone au catalogue des objets clonés
+
+                #Phase 2 - Exclusion volontaire 'freeFlightZone' de la zone d'origine
+                oAs.update({"freeFlightZone":False})
+                oAs.update({"freeFlightZoneExt":False})
+                oAs.update({"excludeAirspaceByFilter":True})
+
+            if oAs["id"] in ["BpFrenchSS"]:
+                 #Suppression volontaire de la base officielle de la surface S en France (car la nouvelle 'surface S' est spécifiquement retracée par BPascal)
+                oAs.update({"vfrZone":False})
+                oAs.update({"vfrZoneExt":False})
+                oAs.update({"excludeAirspaceByFilter":True})
 
         return
