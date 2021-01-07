@@ -100,11 +100,12 @@ class OpenairArea:
             bIsInclude = not bool(sAreaKey in aToken)
             if bIsInclude:
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo",    None,        sAreaKey)
-                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
-                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
-                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
-            #Pour les sorties "-gpsWithoutTopo", ne jamais générer: ""=All (car trop lourd pour la mémoire des petits GPS)
-            aToken = [""]
+                if sAreaKey!="geoPWCFrenchAlps":    #Ne pas générer les spécificités pour le périmètre "geoPWCFrenchAlps"
+                    self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
+                    self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
+                    self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
+            #Pour les sorties "-gpsWithoutTopo", ne jamais générer: "geoPWCFrenchAlps" et ""(=All) (car trop lourd pour la mémoire des petits GPS)
+            aToken = ["geoPWCFrenchAlps",""]
             bIsInclude = not bool(sAreaKey in aToken)
             if bIsInclude:
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)

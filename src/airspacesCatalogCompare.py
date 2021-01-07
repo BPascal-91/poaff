@@ -36,7 +36,22 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
         #for key,val in oPropsZone.items():
         #    oLog.info("{0} --> {1}".format(key, val))
 
-        if context == "aixmParser":
+        if context == "aixmParserCatalog":
+            aKey:list = ["class","type","nameV","lower","upper","GUId","UId","id"]
+            for oKey in aKey:
+                if oKey in oPropsZone:
+                    oVal = oPropsZone[oKey]
+                    oNewPropZone.update({oKey:oVal})
+
+        if context == "aixmParser4CFDv2":
+            aKey:list = ["category","type","name","bottom","top","Ids","UId","id"]
+            oTranslation:dict = {"category":"class","type":"type","codeActivity":"codeActivity","name":"nameV","bottom":"lower","top":"upper","Ids":"Ids"}
+            for oKey in aKey:
+                if oKey in oPropsZone:
+                    oVal = oPropsZone[oKey]
+                    oNewPropZone.update({oTranslation[oKey]:oVal})
+
+        if context == "aixmParser4CFDv1":
             aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
             for oKey in aKey:
                 if oKey in oPropsZone:
@@ -151,7 +166,6 @@ def writeTextFile(sFile="", oText=None):
 
 def saveCalalogCSV(sFileName:str, oCatalog) -> None:
     csv = ""
-
     #Order keys; for header in CSV file
     #aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
     oCols = {"category":0, "type":0, "codeActivity":0, "name":0, "bottom":0, "top":0, "bottom_m":0,"top_m":0, "alt":0, "Ids":0}
@@ -177,6 +191,50 @@ def saveCalalogCSV(sFileName:str, oCatalog) -> None:
     return
 
 
+def saveCalalogCSV2(sFileName:str, oCatalog) -> None:
+    csv = ""
+    #Order keys; for header in CSV file
+    #aKey:list = ["class","type","codeActivity","nameV","lower","upper","GUId","UId","id"]
+    oCols = {"class":0, "type":0, "nameV":0, "lower":0, "upper":0, "GUId":0, "UId":0, "id":0}
+    for key0,val0 in oCatalog.items():
+        for key1,val1 in val0.items():
+            oCols.update({key1:0})
+
+    #List all columns in order of the global index on columns
+    for colKey,colVal in oCols.items():
+        csv += '"{0}";'.format(colKey)
+
+    #Content CSV file
+    for key,item in oCatalog.items():
+        csv += "\n"
+        for colKey,colVal in item.items():
+            csv += '"{0}";'.format(colVal)
+
+    writeTextFile(sFileName, csv)
+    return
+
+
+def comparePoaffCfdWithFlyXC() -> None:
+    sFilseSrc1 = cfdPath + "20200920_airspaces-ffvl-cfd.geojson"
+    sFilseSrc2 = flyXCPath + "20200420_FlyXC-app_airspaces.geojson"
+    #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
+    oCat1 = loadAirspacesCatalog(sFilseSrc1, "aixmParser4CFDv1")
+    oCat2 = loadAirspacesCatalog(sFilseSrc2, "FlyXC")
+    saveCalalogCSV(deltaPath + "aixmpCatalog.csv", oCat1)
+    saveCalalogCSV(deltaPath + "flyxcCatalog.csv", oCat2)
+    return
+
+
+def comparePoaffCfdWithPoaffFreeflight() -> None:
+    sFilseSrc1 = cfdPath + "20210107_global@airspaces-ffvl-cfd.geojson"
+    sFilseSrc2 = cfdPath + "20210107_global@airspaces-freeflight-geoFrenchAll.geojson"
+    #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
+    oCat1 = loadAirspacesCatalog(sFilseSrc1, "aixmParser4CFDv2")
+    oCat2 = loadAirspacesCatalog(sFilseSrc2, "aixmParserCatalog")
+    saveCalalogCSV2(deltaPath + "poaffCFDCatalog.csv", oCat1)
+    saveCalalogCSV2(deltaPath + "poaffFrAllCatalog.csv", oCat2)
+    return
+
 
 if __name__ == '__main__':
     ### Context applicatif
@@ -196,17 +254,12 @@ if __name__ == '__main__':
     oLog = bpaTools.Logger(appId,logFile)
     oLog.resetFile()
 
-    sFilseSrc1 = cfdPath + "20200920_airspaces-ffvl-cfd.geojson"
-    sFilseSrc2 = flyXCPath + "20200420_FlyXC-app_airspaces.geojson"
-    #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
-
-    oCat1 = loadAirspacesCatalog(sFilseSrc1, "aixmParser")
-    oCat2 = loadAirspacesCatalog(sFilseSrc2, "FlyXC")
-
-    saveCalalogCSV(deltaPath + "aixmpCatalog.csv", oCat1)
-    saveCalalogCSV(deltaPath + "flyxcCatalog.csv", oCat2)
+    #comparePoaffCfdWithFlyXC()
+    comparePoaffCfdWithPoaffFreeflight()
 
     print()
     oLog.Report()
     oLog.closeFile
+
+
 
