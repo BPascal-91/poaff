@@ -45,7 +45,7 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
 
         if context == "aixmParser4CFDv2":
             aKey:list = ["category","type","name","bottom","top","Ids","UId","id"]
-            oTranslation:dict = {"category":"class","type":"type","codeActivity":"codeActivity","name":"nameV","bottom":"lower","top":"upper","Ids":"Ids"}
+            oTranslation:dict = {"category":"class","type":"type","codeActivity":"codeActivity","name":"nameV","bottom":"lower","top":"upper","Ids":"Ids","UId":"UId","id":"id"}
             for oKey in aKey:
                 if oKey in oPropsZone:
                     oVal = oPropsZone[oKey]
@@ -215,25 +215,63 @@ def saveCalalogCSV2(sFileName:str, oCatalog) -> None:
 
 
 def comparePoaffCfdWithFlyXC() -> None:
-    sFilseSrc1 = cfdPath + "20200920_airspaces-ffvl-cfd.geojson"
-    sFilseSrc2 = flyXCPath + "20200420_FlyXC-app_airspaces.geojson"
+    sFileSrc1 = cfdPath + "20200920_airspaces-ffvl-cfd.geojson"
+    sFileSrc2 = flyXCPath + "20200420_FlyXC-app_airspaces.geojson"
     #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
-    oCat1 = loadAirspacesCatalog(sFilseSrc1, "aixmParser4CFDv1")
-    oCat2 = loadAirspacesCatalog(sFilseSrc2, "FlyXC")
+    oCat1 = loadAirspacesCatalog(sFileSrc1, "aixmParser4CFDv1")
+    oCat2 = loadAirspacesCatalog(sFileSrc2, "FlyXC")
     saveCalalogCSV(deltaPath + "aixmpCatalog.csv", oCat1)
     saveCalalogCSV(deltaPath + "flyxcCatalog.csv", oCat2)
     return
 
 
-def comparePoaffCfdWithPoaffFreeflight() -> None:
-    sFilseSrc1 = cfdPath + "20210107_global@airspaces-ffvl-cfd.geojson"
-    sFilseSrc2 = cfdPath + "20210107_global@airspaces-freeflight-geoFrenchAll.geojson"
-    #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
-    oCat1 = loadAirspacesCatalog(sFilseSrc1, "aixmParser4CFDv2")
-    oCat2 = loadAirspacesCatalog(sFilseSrc2, "aixmParserCatalog")
-    saveCalalogCSV2(deltaPath + "poaffCFDCatalog.csv", oCat1)
-    saveCalalogCSV2(deltaPath + "poaffFrAllCatalog.csv", oCat2)
+def extractGeoJSON() -> None:
+    #sFileSrc = "20210109_airspaces-freeflight-geoFrench.geojson"
+    sFileSrc = "20210109_airspaces-freeflight-geoBelgium.geojson"
+
+    oLog.info("extractGeoJSON() - file source: {0}".format(sFileSrc))
+    oJson = bpaTools.readJsonFile(cfdPath + sFileSrc)
+    oContents = oJson[poaffCst.cstGeoFeatures]
+
+    oCleanSource:list = list()
+    oExcludeZones:list = list()
+
+    for oZone in oContents:
+        oPropsZone =oZone[poaffCst.cstGeoProperties]
+        bExclude:bool        = bool(oPropsZone.get("class","")=="Q" and oPropsZone.get("type","")=="SIV")
+        bExclude = bExclude or bool(oPropsZone.get("id","") in ["EBBU TMZ","EBBU RMZ","EDCLG"])
+        #bExclude = bExclude or bool(oPropsZone.get("srcClass","")=="G" and oPropsZone.get("srcType","")=="RAS")
+        if bExclude:
+            oExcludeZones.append(oZone)
+        else:
+            oCleanSource.append(oZone)
+
+    oNewJson:dict = {"type": "FeatureCollection","features":oCleanSource}
+    sFileDst = sFileSrc.replace(".geojson","") + "-clean.geojson"
+    bpaTools.writeJsonFile(cfdPath + sFileDst,oNewJson)
+
+    oNewJson:dict = {"type": "FeatureCollection","features":oExcludeZones}
+    sFileDst = sFileSrc.replace(".geojson","") + "-exclude.geojson"
+    bpaTools.writeJsonFile(cfdPath + sFileDst,oNewJson)
     return
+
+
+def comparePoaffWithPoaff() -> None:
+    sStdAreaCode:str = "-geoSwitzerland"        #geoFrenchAll / geoBelgium / geoSwitzerland
+
+    sFileSrc1 = "20201214_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc2 = "20210111_airspaces-freeflight" + sStdAreaCode + ".geojson"
+
+    sFileDst1 = sFileSrc1.replace(".geojson","") + "-catalog.csv"
+    sFileDst2 = sFileSrc2.replace(".geojson","") + "-catalog.csv"
+
+    #oLog.info("Compare files: \n\t{0} \n\t{1}".format(sFilseSrc1, sFilseSrc2))
+    oCat1 = loadAirspacesCatalog(cfdPath + sFileSrc1, "aixmParserCatalog")
+    oCat2 = loadAirspacesCatalog(cfdPath + sFileSrc2, "aixmParserCatalog")
+    saveCalalogCSV2(deltaPath + "/" + sFileDst1, oCat1)
+    saveCalalogCSV2(deltaPath + "/" + sFileDst2, oCat2)
+    return
+
 
 
 if __name__ == '__main__':
@@ -255,7 +293,8 @@ if __name__ == '__main__':
     oLog.resetFile()
 
     #comparePoaffCfdWithFlyXC()
-    comparePoaffCfdWithPoaffFreeflight()
+    comparePoaffWithPoaff()
+    #extractGeoJSON()
 
     print()
     oLog.Report()

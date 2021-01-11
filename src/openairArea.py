@@ -208,6 +208,10 @@ class OpenairArea:
                     else:
                         bIsArea = False     #Ne pas afficher cette zone incohérente pour ces régions
 
+            if not bIsArea:
+                sKey4Find:str = sAreaKey.replace("geo","IncOf")         #test d'inclusion volontaire de la zone ?
+                bIsArea = oGlobalCat.get(sKey4Find, False)
+
             #Filtrage des zones par jour d'activation
             if bIsInclude and bIsArea and exceptDay:
                 if exceptDay in oGlobalCat:

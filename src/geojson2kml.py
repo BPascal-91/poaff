@@ -284,13 +284,13 @@ class Geojson2Kml:
                                 else:
                                     sStyle = "#transOrangePoly"
                             #Blue
-                            elif sKeyClass in ["ZSM","BIRD","PROTECT","D-OTHER","SUR","AER","TRPLA","TRVL","VOL"]:
+                            elif sKeyClass in ["ZSM","BIRD","PROTECT","D-OTHER","SUR","AER","TRPLA","TRVL","VOL","REFUEL"]:
                                 if sLowerM==0:
                                     sStyle = "#transBluePoly"
                                 else:
                                     sStyle = "#noFillBluePoly"
                             #Green
-                            elif sKeyClass in ["E","F","G"]:
+                            elif sKeyClass in ["E","F","G","SIV","FIS"]:
                                 if sLowerM==0:
                                     sStyle = "#transGreenPoly"
                                 else:

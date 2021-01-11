@@ -154,6 +154,10 @@ class GeojsonArea:
                 else:
                     bIsArea = False
 
+            if not bIsArea:
+                sKey4Find:str = sAreaKey.replace("geo","IncOf")         #test d'inclusion volontaire de la zone ?
+                bIsArea = oGlobalCat.get(sKey4Find, False)
+
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalGeoJSON):
                 if sContext != "cfd":
                     aixm2json.addColorProperties(oFinalCat, self.oLog)      #Ajout des propriétés pour colorisation de la zone
