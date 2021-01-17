@@ -39,24 +39,21 @@ def loadAirspacesCatalog (sFile:str, context="") -> dict:
         if context == "aixmParserCatalog":
             aKey:list = ["class","type","nameV","lower","upper","GUId","UId","id"]
             for oKey in aKey:
-                if oKey in oPropsZone:
-                    oVal = oPropsZone[oKey]
-                    oNewPropZone.update({oKey:oVal})
+                oVal = oPropsZone.get(oKey, None)
+                oNewPropZone.update({oKey:oVal})
 
         if context == "aixmParser4CFDv2":
             aKey:list = ["category","type","name","bottom","top","Ids","UId","id"]
             oTranslation:dict = {"category":"class","type":"type","codeActivity":"codeActivity","name":"nameV","bottom":"lower","top":"upper","Ids":"Ids","UId":"UId","id":"id"}
             for oKey in aKey:
-                if oKey in oPropsZone:
-                    oVal = oPropsZone[oKey]
-                    oNewPropZone.update({oTranslation[oKey]:oVal})
+                oVal = oPropsZone.get(oKey, None)
+                oNewPropZone.update({oTranslation[oKey]:oVal})
 
         if context == "aixmParser4CFDv1":
             aKey:list = ["category","type","codeActivity","name","alt","bottom","top","bottom_m","top_m","Ids"]
             for oKey in aKey:
-                if oKey in oPropsZone:
-                    oVal = oPropsZone[oKey]
-                    oNewPropZone.update({oKey:oVal})
+                oVal = oPropsZone.get(oKey, None)
+                oNewPropZone.update({oKey:oVal})
 
         elif context == "FlyXC":
             aKey:list = ["category", "name", "bottom", "top"]
@@ -260,7 +257,7 @@ def comparePoaffWithPoaff() -> None:
     sStdAreaCode:str = "-geoFrenchAll"        #geoFrenchAll / geoBelgium / geoSwitzerland
 
     sFileSrc1 = "20201214_airspaces-freeflight" + sStdAreaCode + ".geojson"
-    sFileSrc2 = "20210111_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc2 = "20210117_airspaces-freeflight" + sStdAreaCode + ".geojson"
 
     sFileDst1 = sFileSrc1.replace(".geojson","") + "-catalog.csv"
     sFileDst2 = sFileSrc2.replace(".geojson","") + "-catalog.csv"
