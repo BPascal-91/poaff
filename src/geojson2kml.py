@@ -114,18 +114,6 @@ class Geojson2Kml:
                 oAsPro = oAs[poaffCst.cstGeoProperties]              #get properties
                 oAsGeo = oAs[poaffCst.cstGeoGeometry]                #get geometry
 
-                #Classification pour organisation des zones
-                if   (oAsPro.get("freeFlightZoneExt",None)==True) and (oAsPro.get("freeFlightZone",None)==False):
-                    sTypeZone:str = "vfrZoneExt"
-                elif (oAsPro.get("vfrZoneExt",None)==True) and (oAsPro.get("vfrZone",None)==False):
-                    sTypeZone:str = "vfrZoneExt"
-                elif oAsPro.get("vfrZone",None)==True:
-                    sTypeZone:str = "vfrZone"
-                elif oAsPro.get("vfrZone",None)==False:
-                    sTypeZone:str = "ifrZone"
-                else:
-                    sTypeZone:str = "Airspace"
-
                 sClassZone:str = oAsPro.get("class","")
                 sTypezZone:str = oAsPro.get("type","")
                 sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("nameV","")
@@ -144,6 +132,27 @@ class Geojson2Kml:
 
                 if "desc" in oAsPro:
                     sDesc += "<br/><br/>" + oAsPro["desc"]
+
+                #Classification pour organisation des zones
+                if "freeFlightZone" in oAsPro:
+                    if   (oAsPro.get("freeFlightZoneExt",None)==True) and (oAsPro.get("freeFlightZone",None)==False):
+                        sTypeZone:str = "vfrZoneExt"
+                    elif (oAsPro.get("vfrZoneExt",None)==True) and (oAsPro.get("vfrZone",None)==False):
+                        sTypeZone:str = "vfrZoneExt"
+                    elif oAsPro.get("vfrZone",None)==True:
+                        sTypeZone:str = "vfrZone"
+                    elif oAsPro.get("vfrZone",None)==False:
+                        sTypeZone:str = "ifrZone"
+                elif "lowerM" in oAsPro:
+                    if   float(sLowerM) < 3500:
+                        sTypeZone:str = "vfrZone"
+                    elif float(sLowerM) < 5940:
+                        sTypeZone:str = "vfrZoneExt"
+                    else:
+                        sTypeZone:str = "ifrZone"
+                else:
+                    sTypeZone:str = "Airspace"
+
                 oTypeZone:dict = self.oKmlTmp.get(sTypeZone, {})
                 oClassZone:list = oTypeZone.get(sClassZone, [])
 
@@ -213,7 +222,7 @@ class Geojson2Kml:
                 idx = 0
                 for sKeyType, oTypeZone in self.oKmlTmp.items():
 
-                    sVisiblility:str="0" #defailt value
+                    sVisiblility:str="0" #default value
                     if sKeyType == "vfrZone":
                         sVisiblility:str="1"
                         oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR", sVisiblility, "Couche de l'espace aérien VFR ; dont le plancher s'étand depuis la surface de la terre (SFC/AGL) jusqu'à l'altitude limite de la surface 'S' (FL115)")
@@ -251,13 +260,13 @@ class Geojson2Kml:
                             elif sKeyClass=="D" and sTypezZone=="LTA":
                                 sStyle = "#noFillPurplePoly"
                             #Red and fill
-                            elif sKeyClass in ["D","D-AMC"] and sDeclassifiable!="Yes":
+                            elif sKeyClass in ["D","D-AMC"] and not bool(sDeclassifiable):
                                 if sLowerM==0:
                                     sStyle = "#fillRedPoly"
                                 else:
                                     sStyle = "#transRedPoly"
                             #Purple and fill
-                            elif sKeyClass in ["D","D-AMC"] and sDeclassifiable=="Yes":
+                            elif sKeyClass in ["D","D-AMC"] and bool(sDeclassifiable):
                                 if sLowerM==0:
                                     sStyle = "#fillRedPurplePoly"
                                 else:
@@ -354,12 +363,13 @@ class Geojson2Kml:
 
 
 if __name__ == '__main__':
-    sPath = "../output/Tests/"
+    sPath:str    = "../output/Tests/"
+    sSrcFile:str = "__testAirspaces-geoFrench.geojson"  #"__testAirspaces-geoAustria.geojson"
     oKml = Geojson2Kml()
-    oKml.readGeojsonFile(sPath + "__testAirspaces.geojson")
+    oKml.readGeojsonFile(sPath + sSrcFile)
     oKml.createKmlDocument("Paragliding Openair Frensh Files", "Cartographies aériennes France - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/")
     oKml.makeAirspacesKml()
-    oKml.writeKmlFile(sPath + "__testAirspaces.kml", bExpand=1)
+    oKml.writeKmlFile(sPath + sSrcFile.replace(".geojson", ".kml"), bExpand=1)
 
     """
     oKml.readGeojsonFile(sPath + "__testAirspaces-freeflight.geojson")

@@ -52,7 +52,6 @@ class GeojsonArea:
 
             #Filtrage des zones par typologie de sorties
             bIsInclude:bool = False
-            oFinalCat:dict = oGlobalCat
             if   sContext == "ifr":
                 bIsInclude = (not oGlobalCat["vfrZone"]) and (not oGlobalCat["groupZone"])
                 sContent = "ifrZone"
@@ -96,27 +95,6 @@ class GeojsonArea:
                 sContent = "freeflightZone for FFVL-CFD"
                 sFile = sFile.replace("-all", "-ffvl-cfd")
                 sAreaKey = ""
-                #Single properties for CFD or FlyXC - {"name":"Agen1 119.15","category":"E","bottom":"2000F MSL","bottom_m":0,"top":"FL 65","color":"#bfbf40"}
-                oSingleCat:dict = {}
-                oSingleCat.update({"name":oGlobalCat["nameV"]})
-                oSingleCat.update({"category":oGlobalCat["class"]})
-                oSingleCat.update({"type":oGlobalCat["type"]})
-                if "codeActivity" in oGlobalCat:    oSingleCat.update({"codeActivity":oGlobalCat["codeActivity"]})
-                oSingleCat.update({"alt":"{0} {1}".format(aixmReader.getSerializeAlt(oGlobalCat), aixmReader.getSerializeAltM(oGlobalCat))})
-                oSingleCat.update({"bottom":aixmReader.getSerializeAlt(oGlobalCat,"Low")})
-                oSingleCat.update({"top":aixmReader.getSerializeAlt(oGlobalCat,"Upp")})
-                oSingleCat.update({"bottom_m":oGlobalCat["lowerM"]})
-                oSingleCat.update({"top_m":oGlobalCat["upperM"]})
-                oSingleCat.update({"Ids":"GUId={0} UId={1} Id={2}".format(oGlobalCat.get("GUId","!"), oGlobalCat["UId"], oGlobalCat["id"])})
-                if "exceptSAT" in oGlobalCat:       oSingleCat.update({"exceptSAT":oGlobalCat["exceptSAT"]})
-                if "exceptSUN" in oGlobalCat:       oSingleCat.update({"exceptSUN":oGlobalCat["exceptSUN"]})
-                if "exceptHOL" in oGlobalCat:       oSingleCat.update({"exceptHOL":oGlobalCat["exceptHOL"]})
-                if "seeNOTAM" in oGlobalCat:        oSingleCat.update({"seeNOTAM":oGlobalCat["seeNOTAM"]})
-                if "activationCode" in oGlobalCat:  oSingleCat.update({"activationCode":oGlobalCat["activationCode"]})
-                if "activationDesc" in oGlobalCat:  oSingleCat.update({"activationDesc":oGlobalCat["activationDesc"]})
-                if "timeScheduling" in oGlobalCat:  oSingleCat.update({"timeScheduling":oGlobalCat["timeScheduling"]})
-                if "desc" in oGlobalCat:            oSingleCat.update({"desc":oGlobalCat["desc"]})
-                oFinalCat = oSingleCat
             else:
                 sContext = "all"
                 sContent = "allZone"
@@ -159,10 +137,38 @@ class GeojsonArea:
                 bIsArea = oGlobalCat.get(sKey4Find, False)
 
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalGeoJSON):
+                oSingleCat:dict = {}
+                if sContext == "cfd":
+                    #Single properties for CFD or FlyXC - {"name":"Agen1 119.15","category":"E","bottom":"2000F MSL","bottom_m":0,"top":"FL 65","color":"#bfbf40"}
+                    oSingleCat.update({"name":oGlobalCat["nameV"]})
+                    oSingleCat.update({"category":oGlobalCat["class"]})
+                    oSingleCat.update({"type":oGlobalCat["type"]})
+                    oSingleCat.update({"alt":"{0} {1}".format(aixmReader.getSerializeAlt(oGlobalCat), aixmReader.getSerializeAltM(oGlobalCat))})
+                    oSingleCat.update({"bottom":aixmReader.getSerializeAlt(oGlobalCat,"Low")})
+                    oSingleCat.update({"top":aixmReader.getSerializeAlt(oGlobalCat,"Upp")})
+                    oSingleCat.update({"bottom_m":oGlobalCat["lowerM"]})
+                    oSingleCat.update({"top_m":oGlobalCat["upperM"]})
+                    oSingleCat.update({"Ids":"GUId={0} UId={1} Id={2}".format(oGlobalCat.get("GUId","!"), oGlobalCat["UId"], oGlobalCat["id"])})
+                    if "codeActivity" in oGlobalCat:    oSingleCat.update({"codeActivity":oGlobalCat["codeActivity"]})
+                    if "exceptSAT" in oGlobalCat:       oSingleCat.update({"exceptSAT":oGlobalCat["exceptSAT"]})
+                    if "exceptSUN" in oGlobalCat:       oSingleCat.update({"exceptSUN":oGlobalCat["exceptSUN"]})
+                    if "exceptHOL" in oGlobalCat:       oSingleCat.update({"exceptHOL":oGlobalCat["exceptHOL"]})
+                    if "seeNOTAM" in oGlobalCat:        oSingleCat.update({"seeNOTAM":oGlobalCat["seeNOTAM"]})
+                    if "activationCode" in oGlobalCat:  oSingleCat.update({"activationCode":oGlobalCat["activationCode"]})
+                    if "activationDesc" in oGlobalCat:  oSingleCat.update({"activationDesc":oGlobalCat["activationDesc"]})
+                    if "timeScheduling" in oGlobalCat:  oSingleCat.update({"timeScheduling":oGlobalCat["timeScheduling"]})
+                    if "desc" in oGlobalCat:            oSingleCat.update({"desc":oGlobalCat["desc"]})
+                else:
+                    #Extract single parts of properties
+                    aSinglePorperties:list = ["nameV","class","type","lower","upper","lowerM","upperM","activationCode","desc","UId","id"]  #Exclude: zoneType, groupZone, srcClass, srcType, vfrZone, vfrZoneExt, freeFlightZone, freeFlightZoneExt, srcName, name; etc...
+                    for sProp in aSinglePorperties:
+                        value = oGlobalCat.get(sProp, None)
+                        if value!=None:
+                            oSingleCat.update({sProp:value})
                 if sContext != "cfd":
-                    aixm2json.addColorProperties(oFinalCat, self.oLog)      #Ajout des propriétés pour colorisation de la zone
+                    aixm2json.addColorProperties(oGlobalCat, oSingleCat, self.oLog)      #Ajout des propriétés pour colorisation de la zone
                 oAs = self.oGlobalGeoJSON[sGlobalKey]
-                oArea = {poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties:oFinalCat, poaffCst.cstGeoGeometry:oAs}
+                oArea = {poaffCst.cstGeoType:poaffCst.cstGeoFeature, poaffCst.cstGeoProperties:oSingleCat, poaffCst.cstGeoGeometry:oAs}
                 oGeoFeatures.append(oArea)
             barre.update(idx)
         barre.reset()
