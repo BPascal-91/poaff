@@ -6,7 +6,7 @@ except ImportError:
     ### Include local modules/librairies  ##
     import os
     import sys
-    aixmParserLocalSrc  = "../../aixmParser/src/"
+    aixmParserLocalSrc  = "../../../aixmParser/src/"
     module_dir = os.path.dirname(__file__)
     sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
     import bpaTools
@@ -256,7 +256,7 @@ def extractGeoJSON() -> None:
 def comparePoaffWithPoaff() -> None:
     sStdAreaCode:str = "-geoFrenchAll"        #geoFrenchAll / geoBelgium / geoSwitzerland
 
-    sFileSrc1 = "20201214_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc1 = "20210111_airspaces-freeflight" + sStdAreaCode + ".geojson"
     sFileSrc2 = "20210117_airspaces-freeflight" + sStdAreaCode + ".geojson"
 
     sFileDst1 = sFileSrc1.replace(".geojson","") + "-catalog.csv"
@@ -276,9 +276,9 @@ if __name__ == '__main__':
     callingContext      = "Paragliding-OpenAir-FrenchFiles"         #Your app calling context
     appName             = bpaTools.getFileName(__file__)
     appPath             = bpaTools.getFilePath(__file__)            #or your app path
-    appVersion          = "1.0.0"                                   #or your app version
+    appVersion          = "1.1.0"                                   #or your app version
     appId               = appName + " v" + appVersion
-    outPath             = appPath + "../output/"
+    outPath             = appPath + "../../output/"
     cfdPath             = outPath + "_CFD_www/"
     flyXCPath           = cfdPath + "FlyXC/"
     deltaPath           = cfdPath + "delta/"

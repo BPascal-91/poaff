@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from copy import deepcopy
 
-aixmParserLocalSrc  = "../../aixmParser/src/"
+aixmParserLocalSrc  = "../../../aixmParser/src/"
 try:
     import bpaTools
 except ImportError:
@@ -23,8 +23,8 @@ appName                 = bpaTools.getFileName(__file__)
 appPath                 = bpaTools.getFilePath(__file__)
 appVersion              = "1.0.0"
 appId                   = appName + " v" + appVersion
-outPath                 = appPath + "../output/"
-inPath                  = appPath + "../input/"
+outPath                 = appPath + "../../output/"
+inPath                  = appPath + "../../input/"
 logFile                 = outPath + "_" + appName + ".log"
 
 ###  Environnement applicatif  ###

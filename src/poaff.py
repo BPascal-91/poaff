@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os
+import os, sys
 import zipfile
 
 aixmParserLocalSrc  = "../../aixmParser/src/"
@@ -7,8 +7,6 @@ try:
     import bpaTools
 except ImportError:
     ### Include local modules/librairies  ##
-    #import os
-    import sys
     module_dir = os.path.dirname(__file__)
     sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
     import bpaTools
@@ -67,7 +65,7 @@ scriptProcessing = {
     "FFVL-ZonesComp":       {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVL/",   poaffCst.cstSpSrcFile:"../input/FFVL/20201204_FFVL_ZonesComplementaires_aixm45.xml"        ,poaffCst.cstSpSrcOwner:"https://federation.ffvl.fr/"},
     "BPa-ZonesComp":        {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20201210_BPa_ZonesComplementaires_aixm45.xml"          ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
     "FFVP-Birds":           {poaffCst.cstSpExecute:not(testMode), poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/FFVP/",   poaffCst.cstSpSrcFile:"../input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"                ,poaffCst.cstSpSrcOwner:"https://www.ffvp.fr"},
-    "BPa-Birds":            {poaffCst.cstSpExecute:True         , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20201216_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml" ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
+    "BPa-Birds":            {poaffCst.cstSpExecute:True         , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20210120_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml" ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"},
     "BPa-FrenchSS":         {poaffCst.cstSpExecute:True         , poaffCst.cstSpProcessType:poaffCst.cstSpPtAdd,      poaffCst.cstSpOutPath:"../output/BPa/",    poaffCst.cstSpSrcFile:"../input/BPa/20210114_LTA-French1-HR_BPa_aixm45.xml"                ,poaffCst.cstSpSrcOwner:"http://pascal.bazile.free.fr"}
 }
 

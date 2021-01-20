@@ -118,6 +118,8 @@ class Geojson2Kml:
                 sTypezZone:str = oAsPro.get("type","")
                 sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("nameV","")
                 sDeclassifiable:str = oAsPro.get("declassifiable","")
+                sOrdUpperM:str = oAsPro.get("ordinalUpperM", None)      #Ordinal AGL value
+                sOrdLowerM:str = oAsPro.get("ordinalLowerM", None)      #Ordinal AGL value
                 sUpperM:str = oAsPro.get("upperM", 9999)
                 sLowerM:str = oAsPro.get("lowerM", 0)
 
@@ -128,7 +130,16 @@ class Geojson2Kml:
                 sDesc += oAsPro.get("lower","SFC") + " / " + oAsPro.get("upper","FL999")
                 if oAsPro.get("upperMax", False):
                     sDesc += "-" + oAsPro["upperMax"]
-                sDesc += " ({0}m / {1}m)".format(sLowerM , sUpperM)
+
+                sDesc += " ("
+                if sOrdLowerM and sOrdUpperM:
+                    sDesc += "{0}m AGL / {1}m AGL ~ ".format(sOrdLowerM , sOrdUpperM)
+                elif sOrdLowerM:
+                    sDesc += "{0}m AGL / {1} ~ ".format(sOrdLowerM , oAsPro.get("upper","FL999"))
+                elif sOrdUpperM:
+                    sDesc += "{0} / {1}m AGL ~ ".format(oAsPro.get("lower","SFC") , sOrdUpperM)
+
+                sDesc += " {0}m / {1}m)".format(sLowerM , sUpperM)
 
                 if "desc" in oAsPro:
                     sDesc += "<br/><br/>" + oAsPro["desc"]
@@ -167,7 +178,7 @@ class Geojson2Kml:
                 #Nota. Exclure la LTA France dont le tracé 3D n'est pas très-bon
                 #if (len(oCoords)>1) and (sNameZone.find("LTA FRANCE 1")<0):
                 if len(oCoords)>1:
-                    oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, oCoords]
+                    oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, sOrdUpperM, sOrdLowerM, oCoords]
                     oClassZone.append(oZone)
                     oTypeZone.update({sClassZone:oClassZone})
                     self.oKmlTmp.update({sTypeZone:oTypeZone})
@@ -242,7 +253,9 @@ class Geojson2Kml:
                             sDeclassifiable:str = oZone[3]
                             sUpperM:str         = oZone[4]
                             sLowerM:str         = oZone[5]
-                            oCoords:list        = oZone[6]
+                            sOrdUpperM:str      = oZone[6]          #Ordinal AGL value
+                            sOrdLowerM:str      = oZone[7]          #Ordinal AGL value
+                            oCoords:list        = oZone[8]
 
                             #Red and fill
                             if  sKeyClass in ["P","ZIT"]:
@@ -314,19 +327,28 @@ class Geojson2Kml:
                             self.oKml.addTag(oPlacemark, "styleUrl", sValue=sStyle)
                             oMultiGeo = self.oKml.addTag(oPlacemark, "MultiGeometry")
 
-                            #Construct top panel
                             oPolygon:list = []
-                            for oAs in oCoords:
-                                sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                                oPolygon.append(sPoint + str(sUpperM))
-
+                            sAltitudeMode:str = "absolute"
                             if sLowerM==0:     #Le plancher est plaqué au sol
+                                #Define the context
+                                sFinalUpper:str = sUpperM           #Standard AMSL value
+                                if sOrdUpperM:                      #Ordinal AGL value
+                                    sFinalUpper = sOrdUpperM
+                                    sAltitudeMode:str = "relativeToGround"
+                                #Construct top panel
+                                for oAs in oCoords:
+                                    sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+                                    oPolygon.append(sPoint + str(sFinalUpper))
                                 #add top panel
-                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1")
+                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1", sAltitudeMode=sAltitudeMode)
                                 oKmlCoords.text = " ".join(oPolygon)
                             else:
+                                #Construct top panel
+                                for oAs in oCoords:
+                                    sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+                                    oPolygon.append(sPoint + str(sUpperM))
                                 #add top panel
-                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0")
+                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
                                 oKmlCoords.text = " ".join(oPolygon)
 
                                 #Construct bottom panel
@@ -335,7 +357,7 @@ class Geojson2Kml:
                                     sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
                                     oPolygon.append(sPoint + str(sLowerM))
                                 #add bottom panel
-                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0")
+                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
                                 oKmlCoords.text = " ".join(oPolygon)
 
                                 #Construct sides panels
@@ -354,7 +376,7 @@ class Geojson2Kml:
                                     oPolygon.append(sPoint0 + str(sLowerM))
 
                                     #Side panel
-                                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0")
+                                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
                                     oKmlCoords.text = " ".join(oPolygon)
 
                         barre.update(idx)

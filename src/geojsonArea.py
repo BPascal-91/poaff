@@ -160,7 +160,7 @@ class GeojsonArea:
                     if "desc" in oGlobalCat:            oSingleCat.update({"desc":oGlobalCat["desc"]})
                 else:
                     #Extract single parts of properties
-                    aSinglePorperties:list = ["nameV","class","type","lower","upper","lowerM","upperM","activationCode","desc","GUId","UId","id"]  #Exclude: zoneType, groupZone, srcClass, srcType, vfrZone, vfrZoneExt, freeFlightZone, freeFlightZoneExt, srcName, name; etc...
+                    aSinglePorperties:list = ["nameV","class","type","lower","upper","ordinalLowerM","ordinalUpperM","lowerM","lowerMin","upperM","upperMax","activationCode","desc","declassifiable","GUId","UId","id"]  #Exclude: zoneType, groupZone, srcClass, srcType, vfrZone, vfrZoneExt, freeFlightZone, freeFlightZoneExt, srcName, name; etc...
                     for sProp in aSinglePorperties:
                         value = oGlobalCat.get(sProp, None)
                         if value!=None:
