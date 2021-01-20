@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
 <!--
     ************************************************************************************************
 
@@ -1494,6 +1495,11 @@
 					<xsd:documentation>a version of Airspace</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="PoaffAdding" type="PoaffAddingType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>(BPascal) Complementary properties add by poaff sotware</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="RsgUid" type="RouteSegmentUidType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Airspace is consisting of Route segment</xsd:documentation>
@@ -1628,6 +1634,28 @@
 			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute ref="mid"/>
+	</xsd:complexType>
+	<xsd:complexType name="PoaffAddingType">
+		<xsd:annotation>
+			<xsd:documentation> (BPascal) Airspace - Complementary properties add by poaff sotware</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="GUId" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>(BPascal) Global Unique identifier</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UId" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>(BPascal) Unique identifier</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Mhz" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>(BPascal) Radio frequencies description</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="ApronGeometryPointType">
 		<xsd:annotation>

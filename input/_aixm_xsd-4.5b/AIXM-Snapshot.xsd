@@ -181,7 +181,7 @@
 		<xsd:documentation>Version: 4.5-r2</xsd:documentation>
 	</xsd:annotation>
 	<xsd:include schemaLocation="AIXM-Features.xsd"/>
-	<xsd:attributeGroup name="Changes"/>
+	<!-- <xsd:attributeGroup name="Changes"/> -->
 	<xsd:element name="AIXM-Snapshot">
 		<xsd:complexType>
 			<xsd:choice maxOccurs="unbounded">

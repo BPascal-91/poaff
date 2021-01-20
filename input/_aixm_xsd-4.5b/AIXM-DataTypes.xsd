@@ -272,6 +272,7 @@
 	<xsd:annotation>
 		<xsd:documentation>Version: 4.5-r2</xsd:documentation>
 	</xsd:annotation>
+	<xsd:include schemaLocation="AIXM-Update.xsd"/>
 	<!-- AIXM predefined simple data types -->
 	<xsd:simpleType name="alpha">
 		<xsd:restriction base="xsd:string">
