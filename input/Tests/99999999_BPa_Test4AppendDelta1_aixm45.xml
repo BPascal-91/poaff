@@ -7102,24 +7102,154 @@ Downgrading to class E:#
 			<txtRmkWorkHr>ATS SKED</txtRmkWorkHr>
 		</Att>
 	</Ase>
-    <Ase>
-        <AseUid mid="1566467">
-            <codeType>TMA</codeType>
-            <codeId>LFLL10</codeId>
-        </AseUid>
-        <txtName>LYON 10</txtName>
-        <codeClass>D</codeClass>
-        <codeDistVerUpper>STD</codeDistVerUpper>
-        <valDistVerUpper>145</valDistVerUpper>
-        <uomDistVerUpper>FL</uomDistVerUpper>
-        <codeDistVerLower>STD</codeDistVerLower>
-        <valDistVerLower>115</valDistVerLower>
-        <uomDistVerLower>FL</uomDistVerLower>
-        <Att>
-            <codeWorkHr>H24</codeWorkHr>
-            <txtRmkWorkHr>H24</txtRmkWorkHr>
-        </Att>
-    </Ase>
+	<Ase>
+		<AseUid mid="1566467">
+			<codeType>TMA</codeType>
+			<codeId>LFLL10</codeId>
+		</AseUid>
+		<txtName>LYON 10</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>145</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>STD</codeDistVerLower>
+		<valDistVerLower>115</valDistVerLower>
+		<uomDistVerLower>FL</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="1565801">
+			<codeType>D-OTHER</codeType>
+			<codeId>LF889</codeId>
+		</AseUid>
+		<txtLocalType>TRVL</txtLocalType>
+		<txtName>889</txtName>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2200</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HX</codeWorkHr>
+			<txtRmkWorkHr>Week-end and public HOL : SR-SS.</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Free flying winch launch.#Paragliders winch launch.#Winch equipped with a flashing light.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="13555717">
+			<codeType>D-OTHER</codeType>
+			<codeId>LFV880TOW</codeId>
+		</AseUid>
+		<txtLocalType>TRVL</txtLocalType>
+		<txtName>880</txtName>
+		<codeActivity>PARAGLIDER</codeActivity>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2400</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<codeDistVerMax>HEI</codeDistVerMax>
+		<valDistVerMax>1500</valDistVerMax>
+		<uomDistVerMax>FT</uomDistVerMax>
+		<Att>
+			<codeWorkHr>HX</codeWorkHr>
+			<txtRmkWorkHr>0900-SS (SUM: -1HR)</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Paragliding winching. Winch equipped with flashing lights.#
+Cable not marked out in outside border East of RWY 02/20.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="13555917">
+			<codeType>D-OTHER</codeType>
+			<codeId>LFV926TOW</codeId>
+		</AseUid>
+		<txtLocalType>TRVL</txtLocalType>
+		<txtName>926</txtName>
+		<codeActivity>PARACHUTE</codeActivity>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2500</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HJ</codeWorkHr>
+			<txtRmkWorkHr>SR-30 - SS+30</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Parasailing winching according to protocol.#
+Winch equipped with flashing lights.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="21373253">
+			<codeType>D-OTHER</codeType>
+			<codeId>LFV929TOW</codeId>
+		</AseUid>
+		<txtLocalType>TRVL</txtLocalType>
+		<txtName>929</txtName>
+		<codeActivity>TOWING</codeActivity>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>1900</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<codeDistVerMax>HEI</codeDistVerMax>
+		<valDistVerMax>1700</valDistVerMax>
+		<uomDistVerMax>FT</uomDistVerMax>
+		<Att>
+			<codeWorkHr>HJ</codeWorkHr>
+			<txtRmkWorkHr>SR-SS</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Paragliding winching. Winch equipped with a flashing light.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="10834071">
+			<codeType>D-OTHER</codeType>
+			<codeId>LF878</codeId>
+		</AseUid>
+		<txtLocalType>TRVL</txtLocalType>
+		<txtName>878</txtName>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HX</codeWorkHr>
+			<txtRmkWorkHr>From APR 1st to OCT 31st : ROUEN ATS SKED, daylight hours only.</txtRmkWorkHr>
+		</Att>
+		<txtRmk>PPR ROUEN TWR.#Parascending.#Winch equipped with a flashing light. Cable equipped with two buoys.#Actual activity on : ROUEN TWR, ROUEN APP and ROUEN ATIS.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="84915502">
+			<codeType>CTR</codeType>
+			<codeId>EBFN</codeId>
+		</AseUid>
+		<txtName>KOKSIJDE CTR</txtName>
+		<codeClass>D</codeClass>
+		<codeActivity>ATS</codeActivity>
+		<codeMil>MIL</codeMil>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>55</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HO</codeWorkHr>
+			<txtRmkWorkHr>Outside EBFN OPR HR, airspace is not active. As EBFN may be re-activated at any time, pilots are advised to avoid crossing whenever possible. Activation can be checked with Steenokkerzeel ATCC or Brussels FIC.</txtRmkWorkHr>
+		</Att>
+		<txtRmk>OPR: Belgian Air Component.
+Partially situated in France.
+The area overhead LFAK is excluded between GND and 800 ft AMSL (510131N 0023419E - along the Belgian-French border - 510330N 0023344E - 510213N 0023003E - 510131N 0023419E).
+</txtRmk>
+	</Ase>
 	<Abd>
 		<AbdUid mid="1568498">
 			<AseUid mid="1561295">
@@ -7970,42 +8100,117 @@ Downgrading to class E:#
 			<valCrc>C7F6B3D0</valCrc>
 		</Avx>
 	</Abd>
-    <Abd>
-        <AbdUid mid="1573640">
-            <AseUid mid="1566467">
-                <codeType>TMA</codeType>
-                <codeId>LFLL10</codeId>
-            </AseUid>
-        </AbdUid>
-        <Avx>
-            <codeType>GRC</codeType>
-            <geoLat>453454.00N</geoLat>
-            <geoLong>0053141.00E</geoLong>
-            <codeDatum>WGE</codeDatum>
-            <valCrc>5081B31B</valCrc>
-        </Avx>
-        <Avx>
-            <codeType>GRC</codeType>
-            <geoLat>453552.00N</geoLat>
-            <geoLong>0054150.00E</geoLong>
-            <codeDatum>WGE</codeDatum>
-            <valCrc>F428F3A9</valCrc>
-        </Avx>
-        <Avx>
-            <codeType>GRC</codeType>
-            <geoLat>452704.00N</geoLat>
-            <geoLong>0054333.00E</geoLong>
-            <codeDatum>WGE</codeDatum>
-            <valCrc>B8D6A222</valCrc>
-        </Avx>
-        <Avx>
-            <codeType>GRC</codeType>
-            <geoLat>452655.00N</geoLat>
-            <geoLong>0053400.00E</geoLong>
-            <codeDatum>WGE</codeDatum>
-            <valCrc>F16B39DB</valCrc>
-        </Avx>
-    </Abd>
+	<Abd>
+		<AbdUid mid="1573640">
+			<AseUid mid="1566467">
+				<codeType>TMA</codeType>
+				<codeId>LFLL10</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>453454.00N</geoLat>
+			<geoLong>0053141.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>5081B31B</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>453552.00N</geoLat>
+			<geoLong>0054150.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>F428F3A9</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>452704.00N</geoLat>
+			<geoLong>0054333.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>B8D6A222</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>452655.00N</geoLat>
+			<geoLong>0053400.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>F16B39DB</valCrc>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1573190">
+			<AseUid mid="1565801">
+				<codeType>D-OTHER</codeType>
+				<codeId>LF889</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>485246.00N</geoLat>
+			<geoLong>0014649.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="13555720">
+			<AseUid mid="13555717">
+				<codeType>D-OTHER</codeType>
+				<codeId>LFV880TOW</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>475042N</geoLat>
+			<geoLong>0043454E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>8A10A9EB</valCrc>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="13555920">
+			<AseUid mid="13555917">
+				<codeType>D-OTHER</codeType>
+				<codeId>LFV926TOW</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>473850N</geoLat>
+			<geoLong>0020621W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>4EAAEA55</valCrc>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="21373255">
+			<AseUid mid="21373253">
+				<codeType>D-OTHER</codeType>
+				<codeId>LFV929TOW</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>471959N</geoLat>
+			<geoLong>0002355W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>D9AEE3ED</valCrc>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="10834073">
+			<AseUid mid="10834071">
+				<codeType>D-OTHER</codeType>
+				<codeId>LF878</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>491753N</geoLat>
+			<geoLong>0011326E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>D40A2671</valCrc>
+		</Avx>
+	</Abd>
+<Abd><AbdUid mid="84915502"><AseUid mid="84915502"><codeType>CTR</codeType><codeId>EBFN</codeId></AseUid></AbdUid><Avx><codeType>CWA</codeType><geoLat>510227N</geoLat><geoLong>0022840E</geoLong><codeDatum>WGE</codeDatum><geoLatArc>510717N</geoLatArc><geoLongArc>0023045E</geoLongArc><valRadiusArc>5</valRadiusArc><uomRadiusArc>NM</uomRadiusArc><valCrc>1F1D5D04</valCrc></Avx><Avx><codeType>GRC</codeType><geoLat>511145N</geoLat><geoLong>0023423E</geoLong><codeDatum>WGE</codeDatum><valCrc>EEAAA3F5</valCrc></Avx><Avx><codeType>GRC</codeType><geoLat>510357N</geoLat><geoLong>0025825E</geoLong><codeDatum>WGE</codeDatum><valCrc>7BA09DD6</valCrc></Avx><Avx><codeType>GRC</codeType><geoLat>505900N</geoLat><geoLong>0024917E</geoLong><codeDatum>WGE</codeDatum><valCrc>0731A3D9</valCrc></Avx></Abd>
 	<Adg>
 		<AdgUid mid="7215424">
 			<AseUid mid="7215422">

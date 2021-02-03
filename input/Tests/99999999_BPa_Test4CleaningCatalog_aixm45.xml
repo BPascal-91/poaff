@@ -249,6 +249,26 @@ VFR : air navigator's attention is drawn on the life threatening nature of activ
 			<txtRmkWorkHr>SKED : See NOTAM</txtRmkWorkHr>
 		</Att>
 	</Ase>
+	<Ase>
+		<AseUid mid="1565895">
+			<codeType>CTR</codeType>
+			<codeId>EBFN</codeId>
+		</AseUid>
+		<txtName>KOKSIJDE</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>55</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Except for airspace ABV LFAK between SFC and 800ft AMSL and defined as below :#51º01'31"N, 002º34'19"E - French-Belgian border
+51º03'30"N, 002º33'44"E - 51º02'13"N, 002º30'03"E -  51º01'31"N, 002º34'19"E.</txtRmk>
+	</Ase>
 	<Abd>
 		<AbdUid mid="1569310">
 			<AseUid mid="1562881">
@@ -263,7 +283,7 @@ VFR : air navigator's attention is drawn on the life threatening nature of activ
 			<codeDatum>WGE</codeDatum>
 			<valCrc>417B265D</valCrc>
 		</Avx>
-	</Abd>	
+	</Abd>
 	<Abd>
 		<AbdUid mid="1568498">
 			<AseUid mid="1561295">
@@ -802,6 +822,45 @@ VFR : air navigator's attention is drawn on the life threatening nature of activ
 			<codeDatum>WGE</codeDatum>
 		</Avx>
 	</Abd>
+	    <Abd>
+        <AbdUid mid="1573490">
+            <AseUid mid="1565895">
+                <codeType>CTR</codeType>
+                <codeId>EBFN</codeId>
+            </AseUid>
+        </AbdUid>
+        <Avx>
+            <GbrUid mid="1545010">
+                <txtName>BELGIUM_FRANCE</txtName>
+            </GbrUid>
+            <codeType>FNT</codeType>
+            <geoLat>510521.00N</geoLat>
+            <geoLong>0023244.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>510131.00N</geoLat>
+            <geoLong>0023419.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>CWA</codeType>
+            <geoLat>510227.00N</geoLat>
+            <geoLong>0022840.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+            <geoLatArc>510717.00N</geoLatArc>
+            <geoLongArc>0023045.00E</geoLongArc>
+            <valRadiusArc>5</valRadiusArc>
+            <uomRadiusArc>NM</uomRadiusArc>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>510536.00N</geoLat>
+            <geoLong>0022315.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+    </Abd>
 	<Adg>
 		<AdgUid mid="1566929">
 			<AseUid mid="1562747">
