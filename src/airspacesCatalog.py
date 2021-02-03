@@ -176,7 +176,7 @@ class AsCatalog:
                 oExistObj = oGlobalAreas[sNewKey]
                 sFKeyExistObj:str = oExistObj.get("class", "") + oExistObj.get("type" , "")
                 sFKeyActivObj:str = sFKeyActivObj2
-                if oExistObj.get("keySrcFile", "")!="BPa-SUPAIP":
+                if oExistObj.get("keySrcFile", "")!="SIA-SUPAIP":
                     sFKeyExistObj += oExistObj.get("lower", "") + oExistObj.get("upper", "")
                     sFKeyActivObj:str = sFKeyActivObj4
                 if sFKeyActivObj == sFKeyExistObj:
@@ -210,18 +210,27 @@ class AsCatalog:
         if oAs.get("excludeAirspaceNotCoord",False):
             return False
 
-        #Depuis le 06/10 ; Préserver les zones particulières de type Point
+        #Depuis le 06/10/2020 ; Préserver les zones particulières de type Point
         if oAs.get("excludeAirspaceNotFfArea", False)==True and oAs.get("geometryType", "")!="Point":
            return False
 
-        if sKeyFile == "BPa-Test4Clean":                #Suppression manuelle de zones
-            if oAs["id"] in ["LFD18B1"]:                #Test de suppression manuelle d'une zone en mer - [Q] 18 B1 (id=LFD18B1)
+        if sKeyFile == "BPa-Test4Clean":                    #Suppression manuelle de zones
+            if oAs["id"] in ["LFD18B1"]:                    #Test de suppression manuelle d'une zone en mer - [Q] 18 B1 (id=LFD18B1)
                 ret = False
 
-        #elif sKeyFile == "EuCtrl":                      #Suppression manuelle de zones
-            #Nota.    [D] CTR ALBERT BRAY (id=LFAQ) - a un mauvais tracé et récupération via le fichier SIA
-            #if oAs["id"] in ["LFAQ"]:
-            #    ret = False
+        if sKeyFile in ["SIA-AIXM","BPa-Test4Clean"]:     #Suppression manuelle de zones
+            #D CTR KOKSIJDE (EBFN) - Tracé Français incomplet dans le fichier SIA !
+            #Suppression de nombreux tracé SIA (border with France) et en doublon avec ceux d'Eurocontrol ! donc je ne prend pas en compte l'instance SIA
+            if oAs["id"] in ["TMA16213","TMA16214","UIR4831","EBFN","EB1","LFCB1A","LFCB1B","LFSTNORD","LFSTSUD","LFST1.1","LFST30","LFSB10.20","LFSBNORD","LFSB20.30","LFSB20.20","LFSB20","LFSB30.30","LFSB30",
+                  "LFSB30.20","LFSB40.20","LFSB40.30","LFSB40","LFSB70.20","LFSB70","LFSB88","LFSB88.20","LFSB80.20","LFSB80","LFBALE1.2","LFSB85","LFSB85.20","LFSB82","LFSB82.20",
+                  "LFSB02S","LFSB60","LFSB60.20","LFSB50","LFSB50.20","LFSB02F","LFSB3","LFSB01S","LFSB2","LFSB01A","LFSB02A",'LFSB03S',"LFSB04S"]:
+                ret = False
+
+        if sKeyFile == "EuCtrl":                         #Suppression manuelle de zones
+            #Nota. [D] CTR ALBERT BRAY (id=LFAQ) - a un mauvais tracé et récupération via le fichier SIA
+            #Suppression de quelques tracé Eurocontrol (recouvrement France-autre pays) dont la définition Eurocontrol n'est pas bonne par rapport a l'instance SIA
+            if oAs["id"] in ["EDSB2","LFSB1F","LSGG","LSGG1","LSGG2","LSGG3","LSGG4","LSGG4.1","LSGG6","LSGG7","LSGG8","LSGG9","LSGG10"]:
+                ret = False
 
         if not(ret):
             self.oLog.info("Unvalid area by manual filter - ({0}){1}".format(sKeyFile, oAs["UId"], oAs["id"], outConsole=False))
@@ -237,22 +246,17 @@ class AsCatalog:
                 bClean = True
 
         #Fonctionnalité d'Exclusion de zones pour épurer le périmètre (non-concernées ou en mer...)
-        elif sKeyFile in ["EuCtrl","SIA"]:
-
-            #### Suppression de doublons entre fichier SIA-FR et fourniture Suisse via Eurocontrol
-            if sKeyFile=="EuCtrl" and (oAs["id"] in ["EDSB2","LSGG","LSGG1","LSGG2","LSGG3","LSGG4","LSGG4.1","LSGG6","LSGG7","LSGG8","LSGG9","LSGG10","LFSB1F","LFSB19C","LFSB19D"]):
-                bClean = True
+        elif sKeyFile in ["EuCtrl","SIA-AIXM"]:
 
             #Suppression de zones non-utile
-            elif oAs["id"] in ["LER152","LER153","EDCLG","EPSFIS3","EPSFIS4","EPSFIS5","LSAZ","EBBU RMZ","EBBU TMZ"]:
+            if oAs["id"] in ["LER152","LER153","EDCLG","EPSFIS3","EPSFIS4","EPSFIS5","LSAZ","EBBU RMZ","EBBU TMZ"]:
                 bClean = True
                 #### Parc en Espagne, deja intégré dans les parcs naturels via integration FFVP
                 #[R] PARQUE NACIONAL DE ORDESA Y MONTE PERDIDO NORTE (HUESCA) (id=LER152)
                 #[R] PARQUE NACIONAL DE ORDESA Y MONTE PERDIDO SUR (HUESCA) (id=LER153)
                 #### Bordure - AN G BRD - *AUID GUId=EDCLG UId=400003699424412 Id=EDCLG
                 #### + les Bordures FIS - EPSFIS3,EPSFIS4,EPSFIS5 etc
-                ###"EBBU RMZ" + "EBBU TMZ" - Supprimés car elles couvrent toute la belgique !?
-
+                ###"EBBU RMZ" + "EBBU TMZ" - RMZ et TMZ BRUSSELS FIR (EQUIPMENT)- Supprimés car elles couvrent toute la belgique !?
 
             #Suppression de zones non-utile, exemple en mer ou autres cas...
             elif oAs["id"] in ["EGWO2","LFD18B1","LFD18A5","LFD18B2","LFD214","LFD16B","LFD16D","LFD31","LFD54B1","LFD54B2","LFD143B",
@@ -278,10 +282,10 @@ class AsCatalog:
         #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
         if sKeyFile in ["EuCtrl"]:
             if oAs["id"] in ["LFST3"]:
-                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur bas de l'Id
+                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'Id
 
         #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
-        if sKeyFile in ["EuCtrl","SIA","BPa-Test4AppDelta1"]:
+        if sKeyFile in ["EuCtrl","SIA-AIXM","BPa-Test4AppDelta1"]:
             if oAs["id"] in ["LECM C","LEBL","LEBL_C","LEBL_D","LEBL_G","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
                   "LSR21","LSGG5","LSAZ","LSR81","LSR80","LSR26","LSR28","LSR27","EUC25SL1","EUC25SL2","LSR29","LFSB22C","LFSB80","LFSB24D",
                   "LFSB85","LFSB02S","LSR75_2","LSR75_1","LFSB1S","LFSB3","LFSB2","LFSB17D","LFSB17C","LFSB30.20","LFSB30","LFSB16D","LFSB16C",
@@ -290,8 +294,8 @@ class AsCatalog:
                   "EDRZPJA","EDR205D","EDDR1","EDRJPJA","ELLXCLDB","ELLX1A","EBS27","EBS29","EBD29","EBS33-1","EBS177",
                   "EBD26","EBS161","ELLX5","EBSOUTH3","EBHTA06","EBHTA04A","EBFS","EBS02","EBS30","EBHTA10D","EBS182","LFQQ2","EBHTA10C",
                   "EBKT TMZ","EBKT RMZ","EBR25","EBHTA10A","EBOS1","EBLFA11","EBR24B","ETXUTE","LFST30","ELLX2F1","ELLX2F2",
-                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","EBS87","LICTAMM18"]:
-                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur bas de l'Id
+                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","EBS87","LICTAMM18","EBTRA SA","EBTRA15","EBTSA15","EBTRA WC","EBTRA WA","EBTSA27A","EBTSA27D","EBTSA27E"]:
+                oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones dans le territoire: PWC France-Alpes, périmètre de performances (geoPWCFrenchAlps)
             if oAs["id"] in ["LSR23","LSAG","LFLL04","LFLL04.20","LFLL03","LFLL02","LFLL12","LICTAMM18"]:
@@ -313,20 +317,21 @@ class AsCatalog:
             if oAs["id"] in ["EDNYTMZB","EDNYTMZA","LSAZ","LSR43","LSR3","LSR54","LSR56","LS-VSE19","LS-VSE18","LJDO1_D","LJDO","LJDT",
                   "LJDT2_D","LJLT","LJMU_D","LJMU","LJMB2_D","LJMT","LHCC","LHB16","LHB22","LHD52","LHSLESMO","LHB18","LHB20","LZBB",
                   "LZBB-WEST","LZIB4","LZIB","LZIB2","LZR01","LKTB","LKTB4","LKR4","LKKV","LKR1","LOWSCLDA","LOWS2","LOWSCLDB","LOWSCLDD",
-                  "EDR142"]:
+                  "EDR142","LZTRA03"]:
                 oAs.update({"ExtOfAustria":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Belgium / Belgique (geoBelgium)
-            if oAs["id"] in ["EBUL607","EBFN","EBSASKI A","EHL179","EBR24A","LFQQ","LFQQ1","LFQQ2","LFQQ3","LFQQ4","LFQQ4.1","LFQQ5","EBR18B",
+            if oAs["id"] in ["EBUL607","EBSASKI A","EHL179","EBR24A","LFQQ","LFQQ1","LFQQ2","LFQQ3","LFQQ4","LFQQ4.1","LFQQ5","EBR18B",
                   "LFCBA16B","LFP38","EBR18A","ELLX1A","ELLX4","TMA16214","ELLX1B","ELS06","ELS05","EDR165A","EDR117","EBEHBKTMA","EHBK1-1",
                   "EHBK2","EHSRMZBK","EHBK1","EHBK1","EHMCD-1","EHMCD-1_B","EBL179","EHSRMZBDA","EBBL2","EHSRMZBL","EHEH4","EHEH3","EHEH1","EHEH2",
                   "EHGR","EHSRMZGR","EHV-REGTEH","EHAMS2","EHV-SCHIJF","EHAMS1","EHSTMZ-G1","EHWO","EHSRMZWO","EHB-51","EBLG1-2","EBEAST4A-2",
-                  "EBEIJSDEN","EHMCD-2","EHMCD-2_B","EHSRMZGR1","EHSRMZWO1","EHSAFIZBDA","EHATZBDA","EHSRMZBL1","EHSAFIZBDB","EHATZBDB","EHSRMZBDB","EBLG2-2"]:
+                  "EBEIJSDEN","EHMCD-2","EHMCD-2_B","EHSRMZGR1","EHSRMZWO1","EHSAFIZBDA","EHATZBDA","EHSRMZBL1","EHSAFIZBDB","EHATZBDB","EHSRMZBDB",
+                  "EBLG2-2","EHTRA12","EBTSA29C","ELTSA03","EHTMZ-MAA1","EHTSA23","EHTMZ-MAA2","EHTMZ-D2","EHTMZ-D1"]:
                 oAs.update({"ExtOfBelgium":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Czechia / Tchéquie (geoCzechia)
             if oAs["id"] in ["EPCTA05","EPX181","EPR26","EPR13","EPDLG01","LOWW8","LOWW6","LZBB-WEST","LZIB4","LZBB","LZ_GLIDER5","LZR02",
-                  "LZR01","LZBB-EAST","LZZI1","LZZI2","LZ_GLIDER7","EPKK5","EPCTA04"]:
+                  "LZR01","LZBB-EAST","LZZI1","LZZI2","LZ_GLIDER7","EPKK5","EPCTA04","EPTR03A","LZTRA03","LZHL","EPTS46","EPTS45","EPTS43","EPTS42","EPTS41","EPTS40"]:
                 oAs.update({"ExtOfCzechia":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Denmark / Danemark (geoDenmark)
@@ -342,14 +347,17 @@ class AsCatalog:
                   "LFST-BADF","LFST-BADD","LFST-BADA","EDSB2","LFST-BADC","EDSB-F","LFST1","LFST-BADB","LFST-BADE","LFST1","LFR199","LFR322",
                   "LFR323","LFST7","LFSB09","LFSB10","LFSB08","LFSB03F","LFP36","LFSB01F","LFSB1","LFSB1S","LSZH13","LSR70","LSVTGN","EDNY2",
                   "LOCE","LOHPGBREGE","LOSTMZWIW","LOSTMZWIE","LOWI5","LOHPGKOESS","LOWS1","LOWS","LOHPGUNTER","LOTRALOWSN","LKKV","LKR1",
-                  "LKMT","EPCTA05","EPDLG01","LKR2","EPSC4","EPSC3","EPSCRC","EPX003","EPSCRE","EPSC5","EDAH2","EHSRMZTW1","EHSTMZXMAL","EHSRMZLV1"]:
+                  "LKMT","EPCTA05","EPDLG01","LKR2","EPSC4","EPSC3","EPSCRC","EPX003","EPSCRE","EPSC5","EDAH2","EHSRMZTW1","EHSTMZXMAL",
+                  "EHSRMZLV1","ZRTBGTQ","EHTRA15","EHTRA14","EHTRA14C","EHTRA12","ZRTBGTQ","LFSB02S","LFSB3","LFSB01S","EHTMZ-D1","EHTMZ-MAA1",
+                  "EHATZSV","EBTSA28A","EBTSA28B","EBTSA29B","EBTSA29C","ZRTBGTQ","EPTS40"]:
                 oAs.update({"ExtOfGermany":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Hungary / Hongrie (geoHungary)
             if oAs["id"] in ["LDZO_D","LDZA1","LJMB2_D","LJMT","LJMU_D","LJMU","LDD103","LDD104","LDD109","LDD114","LDD119","LDD129","LDD128",
                   "LDOS","LYBT","LRBU2","LRAR1","LRAR1","LRAR","LROD","LRSM","UKLVWD","UKLVWC","UKLU","LZBB-EAST","LZR55","LZBB","LZKZ1","LZKZ",
                   "LZKZ3","LZBB-WEST","LZIB4","LZIB1","LZIB","LOWW3","LOWW2","LOSTMZWW","LOTRASPIS","LOTRASPISH","LOR16","LOWW5","LOWW7",
-                  "LOTRAPINKA","LZR10","LZRUTOL","LZKZ4","LZKZ1C","LZKZ1B"]:
+                  "LOTRAPINKA","LZR10","LZRUTOL","LZKZ4","LZKZ1C","LZKZ1B","LDTR103","LDTR104","LDTR109","LDTR114","LDTR119","LDTR129","LDTR128",
+                  "LDTS103","LDTS104","LDTS109","LDTS114","LDTS119","LDTS129","LDTS128"]:
                 oAs.update({"ExtOfHungary":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Ireland / Irlande (geoIreland)
@@ -376,14 +384,15 @@ class AsCatalog:
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Luxembourg (geoLuxembourg)
             if oAs["id"] in ["EDR205D","EDR205A","ELLXCLDB","ELS02-1","ELLX2C2","ELLXCLDA","EBS31","EBS29","EBS27","EBLFA03","EBS178","EBD29",
-                  "EBHTA03B","EBLFA02","EBHTA03A","EBS33-1","EBHTA07","EBSOUTH3","ELLX5","ELLX4","TMA16214","LFR45N3","ELLX3","TMA16213"]:
+                  "EBHTA03B","EBLFA02","EBHTA03A","EBS33-1","EBHTA07","EBSOUTH3","ELLX5","ELLX4","TMA16214","LFR45N3","ELLX3","TMA16213","EBTRA S6","EBTRA SA",
+                  "EBTSA29A","EBTSA S6","EBTSA29B"]:
                 oAs.update({"ExtOfLuxembourg":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Netherlands / Pays-Bas (geoNetherlands)
             if oAs["id"] in ["EHSRMZNSAA","EHSTMZNSAA","EBOS2","EBOS1","EBHTA10A","EBS27","EBHTA10B","EBBR3A","EBBR2",
                   "EBBR3B","EBS168","EBS28","EBS168","EBHTA14A","EBBR7","EBBL1","EBBL1","EBBL","EBR05B","EBBL2","EBR05C","EBBL3","EBS165",
                   "EBLG3","EBEAST3","EBLG1-1","EBLG2-1","EBEAST4A-1","EHBK1-3","EBEAST4B","EHBK1-2","EHBK2","EBLG5","ETNG","EHBK2","EDDLCLCX",
-                  "EDLVTMZC","EDLV1","EDLVTMZD","EDLVTMZB","EDLVCLD","EDLSPJA","EDR202D","EDR202A","EDR202E","EBR54","EBR55"]:
+                  "EDLVTMZC","EDLV1","EDLVTMZD","EDLVTMZB","EDLVCLD","EDLSPJA","EDR202D","EDR202A","EDR202E","EBR54","EBR55","EBTRA NA","EBTRA17"]:
                 oAs.update({"ExtOfNetherlands":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Poland / Pologne (geoPoland)
@@ -400,17 +409,21 @@ class AsCatalog:
             if oAs["id"] in ["LOTRASPIC","LOTRASPICH","LOGLDSPITZ","LOWW2","LOTRASPIS","LOTRASPISH","LHSLESMO","LHCC","LOTRASPIN","LOTRASPINH",
                   "LHBPTMAW","LHBP2A","LHSG113/V","LHSG113/S","LHSG111","LHB19A","LHBPTMAE","LHB26","LHSG110","LHSG112","LHSG114","LHBP7","LHB31",
                   "LHCCNORTHL","LZKZ2","LHB03","UKLVWD","UKLVWC","UKLU","UKLU","EPWWADIZ3","EPR10","EPX178","EPR27","EPKK5","EPR15","EPR19","EPR8",
-                  "LKMT","LKTB","LKTB3","LOWW6","LOWW4","LOWW3","EPTR174","EPTR94","LHPR"]:
+                  "LKMT","LKTB","LKTB3","LOWW6","LOWW4","LOWW3","EPTR174","EPTR94","LHPR","EPTR03A","EPTR03B","EPTR01A","EPTR14C","EPTR14D","EPTR15B",
+                  "EPTR130A","EPTR15A","EPTR130B"]:
                 oAs.update({"ExtOfSlovakia":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Slovenia / Slovénie (geoSlovenia)
             if oAs["id"] in ["LICTAPP7","LDZO_D","LDX81","LDPL6","LDZA3","LDD173","LDZA1","LDD160","LDD159","LDD191","LDD192","LDD190","LDD187",
-                  "LDD186","LDD185","LDD184","LDX51","LDD108","LDD107","LDD101","LDD103","LHCC","LHB16","LOWG2","LOHPGPETZ1"]:
+                  "LDD186","LDD185","LDD184","LDX51","LDD108","LDD107","LDD101","LDD103","LHCC","LHB16","LOWG2","LOHPGPETZ1","LDTR173","LDTR160",
+                  "LDTR159","LDTR191","LDTR192","LDTR190","LDTR187","LDTR186","LDTR185","LDTR184","LDTR108","LDTR107","LDTR101","LDTR103","LHTRA21A",
+                  "LDTS173","LDTS160","LDTS159","LDTS191","LDTS192","LDTS190","LDTS187","LDTS186","LDTS185","LDTS184","LDTS108","LDTS107","LDTS101",
+                  "LDTS103"]:
                 oAs.update({"ExtOfSlovenia":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Spain / Espagne (geoSpain)
             if oAs["id"] in ["LFMT14","LFMT18","LFMT18.20","LTA130753","LTA130752","LTA130751","LFBZ9.2","LFBZ9.1","LFBZ1","LFR266","LPR24C",
-                  "LPABG01","LPAMU01","LPFR_B"]:
+                  "LPABG01","LPAMU01","LPFR_B","LPTRA54","LPTRA55","LPTRA57"]:
                 oAs.update({"ExtOfSpain":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Switzerland / Suisse (geoSwitzerland)
@@ -454,7 +467,7 @@ class AsCatalog:
 
         #Fonctionnalité spécifique pour exclusion standard et intégratrion spécifique pour la CFD
         #Les zones suivantes sont utilisées pour un affichage quasi-exaustif ou garantie des caulculs-automatisés
-        if sKeyFile in ["EuCtrl","SIA"]:
+        if sKeyFile in ["EuCtrl","SIA-AIXM"]:
             if oAs["id"] in ["FMEE1","CTA4351A.2","OCA4521.20"]:
                 oAs.update({"freeFlightZone":False})
                 oAs.update({"freeFlightZoneExt":False})
@@ -473,7 +486,7 @@ class AsCatalog:
                 oAs.update({"exceptHOL":True})
 
         #Toutes les RTBA du SIA France, ne sont jamais activées les samedis/dimanches et jours fériés
-        if sKeyFile in ["EuCtrl","SIA"] and oAs["type"]=="R":
+        if sKeyFile in ["EuCtrl","SIA-AIXM"] and oAs["type"]=="R":
             if oAs["id"] in ["LFR45A","LFR45B","LFR45C","LFR45D","LFR45N2","LFR45N3","LFR45N4","LFR45N5.1","LFR45N5.2","LFR45S1","LFR45S2","LFR45S3","LFR45S4","LFR45S5","LFR45S6.1","LFR45S6.2","LFR45S7","LFR45NS","LFR46A","LFR46B","LFR46C","LFR46D","LFR46E1","LFR46E2","LFR46F1","LFR46F2","LFR46F3","LFR46G","LFR46N1","LFR46N2","LFR69","LFR139","LFR142","LFR143","LFR144","LFR145","LFR147","LFR165","LFR152","LFR166A","LFR166B","LFR166C","LFR56","LFR57","LFR149A","LFR149B","LFR149D","LFR149E","LFR193A","LFR193B","LFR590A","LFR590B","LFR191A","LFR191B","LFR191C","LFR589A","LFR589B","LFR591","LFR592","LFR593A","LFR593B"]:
                 oAs.update({"type":"RTBA"})
                 oAs.update({"exceptSAT":True})
@@ -482,7 +495,7 @@ class AsCatalog:
                 #self.oLog.info("Special French-RTBA areas - ({0}){1}".format(sKeyFile, oAs["UId"], oAs["id"], outConsole=False))
 
         #LTA - Traitements spécifiques pour construction des zones d'extention de vol libre
-        if sKeyFile in ["BPa-SUPAIP","BPa-FrenchSS","SIA","EuCtrl","BPa-Test4AppDelta1"] and oAs["type"]=="LTA":
+        if sKeyFile in ["SIA-SUPAIP","BPa-FrenchSS","SIA-AIXM","EuCtrl","BPa-Test4AppDelta1"] and oAs["type"]=="LTA":
 
             #Filtrage volontaire 'freeFlightZone' de la base officielle de la surface S en France (car la nouvelle 'surface S' est spécifiquement retracée par BPascal)
             if oAs["id"] in ["LTA13071","LTA130732.","LTA130733.","LTA130734.","LTA130735.","LTA130736.","LTA130737.","LTA130741."]:
@@ -505,7 +518,7 @@ class AsCatalog:
                 #Id=LTA130752 - AC E - AN LTA FRANCE 5 PYRENEES 2 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]
                 #Id=LTA130753 - AC E - AN LTA FRANCE 5 PYRENEES 3 Lower(3000FT AGL-FL115) / *AAlt ["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]
 
-                if sKeyFile in ["BPa-SUPAIP","BPa-FrenchSS","SIA"]:  #Ne pas clôner les zones sur les sources: "EuCtrl","BPa-Test4AppDelta1"
+                if sKeyFile in ["SIA-SUPAIP","BPa-FrenchSS","SIA-AIXM"]:  #Ne pas clôner les zones sur les sources: "EuCtrl","BPa-Test4AppDelta1"
                     #Phase 1.0 - Contruction du clone d'objet
                     oClone = deepcopy(oAs)
                     sNewKey:str = "BPaClone-" + oAs["UId"]

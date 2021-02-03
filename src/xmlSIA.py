@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 from bs4 import BeautifulSoup
 import bpaTools
 import aixmReader
@@ -10,6 +11,8 @@ def getMasterFrequecy(oFreqs:dict, sTypeZone:str="") -> str:
     sFreqType:str = "xxx"
     sFreq:str = None
     sPhone:str = None
+    if isinstance(oFreqs, str):
+        oFreqs = json.loads(oFreqs)
     if sTypeZone == "TMA":              #Cas d'une TMA
         sFreqType = "APP"               #Prendre la Fréqunce d'APProche
         if not sFreqType in oFreqs:

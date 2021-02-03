@@ -95,12 +95,15 @@ class OpenairArea:
         if sContext=="cfd":
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo")
         elif sContext=="ff":
-            #Pour les sorties "-gpsWithTopo", ne jamais générer: geoFrenchNorth, geoFrenchSouth, geoFrenchNESW, geoFrenchVosgesJura, geoFrenchPyrenees, geoFrenchAlps
-            aToken = ["geoFrenchNorth", "geoFrenchSouth", "geoFrenchNESW", "geoFrenchVosgesJura", "geoFrenchPyrenees", "geoFrenchAlps"]
-            bIsInclude = not bool(sAreaKey in aToken)
-            if bIsInclude:
-                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo",    None,        sAreaKey)
-                if sAreaKey!="geoPWCFrenchAlps":    #Ne pas générer les spécificités pour le périmètre "geoPWCFrenchAlps"
+            #24/01/2021 : Demande de Léo: Les nouveaux Flymaster signés 'SD' (GPS SD, NAV SD et LIVE SD) possèdent une carte mémoire sur laquelle est systématiquement embarquée une carte topo 'World Ground Level'
+            #   La mémoire des Flymaster n'a toujours pas été étendue ; il est donc maintenant nécessaire de générer les fichiers 'gpsWithTopo' avec découpage de la France pour ce type d'appareil !
+            #   Ancien filtrage maintenant inhibé: Pour les sorties "-gpsWithTopo", ne jamais générer: geoFrenchNorth, geoFrenchSouth, geoFrenchNESW, geoFrenchVosgesJura, geoFrenchPyrenees, geoFrenchAlps
+            #aToken = ["geoFrenchNorth", "geoFrenchSouth", "geoFrenchNESW", "geoFrenchVosgesJura", "geoFrenchPyrenees", "geoFrenchAlps"]
+            #bIsInclude = not bool(sAreaKey in aToken)
+            if True:   #old - bIsInclude
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", None, sAreaKey)   #Construction classique de la carte
+                self.saveOpenairAirspacesFile2(sFile, "wrn"   , "-gpsWithTopo", None, sAreaKey)   #Construction de la carte DANGERs
+                if not sAreaKey in ["geoPWCFrenchAlps",""]:    #Ne pas générer les spécificités pour le périmètre "geoPWCFrenchAlps"
                     self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSAT",    sAreaKey)
                     self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptSUN",    sAreaKey)
                     self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo", "exceptHOL",    sAreaKey)
@@ -108,7 +111,8 @@ class OpenairArea:
             aToken = ["geoPWCFrenchAlps",""]
             bIsInclude = not bool(sAreaKey in aToken)
             if bIsInclude:
-                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)
+                self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", None,        sAreaKey)   #Construction classique de la carte
+                self.saveOpenairAirspacesFile2(sFile, "wrn"   , "-gpsWithoutTopo", None,        sAreaKey)   #Construction de la carte DANGERs
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSAT", sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptSUN", sAreaKey)
                 self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithoutTopo", "exceptHOL", sAreaKey)
@@ -144,17 +148,17 @@ class OpenairArea:
                 sFile = sFile.replace("-all", "-ifr")
             elif sContext == "vfr":
                 bIsInclude = oGlobalCat["vfrZone"]
-                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)			#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m
+                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)      #Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
-            elif sContext == "ff":
+            elif sContext in ["ff","wrn"]:
                 bIsIncludeLoc:bool = True
                 if sAreaKey!="":
                     sKey4Find:str = sAreaKey.replace("geo","ExtOf")
-                    if sAreaKey[:9]=="geoFrench":                      #Spec for all french territories
+                    if sAreaKey[:9]=="geoFrench":                                               #Spec for all french territories
                         sKey4Find = "ExtOfFrench"
                     if sKey4Find in oGlobalCat:
-                        bIsIncludeLoc = not oGlobalCat[sKey4Find]       #Exclusion de zone
+                        bIsIncludeLoc = not oGlobalCat[sKey4Find]                               #Exclusion de zone
                 bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 #Relevage du plafond de carte pour certaines zones situées en France
                 if bIsIncludeLoc and ("freeFlightZoneExt" in oGlobalCat):
@@ -166,18 +170,23 @@ class OpenairArea:
                             break
                     if bIsExtAlt4Loc:
                         bIsInclude = bIsInclude or (bIsIncludeLoc and oGlobalCat["freeFlightZoneExt"])
+                if sContext in ["wrn"]:
+                    bIsInclude = bIsInclude and oGlobalCat["class"]=="Q"                        #Ne préserver que les zones DANGEREUSEs
+                else:
+                    bIsInclude = bIsInclude and oGlobalCat["class"]!="Q"                        #Exclusion systématique des zones DANGEREUSEs
                 sContent = "freeflightZone"
                 sFile = sFile.replace("-all", "-freeflight")
             elif sContext == "cfd":
                 bIsIncludeLoc:bool = True
                 if "ExtOfFrench" in oGlobalCat:
-                    bIsIncludeLoc = not oGlobalCat["ExtOfFrench"]      						#Pour Exclure toutes zones hors de France
+                    bIsIncludeLoc = not oGlobalCat["ExtOfFrench"]      						   #Pour Exclure toutes zones hors de France
                 bIsInclude = bIsIncludeLoc and oGlobalCat["freeFlightZone"]
                 if "use4cfd" in oGlobalCat:
                     bIsInclude = bIsInclude or oGlobalCat["use4cfd"]
                 #Relevage systématique du plafond de la carte
                 elif "freeFlightZoneExt" in oGlobalCat:
                     bIsInclude = bIsInclude or (bIsIncludeLoc and oGlobalCat["freeFlightZoneExt"])
+                bIsInclude = bIsInclude and oGlobalCat["class"]!="Q"                            #Exclusion systématique des zones DANGEREUSEs
                 sContent =  "freeflightZone for FFVL-CFD"
                 sFile = sFile.replace("-all", "-ffvl-cfd")
                 sAreaKey = ""
@@ -240,6 +249,9 @@ class OpenairArea:
         if sAreaKey:
             sContent += " / " + sAreaKey
             sFile = sFile.replace(".txt", "-" + sAreaKey + ".txt")
+        if sContext in ["wrn"]:
+            sContent += " / Dangerous areas"
+            sFile = sFile.replace(".txt", "-warning" + ".txt")
 
         if exceptDay:
             ext4exceptDay = exceptDay.replace("except","for")

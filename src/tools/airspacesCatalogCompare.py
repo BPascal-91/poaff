@@ -4,14 +4,19 @@ try:
     import bpaTools
 except ImportError:
     ### Include local modules/librairies  ##
-    import os
-    import sys
+    import os, sys
     aixmParserLocalSrc  = "../../../aixmParser/src/"
     module_dir = os.path.dirname(__file__)
     sys.path.append(os.path.join(module_dir, aixmParserLocalSrc))
     import bpaTools
 
-import poaffCst
+try:
+    import poaffCst
+except ImportError:
+    sLocalSrc:str = "../"                                       #Include local modules/librairies
+    module_dir = os.path.dirname(__file__)
+    sys.path.append(os.path.join(module_dir, sLocalSrc))
+    import poaffCst
 
 
 def splitDescription(sVal:str, sToken:str, oPop:list) -> str:
@@ -256,8 +261,9 @@ def extractGeoJSON() -> None:
 def comparePoaffWithPoaff() -> None:
     sStdAreaCode:str = "-geoFrenchAll"        #geoFrenchAll / geoBelgium / geoSwitzerland
 
-    sFileSrc1 = "20210111_airspaces-freeflight" + sStdAreaCode + ".geojson"
-    sFileSrc2 = "20210117_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    #sFileSrc1 = "20210111_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc1 = "20210130_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc2 = "20210202_airspaces-freeflight" + sStdAreaCode + ".geojson"
 
     sFileDst1 = sFileSrc1.replace(".geojson","") + "-catalog.csv"
     sFileDst2 = sFileSrc2.replace(".geojson","") + "-catalog.csv"

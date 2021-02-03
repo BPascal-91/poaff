@@ -32,8 +32,8 @@ class GeojsonTrunc:
 
     def setGeo(self, oGeo:dict=None)-> None:
         if oGeo:
-            if self.oLog:
-                self.oLog.info("setGeo()", outConsole=True)
+            #if self.oLog:
+            #    self.oLog.info("setGeo()", outConsole=True)
             self.oInpGeo:dict = oGeo
             self.oOutGeo:dict = deepcopy(oGeo)
         return
@@ -57,8 +57,8 @@ class GeojsonTrunc:
         sTitle = "GeoJSON airspaces truncate"
         if not oGeoJSON:
             oGeoJSON = self.oOutGeo
-        if self.oLog:
-            self.oLog.info(sTitle, outConsole=False)
+        #if self.oLog:
+        #    self.oLog.info(sTitle, outConsole=False)
 
         if poaffCst.cstGeoFeatures in oGeoJSON:
             oFeatures:dict = oGeoJSON[poaffCst.cstGeoFeatures]

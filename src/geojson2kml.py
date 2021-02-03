@@ -85,7 +85,8 @@ class Geojson2Kml:
         if sVisibility:
             self.oKml.addTag(oFolder, "visibility", sValue=sVisibility)
         if sDescription:
-            self.oKml.addTag(oFolder, "description", sValue=sDescription)
+            sDesc:str = self.oKml.letCDATA(sDescription)
+            self.oKml.addTag(oFolder, "description", sValue=sDesc)
         return oFolder
 
     #sAltitudeMode:str="absolute" [altitudeModeEnum: clampToGround, relativeToGround, absolute, substitute gx:altitudeMode: clampToSeaFloor, relativeToSeaFloor}
@@ -101,8 +102,8 @@ class Geojson2Kml:
 
     def makeAirspacesKml(self) -> None:
         sTitle = "Analyse airspaces"
-        if self.oLog:
-            self.oLog.info(sTitle, outConsole=False)
+        #if self.oLog:
+        #    self.oLog.info(sTitle, outConsole=False)
 
         #Interprétation du contenu source
         if poaffCst.cstGeoFeatures in self.oGeo:
@@ -116,33 +117,31 @@ class Geojson2Kml:
 
                 sClassZone:str = oAsPro.get("class","")
                 sTypezZone:str = oAsPro.get("type","")
-                sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("nameV","")
+                if "name" in oAsPro:
+                    sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("name","")
+                else:
+                    sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("nameV","")
                 sDeclassifiable:str = oAsPro.get("declassifiable","")
                 sOrdUpperM:str = oAsPro.get("ordinalUpperM", None)      #Ordinal AGL value
                 sOrdLowerM:str = oAsPro.get("ordinalLowerM", None)      #Ordinal AGL value
                 sUpperM:str = oAsPro.get("upperM", 9999)
                 sLowerM:str = oAsPro.get("lowerM", 0)
 
-                sDesc:str = ""
-
-                if oAsPro.get("lowerMin", False):
-                    sDesc += oAsPro["lowerMin"] + "-"
-                sDesc += oAsPro.get("lower","SFC") + " / " + oAsPro.get("upper","FL999")
-                if oAsPro.get("upperMax", False):
-                    sDesc += "-" + oAsPro["upperMax"]
-
-                sDesc += " ("
-                if sOrdLowerM and sOrdUpperM:
-                    sDesc += "{0}m AGL / {1}m AGL ~ ".format(sOrdLowerM , sOrdUpperM)
-                elif sOrdLowerM:
-                    sDesc += "{0}m AGL / {1} ~ ".format(sOrdLowerM , oAsPro.get("upper","FL999"))
-                elif sOrdUpperM:
-                    sDesc += "{0} / {1}m AGL ~ ".format(oAsPro.get("lower","SFC") , sOrdUpperM)
-
-                sDesc += " {0}m / {1}m)".format(sLowerM , sUpperM)
-
-                if "desc" in oAsPro:
-                    sDesc += "<br/><br/>" + oAsPro["desc"]
+                sDesc:str = self.makeAirspaceHtmlDesc(sName             = sNameZone,
+                                                      sClass            = sClassZone,
+                                                      sType             = sTypezZone,
+                                                      sCodeActivity     = oAsPro.get("codeActivity",""),
+                                                      bDeclassifiable   = sDeclassifiable,
+                                                      sLower            = oAsPro.get("lower","SFC"),
+                                                      sUpper            = oAsPro.get("upper","FL999"),
+                                                      sLowerMin         = oAsPro.get("lowerMin",""),
+                                                      sUpperMax         = oAsPro.get("upperMax",""),
+                                                      sLowerM           = sLowerM,
+                                                      sUpperM           = sUpperM,
+                                                      sDescription      = oAsPro.get("desc",""),
+                                                      sActivationDesc   = oAsPro.get("activationDesc",""),
+                                                      sTimeScheduling   = oAsPro.get("timeScheduling",""),
+                                                      sMhz              = oAsPro.get("Mhz","") )
 
                 #Classification pour organisation des zones
                 if "freeFlightZone" in oAsPro:
@@ -189,8 +188,8 @@ class Geojson2Kml:
             #Construction de l'organisation des polygons dans le KML
             if len(self.oKmlTmp)>0:
                 sTitle = "KML generator"
-                if self.oLog:
-                    self.oLog.info(sTitle, outConsole=False)
+                #if self.oLog:
+                #    self.oLog.info(sTitle, outConsole=False)
 
                 #https://developers.google.com/kml/documentation/kmlreference#color
                 #The first two hex characters define the alpha band, or opacity.
@@ -297,7 +296,7 @@ class Geojson2Kml:
                                 else:
                                     sStyle = "#transBrownPoly"
                             #Orange
-                            elif sKeyClass in ["Q","GP"]:
+                            elif sKeyClass in ["GP","Q","VV","VL","BA","PA"]:       #Danger; Vol à voile; Vol libre; Ballon; Parachutisme
                                 sStyle = "#noFillOrangePoly"
                             #Orange and No-Fill
                             elif sKeyClass in ["RMZ","W"]:
@@ -312,7 +311,7 @@ class Geojson2Kml:
                                 else:
                                     sStyle = "#noFillBluePoly"
                             #Green
-                            elif sKeyClass in ["E","F","G","SIV","FIS"]:
+                            elif sKeyClass in ["E","F","G","SIV","FIS","FFVL","FFVP"]:
                                 if sLowerM==0:
                                     sStyle = "#transGreenPoly"
                                 else:
@@ -383,13 +382,94 @@ class Geojson2Kml:
                 barre.reset()
         return
 
+    #Contruction dynamique du tableau de présentation
+    def makeAirspaceHtmlDesc(self, sName:str, sClass:str, sType:str="", sCodeActivity:str="", bDeclassifiable:bool=False, sLower:str="", sUpper:str="", sLowerMin:str="", sUpperMax:str="", sLowerM:str="", sUpperM:str="", sDescription:str="", sActivationDesc:str="", sTimeScheduling:str="", sMhz:str="") -> None:
+        cstTable:str                = '<table border="1" cellpadding="2" cellspacing="0" style="text-align:center;">{0}</table>'
+        cstTableHead:str            = '<th>{0}</th>'
+        cstTableRow:str             = '<tr>{0}</tr>'
+        cstTableColRawspan:str      = '<td rowspan="{0}">{1}</td>'
+        cstTableCol:str             = '<td>{0}</td>'
+        cstTextBold:str             = '<b>{0}</b>'
+        #cstTextItalic:str           = '<i>{0}</i>'
+        #cstTextUnderlined:str       = '<u>{0}</u>'
+        #cstSpanCentert:str          = '<span style="text-align:center; display:block;">{0}</span>'
+
+        """ Ouput sample :
+          <table border="1" cellpadding="2" cellspacing="0" style="text-align: center;">
+    		<tr>
+    		  <th>Class</th>
+    		  <th>Type</th>
+    		  <th>Lower / Upper</th>
+    		</tr>
+            <tr>
+    		  <td rowspan="2"><font size=6><b>A</b></font></td>
+              <td rowspan="2"><b>CTR</b></td>
+    		  <td>2500F MSL</td>
+    		</tr>
+            <tr>
+    		  <td>2000F MSL</td>
+    		</tr>
+          </table>
+          <br/><b>Description</b>: Tyty et toto sont sur un bateau...
+          <br/><b>Activity</b>: Autorisation de vol donnée par la tour de contrôle...
+        """
+
+        sHtmlDesc:str  = ""
+        sContent:str    = ""
+
+        sRow:str        = cstTableHead.format("Class")
+        if sClass!=sType:
+            sRow       += cstTableHead.format("Type")
+        if sCodeActivity:
+            sRow       += cstTableHead.format("Activity")
+        sRow           += cstTableHead.format("Upp / Low")
+        if sLowerMin or sUpperMax:
+            sRow       += cstTableHead.format("Max / Min")
+        if sLowerM!="" or sUpperM!="":
+            sRow       += cstTableHead.format("<i>in meter</i>")
+        sContent       += cstTableRow.format(sRow)
+
+        if not bDeclassifiable:
+            sStyle:str = 'style="background-color:black; color:white;"'
+        else:
+            sStyle:str = ""
+        sRow:str        = cstTableColRawspan.format(2, '<font size=6 ' + sStyle + '>' + cstTextBold.format(sClass) + '</font>')
+        if sClass!=sType:
+            sRow       += cstTableColRawspan.format(2, cstTextBold.format(sType))
+        if sCodeActivity:
+            sRow       += cstTableColRawspan.format(2, cstTextBold.format(sCodeActivity))
+        sRow           += cstTableCol.format(sUpper)
+        if sLowerMin or sUpperMax:
+            sRow       += cstTableCol.format(sUpperMax)
+        sRow           += cstTableCol.format(str(sUpperM) + (" m" if sUpperM!="" else ""))
+        sContent       += cstTableRow.format(sRow)
+
+        sRow:str        = cstTableCol.format(sLower)
+        if sLowerMin or sUpperMax:
+            sRow       += cstTableCol.format(sLowerMin)
+        sRow           += cstTableCol.format(str(sLowerM) + (" m" if sLowerM!="" else ""))
+        sContent       += cstTableRow.format(sRow)
+
+        sHtmlDesc = cstTable.format(sContent)
+        if sDescription:
+            sHtmlDesc += "<br/>" + cstTextBold.format("Description: ") + sDescription
+        if sActivationDesc:
+            sHtmlDesc += "<br/><br/>" + cstTextBold.format("Activation: ") + sActivationDesc
+        if sTimeScheduling:
+            sHtmlDesc += "<br/><br/>" + cstTextBold.format("TimeScheduling: ") + str(sTimeScheduling)
+        if sMhz:
+            sHtmlDesc += "<br/><br/>" + cstTextBold.format("Frequencies: ") + str(sMhz)
+
+        return sHtmlDesc
 
 if __name__ == '__main__':
-    sPath:str    = "../output/Tests/"
-    sSrcFile:str = "__testAirspaces-geoFrench.geojson"  #"__testAirspaces-geoAustria.geojson"
+    sPath:str    = "../output/Tests/map/"
+    sSrcFile:str = "20210127_BPa_FR-ZSM_Protection-des-rapaces.geojson"   #20210201_airspaces-freeflight-geoFrenchAlps.geojson - 20210123_BPa_FR-ZSM_Protection-des-rapaces.geojson - 20210111_airspaces-freeflight-gpsWithTopo-geoFrenchAll.geojson
     oKml = Geojson2Kml()
     oKml.readGeojsonFile(sPath + sSrcFile)
-    oKml.createKmlDocument("Paragliding Openair Frensh Files", "Cartographies aériennes France - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/")
+    sTilte:str = "Paragliding Openair Frensh Files"
+    sDesc:str  = "Created at: " + bpaTools.getNowISO() + "<br/>http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/"
+    oKml.createKmlDocument(sTilte, sDesc)
     oKml.makeAirspacesKml()
     oKml.writeKmlFile(sPath + sSrcFile.replace(".geojson", ".kml"), bExpand=1)
 
