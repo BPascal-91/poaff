@@ -284,8 +284,147 @@ class AsCatalog:
             if oAs["id"] in ["LFST3"]:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'Id
 
-        #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
+        #Traitements particuliers
         if sKeyFile in ["EuCtrl","SIA-AIXM","BPa-Test4AppDelta1"]:
+
+            ### deb -Protocoles FFVL ou FFVP - Gestion spécifique des protocoles particuliers négociés par la FFVL ou la FFVP
+            cstFfvlProtType:str = "FFVL-Prot"
+            cstFfvpProtType:str = "FFVP-Prot"
+            cstProtBase:str = "(Pascal Bazile: Voir protocole {0}) - "
+            ### FFVL ###
+            #Zones règlementés ou de classe D
+            if oAs["id"] in ["LFR30A","LFR30B"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Massifdumontblancchamonix.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFSRMZOH"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Protocole_La_Heve_Lejard_10_03_2017.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFR331","LFR332A","LFR332B"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/13EME-BCA-LFR331.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFR138","LFR138TA"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/ALVL_UCPA_E3P_Canjuers_2017.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFLN1.4"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Protocole-TMA-2016-03-31_0.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFR211","LFR212","LFR45D","LFR45S7"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/BA116%20protocole%20d%27accord%2013032008.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["SOCA"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/CAYENNEROCHAMBEAU.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFAT"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/CTR_LE_TOUQUET.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFSO","LFR92"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/BA133.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFRD01"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/DINARD.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFOE","LFOE1"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/BA105-VL-2018.pdf + https://federation.ffvl.fr/sites/ffvl.fr/files/Accord%20%20sites%20de%20treuils%20Quatremare%20et%20Quittebeuf.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFRG"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Trouville_grand_bec.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFR77A"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/convention%20base%20salon.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFCR"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Protocole%20SNA%20-%20Comit%C3%A9%20Dept%20Vol%20libre%20Rodez%202009.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFR55D"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/BA115-VL-2018.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            #Zones classifiés Dangereuses
+            if oAs["id"] in ["LF963"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Poitiers.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LF889"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/TreuilEnSemaine.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LF8917"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/arreteMasserac.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFV934TOW"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/ArretedefLaNoe%20avril%202017_0.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LF915", "LF916"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Accord%20%20sites%20de%20treuils%20Quatremare%20et%20Quittebeuf.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFV1007TOW"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/BA105-VL-2018.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LF995"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Savineslelac.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LF9605"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Protocole.pdf")
+                oAs.update({"name":oAs.get("name","") + " - " + cstFfvlProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+
+
+            ### Cas particulier FFVL + FFVP ###
+            if oAs["id"] in ["LFST1","LFST2"]:
+                #Cas particulier de 2 protocoles: FFVL + FFVP !
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Strasbourg_Entzheim.pdf + https://federation.ffvl.fr/sites/ffvl.fr/files/TMA_Strasbourg.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType + " / " + cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFRG2"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/TMA-DEAUVILLE.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType + " / " + cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFR19610", "LFR19620", "LFR19630", "LFR196A2", "LFR196B", "LFR19660", "LFR19670", "LFR19680"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/GAPVALENSOLE.pdf")
+                oAs.update({"codeActivity":cstFfvlProtType + " / " + cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+
+
+            ### FFVP ###
+            if oAs["id"] in ["EDSB-F","LFST-BADC","LFR199","LFST2.1","LFST1.2","LFST7","LFR197","LFR198"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/TMA_Strasbourg.pdf")
+                oAs.update({"codeActivity":cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFBI1","LFBI2"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Protocole_Poitiers_CTR1_et_CTR2.pdf")
+                oAs.update({"codeActivity":cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFOJ5.2", "LFOJ1.2", "LFOJ6.2", "LFOJ8", "LFOJ5.1"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Protocole_Orleans_2015-BA123.pdf")
+                oAs.update({"codeActivity":cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            if oAs["id"] in ["LFBG", "CTA4721", "LFR49A1", "LFR49A2"]:
+                sMsg:str = cstProtBase.format("https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf")
+                oAs.update({"codeActivity":cstFfvpProtType})
+                oAs.update({"activationDesc":sMsg + oAs.get("activationDesc","")})
+            ### fin - Protocoles FFVL ou FFVP
+
+
+            #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
             if oAs["id"] in ["LECM C","LEBL","LEBL_C","LEBL_D","LEBL_G","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
                   "LSR21","LSGG5","LSAZ","LSR81","LSR80","LSR26","LSR28","LSR27","EUC25SL1","EUC25SL2","LSR29","LFSB22C","LFSB80","LFSB24D",
                   "LFSB85","LFSB02S","LSR75_2","LSR75_1","LFSB1S","LFSB3","LFSB2","LFSB17D","LFSB17C","LFSB30.20","LFSB30","LFSB16D","LFSB16C",

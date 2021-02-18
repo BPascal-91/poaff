@@ -14,6 +14,17 @@ except ImportError:
 import poaffCst
 import geoRefArea
 
+
+
+###################################################################################################
+# /!\ Change before generate html page !!! -> Sample - Cycle AIRAC 01/21 (28/01/2021 au 24/02/2021)
+###################################################################################################
+cstAIRACdateStart:datetime = datetime.datetime(2021, 1, 28)
+cstAIRACdateEnd:datetime   = datetime.datetime(2021, 2, 24)
+###################################################################################################
+
+
+
 ###  Context applicatif  ####
 appName                 = bpaTools.getFileName(__file__)
 appPath                 = bpaTools.getFilePath(__file__)
@@ -188,16 +199,15 @@ class PoaffWebPage:
                 sLine += '"monthly";'                                   #frequency
                 sLine += '"Licence Ouverte / Open Licence version 2.0";'#license
                 if str(aLine[1]).find("_border")>0:
-                    sLine += '"{0}";'.format("")                                #temporal_coverage.start
-                    sLine += '"{0}";'.format("")                                #temporal_coverage.end
+                    sLine += '"{0}";'.format("")                        #temporal_coverage.start
+                    sLine += '"{0}";'.format("")                        #temporal_coverage.end
                 else:
-                    sLine += '"{0}";'.format(aLine[2])                          #temporal_coverage.start
-                    sLine += '"{0}";'.format(bpaTools.getDate(bpaTools.addMonths(
-                                        datetime.date(int(aLine[2][0:4]), int(aLine[2][4:6]), int(aLine[2][6:8])), 1)))       #temporal_coverage.end
-                sLine += '"False";'                                    #private
-                sLine += ";"                                           #featured
-                sLine += '"{0}";'.format(sCreatedAt)                   #created_at
-                sLine += ";"                                           #last_modified
+                    sLine += '"{0}";'.format(cstAIRACdateStart.strftime("%Y/%m/%d"))         #temporal_coverage.start
+                    sLine += '"{0}";'.format(cstAIRACdateEnd.strftime("%Y/%m/%d"))           #temporal_coverage.end
+                sLine += '"False";'                                     #private
+                sLine += ";"                                            #featured
+                sLine += '"{0}";'.format(sCreatedAt)                    #created_at
+                sLine += ";"                                            #last_modified
                 sLine += '"' + sFileExt[1:] + ',aixm,openair,eurocontrol,sia-france,espace-aerien,carte-aerienne,airspace,map,3d,sports-aeriens,air-sports,delta,deltaplane,hangliding,parapente,paragliding";'  #tags
                 fCatalog.write(sLine + "\n")
 
@@ -645,6 +655,8 @@ class PoaffWebPage:
             sBuffStr += "; <b>" + aPubDates[-1] + "</b>"
             self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@webPublicationDates@@", sBuffStr)
             self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@webPublicationLastDate@@", str(aPubDates[-1]))
+            sAIRACdates:str = cstAIRACdateStart.strftime("%d/%m/%Y") + " au " + cstAIRACdateEnd.strftime("%d/%m/%Y")
+            self.sWebPageBuffer = self.sWebPageBuffer.replace("@@DatesList@@AIRACdates@@", sAIRACdates)
 
             sNewWebPage:str = "index.htm"
             sMsg = "Creating Web file - {}".format(sNewWebPage)
@@ -705,6 +717,8 @@ class PoaffWebPage:
         if bKmlFile or bKmlWarnFile:
             sEndOf:str      = bpaTools.getContentOf(sTitle, "[", "]")
             sTitleClean:str   = sTitle.replace("[" + sEndOf + "]", "")
+            sTitle3D:str       = sTitleClean.replace("Cartographie", "Cartographie 3D")
+            sTitleWarn3D:str   = sTitle3D.replace(" 3D ", " 3D des zones dangereuses ")
 
         #--Colonne 1--
         sCellContent:str = cstTextBold.format(oAreaRef[2])
@@ -737,9 +751,9 @@ class PoaffWebPage:
             sContent += '<a title="Exemple de représentation..." target="map" href="' + sImgFile + '"><img height="50" src="' + sImgFile + '" /></a>'
             sKmlLinks:str=""
             if bKmlWarnFile:
-                sKmlLinks += self.makeLink4File("files", sKmlWarnFile, "Dangers sur " + sTitleClean + "[format KML]", "KML-Warning") + ' / '
+                sKmlLinks += self.makeLink4File("files", sKmlWarnFile, sTitleWarn3D + "[format KML]", "KML-Warning") + ' / '
             if bKmlFile:
-                sKmlLinks += self.makeLink4File("files", sKmlFile, sTitleClean + "[format KML]", "KML-Map")
+                sKmlLinks += self.makeLink4File("files", sKmlFile, sTitle3D + "[format KML]", "KML-Map")
             if sKmlLinks:
                 sContent += '<br/>' + sKmlLinks
             if bQualityLight:

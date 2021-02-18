@@ -27,6 +27,7 @@ except ImportError:
     sys.path.append(os.path.join(module_dir, sLocalSrc))
     from geojson2kml import Geojson2Kml
 
+import xmlSIA
 
 def copyFile(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> bool:
     if os.path.exists(sSrcPath + sSrcFile):
@@ -71,6 +72,8 @@ def makeAixm2Openair(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> 
     aArgs = [appName, aixmReader.CONST.frmtOPENAIR, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optCleanLog]
     oOpts = bpaTools.getCommandLineOptions(aArgs)
     aixmCtrl = aixmReader.AixmControler(sSrcPath + sSrcFile, sDstPath, "", oLog)        #Init controler
+    aixmCtrl.bOpenairOptimizePoint = False
+    #aixmCtrl.bOpenairOptimizeArc = False        #--> Ne pas optimiser l'Arc car l'alignement du 1er point de l'arc de cercle ne coincide souvent pas avec le point théorique du départ de l'arc !?
     aixmCtrl.execParser(oOpts)                                                          #Execution des traitements
     renameFile(sDstPath, "airspaces-all-gpsWithTopo.txt", sDstPath, sDstFile)
     return
@@ -149,40 +152,36 @@ if __name__ == '__main__':
     oLog.resetFile()
 
 
-
-    ###--- Ctrl test --
     sInPath:str         = cstPoaffInPath  + "Tests/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
     #sSrcOpenairFile:str  = "99999999_BPa_TestOpenair-RTBA.txt"
-    sSrcOpenairFile:str  = "99999999_BPa_Test4Circles.txt"  #99999999_BPa_Test4Circles.txt
+    #sSrcOpenairFile:str  = "99999999_BPa_Test4Circles_Arcs.txt"  #99999999_BPa_Test4Circles.txt
+    sSrcOpenairFile:str  = "99999999_BPa_Test4Circles_AlignArcs.txt"
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
 
 
-
     """
-    ###--- Bulles de Protection des oiseaux ---
     sInPath:str         = cstPoaffInPath  + "BPa/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
-    #sSrcOpenairFile:str  = "20210127_BPa_FR-ZSM_Protection-des-rapaces.txt"
-    sSrcOpenairFile:str  = "20210116_BPa_FR-SIA-SUPAIP.txt"
+    sSrcOpenairFile:str  = "20210208_BPa_FR-ZSM_Protection-des-rapaces.txt"
+    #sSrcOpenairFile:str  = "20210116_BPa_FR-SIA-SUPAIP.txt"
     #sFilterClass=["ZSM", "GP"]
     #sFilterName=["LaDaille", "LeFornet", "Bonneval", "Termignon", "PERCNOPTERE", "LeVillaron"]
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
     """
 
 
-    """
     sInPath:str         = cstPoaffInPath  + "FFVL/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
     #sSrcOpenairFile:str  = "20200120_FFVL_ParcAnnecyMaraisBoutDuLac.txt"
-    #sSrcOpenairFile:str  = "20210124_FFVL_ProtocolesParticuliers_BPa.txt"
     #sSrcOpenairFile:str  = "20210202_BPa_ParcsNat_ChampagneBourgogne.txt"
-    sSrcOpenairFile:str   = "20210202_PascalW_ParcCevennes.txt"
+    #sSrcOpenairFile:str   = "20210202_PascalW_ParcCevennes.txt"
+    sSrcOpenairFile:str  = "20210214_FFVL_ProtocolesParticuliers_BPa.txt"
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
-    """
+
 
 
     """
