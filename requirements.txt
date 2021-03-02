@@ -8,3 +8,4 @@
 Shapely
 #Sous Windows, 'Shapely' peut ne pas s'installer, si besoin le télécharger --> https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely
 beautifulsoup4
+rdp

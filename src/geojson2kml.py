@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+from rdp import rdp
+
 try:
     import bpaTools
 except ImportError:
@@ -39,7 +42,10 @@ class Geojson2Kml:
     def writeKmlFile(self, fileDst:str, bExpand=0) -> None:
         if not self.oGeo:
             sMsg:str = " file {0} - Empty source geometry".format(fileDst)
-            self.oLog.warning("Unwritten" + sMsg, outConsole=False)
+            if self.oLog:
+                self.oLog.warning("Unwritten" + sMsg, outConsole=False)
+            else:
+                print(sMsg)
             bpaTools.deleteFile(fileDst)
             return
 
@@ -100,10 +106,11 @@ class Geojson2Kml:
         oCoords = self.oKml.addTag(oFolder2, "coordinates")
         return oCoords
 
-    def makeAirspacesKml(self) -> None:
-        sTitle = "Analyse airspaces"
+    #Use epsilonReduce for compress shape in KML file   (Nota. epsilonReduce=0 for no compression, samples: 0.0001 or 0.0005)
+    def makeAirspacesKml(self, epsilonReduce:float=0.0005) -> None:
+        sTitle = "KML analyse"
         #if self.oLog:
-        #    self.oLog.info(sTitle, outConsole=False)
+        #    self.oLog.info("makeAirspacesKml() " + sTitle, outConsole=False)
 
         #Interprétation du contenu source
         if poaffCst.cstGeoFeatures in self.oGeo:
@@ -115,25 +122,23 @@ class Geojson2Kml:
                 oAsPro = oAs[poaffCst.cstGeoProperties]              #get properties
                 oAsGeo = oAs[poaffCst.cstGeoGeometry]                #get geometry
 
-                sClassZone:str = oAsPro.get("class","")
+                sClassZone:str = oAsPro.get("class", oAsPro.get("category","?class"))
                 sTypezZone:str = oAsPro.get("type","")
-                if "name" in oAsPro:
-                    sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("name","")
-                else:
-                    sNameZone:str = "[" + sClassZone + "] " + oAsPro.get("nameV","")
+                sTmpName:str = oAsPro.get("name", oAsPro.get("nameV","?name"))
+                sNameZone:str = "[" + sClassZone + "] " + sTmpName
                 sDeclassifiable:str = oAsPro.get("declassifiable","")
                 sOrdUpperM:str = oAsPro.get("ordinalUpperM", None)      #Ordinal AGL value
                 sOrdLowerM:str = oAsPro.get("ordinalLowerM", None)      #Ordinal AGL value
-                sUpperM:str = oAsPro.get("upperM", 9999)
-                sLowerM:str = oAsPro.get("lowerM", 0)
+                sUpperM:str = oAsPro.get("upperM", oAsPro.get("top_m", 9999))
+                sLowerM:str = oAsPro.get("lowerM", oAsPro.get("bottom_m", 0))
 
                 sDesc:str = self.makeAirspaceHtmlDesc(sName             = sNameZone,
                                                       sClass            = sClassZone,
                                                       sType             = sTypezZone,
                                                       sCodeActivity     = oAsPro.get("codeActivity",""),
                                                       bDeclassifiable   = sDeclassifiable,
-                                                      sLower            = oAsPro.get("lower","SFC"),
-                                                      sUpper            = oAsPro.get("upper","FL999"),
+                                                      sLower            = oAsPro.get("lower",oAsPro.get("bottom","SFC")),
+                                                      sUpper            = oAsPro.get("upper",oAsPro.get("top"   ,"FL999")),
                                                       sLowerMin         = oAsPro.get("lowerMin",""),
                                                       sUpperMax         = oAsPro.get("upperMax",""),
                                                       sLowerM           = sLowerM,
@@ -173,11 +178,20 @@ class Geojson2Kml:
                 elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates][0]     #get coordinates of geometry
 
-                #Stockage organisationnel temporaire
-                #Nota. Exclure la LTA France dont le tracé 3D n'est pas très-bon
-                #if (len(oCoords)>1) and (sNameZone.find("LTA FRANCE 1")<0):
                 if len(oCoords)>1:
-                    oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, sOrdUpperM, sOrdLowerM, oCoords]
+                    #Optimisation du tracé
+                    if epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40):   #Ne pas optimiser le tracé des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
+                        oCoordsDst:list = rdp(oCoords, epsilon=epsilonReduce)       #Optimisation du tracé des coordonnées
+                        sMsg:str = "RDP Optimisation: {0} - {1}->{2}".format(sNameZone, len(oCoords), len(oCoordsDst))
+                        if self.oLog:
+                            self.oLog.info(sMsg)
+                        #else:
+                        #    print(sMsg)
+                    else:
+                        oCoordsDst:list = oCoords
+
+                    #Stockage organisationnel temporaire
+                    oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, sOrdUpperM, sOrdLowerM, oCoordsDst]
                     oClassZone.append(oZone)
                     oTypeZone.update({sClassZone:oClassZone})
                     self.oKmlTmp.update({sTypeZone:oTypeZone})
@@ -189,7 +203,7 @@ class Geojson2Kml:
             if len(self.oKmlTmp)>0:
                 sTitle = "KML generator"
                 #if self.oLog:
-                #    self.oLog.info(sTitle, outConsole=False)
+                #    self.oLog.info("makeAirspacesKml() " + sTitle, outConsole=False)
 
                 #https://developers.google.com/kml/documentation/kmlreference#color
                 #The first two hex characters define the alpha band, or opacity.
@@ -233,7 +247,10 @@ class Geojson2Kml:
                 for sKeyType, oTypeZone in self.oKmlTmp.items():
 
                     sVisiblility:str="0" #default value
-                    if sKeyType == "vfrZone":
+                    if sKeyType == "Airspace":
+                        sVisiblility:str="1"
+                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Airspace", sVisiblility, "Espace aérien")
+                    elif sKeyType == "vfrZone":
                         sVisiblility:str="1"
                         oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR", sVisiblility, "Couche de l'espace aérien VFR ; dont le plancher s'étand depuis la surface de la terre (SFC/AGL) jusqu'à l'altitude limite de la surface 'S' (FL115)")
                     elif sKeyType == "vfrZoneExt":

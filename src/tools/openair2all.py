@@ -62,6 +62,7 @@ def makeOpenair2Aixm(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> 
 
 def makeAixm2Geojson(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> None:
     aArgs = [appName, aixmReader.CONST.frmtGEOJSON, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optCleanLog]
+    aArgs += [aixmReader.CONST.optEpsilonReduce + "=0.0001"]
     oOpts = bpaTools.getCommandLineOptions(aArgs)
     aixmCtrl = aixmReader.AixmControler(sSrcPath + sSrcFile, sDstPath, "", oLog)        #Init controler
     aixmCtrl.execParser(oOpts)                                                          #Execution des traitements
@@ -84,8 +85,9 @@ def makeGeojson2Kml(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> N
     sTilte:str = "Paragliding Openair Frensh Files"
     sDesc:str  = "Created at: " + bpaTools.getNowISO() + "<br/>http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/"
     oKml.createKmlDocument(sTilte, sDesc)
-    oKml.makeAirspacesKml()
+    oKml.makeAirspacesKml(epsilonReduce=0.005)                     #epsilonReduce=0 / epsilonReduce=0.005
     oKml.writeKmlFile(sDstPath + sDstFile, bExpand=1)
+    oKml = None     #Free and clean file
     return
 
 def makeAllFiles(sSrcPath:str, sSrcOpenairFile:str, sDstPath:str) -> None:
@@ -157,7 +159,8 @@ if __name__ == '__main__':
     sRootSchemaLocation:str = cstPoaffInPath
     #sSrcOpenairFile:str  = "99999999_BPa_TestOpenair-RTBA.txt"
     #sSrcOpenairFile:str  = "99999999_BPa_Test4Circles_Arcs.txt"  #99999999_BPa_Test4Circles.txt
-    sSrcOpenairFile:str  = "99999999_BPa_Test4Circles_AlignArcs.txt"
+    #sSrcOpenairFile:str  = "99999999_BPa_Test4Circles_AlignArcs.txt"
+    sSrcOpenairFile:str  = "99999999_ComplexArea.txt"
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
 
 
@@ -165,14 +168,14 @@ if __name__ == '__main__':
     sInPath:str         = cstPoaffInPath  + "BPa/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
-    sSrcOpenairFile:str  = "20210208_BPa_FR-ZSM_Protection-des-rapaces.txt"
-    #sSrcOpenairFile:str  = "20210116_BPa_FR-SIA-SUPAIP.txt"
+    #sSrcOpenairFile:str  = "20210208_BPa_FR-ZSM_Protection-des-rapaces.txt"
+    sSrcOpenairFile:str  = "20210116_BPa_FR-SIA-SUPAIP.txt"
     #sFilterClass=["ZSM", "GP"]
     #sFilterName=["LaDaille", "LeFornet", "Bonneval", "Termignon", "PERCNOPTERE", "LeVillaron"]
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
     """
 
-
+    """
     sInPath:str         = cstPoaffInPath  + "FFVL/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
@@ -181,7 +184,7 @@ if __name__ == '__main__':
     #sSrcOpenairFile:str   = "20210202_PascalW_ParcCevennes.txt"
     sSrcOpenairFile:str  = "20210214_FFVL_ProtocolesParticuliers_BPa.txt"
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
-
+    """
 
 
     """

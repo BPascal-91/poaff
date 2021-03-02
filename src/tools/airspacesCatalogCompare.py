@@ -261,9 +261,8 @@ def extractGeoJSON() -> None:
 def comparePoaffWithPoaff() -> None:
     sStdAreaCode:str = "-geoFrenchAll"        #geoFrenchAll / geoBelgium / geoSwitzerland
 
-    #sFileSrc1 = "20210111_airspaces-freeflight" + sStdAreaCode + ".geojson"
-    sFileSrc1 = "20210130_airspaces-freeflight" + sStdAreaCode + ".geojson"
-    sFileSrc2 = "20210202_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc1 = "20210216_airspaces-freeflight" + sStdAreaCode + ".geojson"
+    sFileSrc2 = "20210301_airspaces-freeflight" + sStdAreaCode + ".geojson"
 
     sFileDst1 = sFileSrc1.replace(".geojson","") + "-catalog.csv"
     sFileDst2 = sFileSrc2.replace(".geojson","") + "-catalog.csv"

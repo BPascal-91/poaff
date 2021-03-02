@@ -19,8 +19,8 @@ import geoRefArea
 ###################################################################################################
 # /!\ Change before generate html page !!! -> Sample - Cycle AIRAC 01/21 (28/01/2021 au 24/02/2021)
 ###################################################################################################
-cstAIRACdateStart:datetime = datetime.datetime(2021, 1, 28)
-cstAIRACdateEnd:datetime   = datetime.datetime(2021, 2, 24)
+cstAIRACdateStart:datetime = datetime.datetime(2021, 2, 25)
+cstAIRACdateEnd:datetime   = datetime.datetime(2021, 3, 24)
 ###################################################################################################
 
 
@@ -256,6 +256,22 @@ class PoaffWebPage:
         for aTypeFile in aTypeFiles:
             srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
             dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
+
+            if aTypeFile[0]=="-ffvl-cfd":
+                srcFileName2 = str(srcFileName).replace(".geojson", ".kml")
+                dstFileName2 = str(dstFileName).replace(".geojson", ".kml")
+                bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2)
+                if bCopyFile:
+                    sTitle:str = aTypeFile[1] + sFormat
+                    sTitle = sTitle.replace("Cartographie spécifique", "Cartographie 3D représentative des cartographies spécifiques")
+                    self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
+                    #Duplication du fichier "LastVersion"
+                    dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                    if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
+                        self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
+                    sToken = str("@@file@@KML-airspaces-all@@").replace("-all", aTypeFile[0])
+                    self.publishFile(dstFileName2, sToken, sTitle)
+
             if aTypeFile[0] in ["-freeflight"]:
                 #Déclinaison de toutes les régionalisations
                 for sAreaKey, oAreaRef in geoRefArea.GeoRefArea(False).AreasRef.items():
@@ -268,7 +284,7 @@ class PoaffWebPage:
                             sTitle:str = aTypeFile[1] + " / " + sAreaKey[1:] + sFileType + sFormat
                             if sFileType == "-warning":
                                 sTitle = cstDangersHeader + sTitle
-                            self.addFile2Catalog(True, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, geoRefArea.GeoRefArea(False).AreasRef[sAreaKey])
+                            self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, geoRefArea.GeoRefArea(False).AreasRef[sAreaKey])
                             sTocken:str = "@@file@@KML-airspaces-freeflight-" + sAreaKey + sFileType + "@@"
                             self.publishFile(dstFileName2, sTocken, sTitle)
 

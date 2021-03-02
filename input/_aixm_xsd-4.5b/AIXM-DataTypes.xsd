@@ -2034,7 +2034,7 @@
 	<xsd:simpleType name="codeIdAsBase">
 		<xsd:restriction base="character3">
 			<xsd:minLength value="1"/>
-			<xsd:maxLength value="10"/>
+			<xsd:maxLength value="20"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	<xsd:complexType name="codeIdAs">
