@@ -1,0 +1,5 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", 
+	"properties": {"name": "FrenchNorth", "id": "manu", "countryName": "France", "countryCode": "FR", "countryIsoCode": "FRA", "src": "French-North.json", "creationDatetime": "2020-06-01T00:08:37.823717"}, 
+	"geometry": {"type": "Polygon", "coordinates": [
+		[[2.54322, 51.09017], [1.72165, 51.01615], [-1.86297, 49.86025], [-4.82241, 48.62363], [-4.79494, 47.94006], [-1.50591, 46.11000], [6.58064, 46.11000], [7.82975, 47.53066], [8.53732, 49.02843], [2.54322, 51.09017]]
+]}}]}
