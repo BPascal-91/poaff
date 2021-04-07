@@ -43,7 +43,7 @@ class Geojson2Kml:
         if not self.oGeo:
             sMsg:str = " file {0} - Empty source geometry".format(fileDst)
             if self.oLog:
-                self.oLog.warning("Unwritten" + sMsg, outConsole=False)
+                self.oLog.info("Unwritten" + sMsg, outConsole=False)
             else:
                 print(sMsg)
             bpaTools.deleteFile(fileDst)
@@ -106,8 +106,8 @@ class Geojson2Kml:
         oCoords = self.oKml.addTag(oFolder2, "coordinates")
         return oCoords
 
-    #Use epsilonReduce for compress shape in KML file   (Nota. epsilonReduce=0 for no compression, samples: 0.0001 or 0.0005)
-    def makeAirspacesKml(self, epsilonReduce:float=0.0005) -> None:
+    #Use epsilonReduce for compress shape in KML file   (Nota. epsilonReduce=-1 for no compression, =0 supress-doublon; samples: 0.0001 or 0.0005)
+    def makeAirspacesKml(self, epsilonReduce:float=-1) -> None:
         sTitle = "KML analyse"
         #if self.oLog:
         #    self.oLog.info("makeAirspacesKml() " + sTitle, outConsole=False)
@@ -124,13 +124,19 @@ class Geojson2Kml:
 
                 sClassZone:str = oAsPro.get("class", oAsPro.get("category","?class"))
                 sTypezZone:str = oAsPro.get("type","")
-                sTmpName:str = oAsPro.get("name", oAsPro.get("nameV","?name"))
+                sTmpName:str = oAsPro.get("name", oAsPro.get("nameV", "?name"))
                 sNameZone:str = "[" + sClassZone + "] " + sTmpName
                 sDeclassifiable:str = oAsPro.get("declassifiable","")
                 sOrdUpperM:str = oAsPro.get("ordinalUpperM", None)      #Ordinal AGL value
                 sOrdLowerM:str = oAsPro.get("ordinalLowerM", None)      #Ordinal AGL value
                 sUpperM:str = oAsPro.get("upperM", oAsPro.get("top_m", 9999))
                 sLowerM:str = oAsPro.get("lowerM", oAsPro.get("bottom_m", 0))
+                sMinGroundHeight:str = 0
+                sMaxGroundHeight:str = 0
+                aGroundEH:list = oAsPro.get("groundEstimatedHeight", None)
+                if aGroundEH:
+                    sMinGroundHeight = aGroundEH[0]
+                    sMaxGroundHeight = aGroundEH[3]
 
                 sDesc:str = self.makeAirspaceHtmlDesc(sName             = sNameZone,
                                                       sClass            = sClassZone,
@@ -182,16 +188,18 @@ class Geojson2Kml:
                     #Optimisation du tracé
                     if epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40):   #Ne pas optimiser le tracé des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
                         oCoordsDst:list = rdp(oCoords, epsilon=epsilonReduce)       #Optimisation du tracé des coordonnées
-                        sMsg:str = "RDP Optimisation: {0} - {1}->{2}".format(sNameZone, len(oCoords), len(oCoordsDst))
-                        if self.oLog:
-                            self.oLog.info(sMsg)
-                        #else:
-                        #    print(sMsg)
+                        iOrgSize:int = len(oCoords)
+                        iNewSize:int = len(oCoordsDst)
+                        if iNewSize>0 and iNewSize!=iOrgSize:
+                            percent:float = round((1-(iNewSize/iOrgSize))*100,1)
+                            percent = int(percent) if percent>=1.0 else percent
+                            sOpti:str = "Segments optimisés à {0}% ({1}->{2}) [rdp={3}] ***".format(percent, iOrgSize, iNewSize, epsilonReduce)
+                            self.oLog.debug("Kml RDP Optimisation: {0} - {1}".format(sNameZone, sOpti), level=2, outConsole=False)
                     else:
                         oCoordsDst:list = oCoords
 
                     #Stockage organisationnel temporaire
-                    oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, sOrdUpperM, sOrdLowerM, oCoordsDst]
+                    oZone:list = [sNameZone, sDesc, sTypezZone, sDeclassifiable, sUpperM, sLowerM, sOrdUpperM, sOrdLowerM, sMinGroundHeight, sMaxGroundHeight, oCoordsDst]
                     oClassZone.append(oZone)
                     oTypeZone.update({sClassZone:oClassZone})
                     self.oKmlTmp.update({sTypeZone:oTypeZone})
@@ -271,7 +279,9 @@ class Geojson2Kml:
                             sLowerM:str         = oZone[5]
                             sOrdUpperM:str      = oZone[6]          #Ordinal AGL value
                             sOrdLowerM:str      = oZone[7]          #Ordinal AGL value
-                            oCoords:list        = oZone[8]
+                            sMinGroundHeight    = oZone[8]
+                            sMaxGroundHeight    = oZone[9]
+                            oCoords:list        = oZone[10]
 
                             #Red and fill
                             if  sKeyClass in ["P","ZIT"]:
@@ -345,12 +355,11 @@ class Geojson2Kml:
 
                             oPolygon:list = []
                             sAltitudeMode:str = "absolute"
+                            sFinalUpper:str = sUpperM           #Standard AMSL value
+                            if sOrdUpperM:                      #Ordinal AGL value
+                                sFinalUpper = int(sMaxGroundHeight) + int(sOrdUpperM)    #New - Elevation au dessus du point géographique le plus élevé de la zone
+
                             if sLowerM==0:     #Le plancher est plaqué au sol
-                                #Define the context
-                                sFinalUpper:str = sUpperM           #Standard AMSL value
-                                if sOrdUpperM:                      #Ordinal AGL value
-                                    sFinalUpper = sOrdUpperM
-                                    sAltitudeMode:str = "relativeToGround"
                                 #Construct top panel
                                 for oAs in oCoords:
                                     sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
@@ -359,10 +368,14 @@ class Geojson2Kml:
                                 oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1", sAltitudeMode=sAltitudeMode)
                                 oKmlCoords.text = " ".join(oPolygon)
                             else:
+                                sFinalLower:str = sLowerM           #Standard AMSL value
+                                if sOrdLowerM:                      #Ordinal AGL value
+                                    sFinalLower = int(sMinGroundHeight) + int(sOrdLowerM)    #New - Elevation au dessus du point géographique le moins élevé de la zone
+
                                 #Construct top panel
                                 for oAs in oCoords:
                                     sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                                    oPolygon.append(sPoint + str(sUpperM))
+                                    oPolygon.append(sPoint + str(sFinalUpper))
                                 #add top panel
                                 oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
                                 oKmlCoords.text = " ".join(oPolygon)
@@ -371,7 +384,7 @@ class Geojson2Kml:
                                 oPolygon:list = []
                                 for oAs in oCoords:
                                     sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                                    oPolygon.append(sPoint + str(sLowerM))
+                                    oPolygon.append(sPoint + str(sFinalLower))
                                 #add bottom panel
                                 oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
                                 oKmlCoords.text = " ".join(oPolygon)
@@ -385,11 +398,11 @@ class Geojson2Kml:
                                         sPoint1:str = str(oCoords[idx+1][0]) + "," + str(oCoords[idx+1][1]) + ","
 
                                     oPolygon:list = []
-                                    oPolygon.append(sPoint0 + str(sLowerM))
-                                    oPolygon.append(sPoint0 + str(sUpperM))
-                                    oPolygon.append(sPoint1 + str(sUpperM))
-                                    oPolygon.append(sPoint1 + str(sLowerM))
-                                    oPolygon.append(sPoint0 + str(sLowerM))
+                                    oPolygon.append(sPoint0 + str(sFinalLower))
+                                    oPolygon.append(sPoint0 + str(sFinalUpper))
+                                    oPolygon.append(sPoint1 + str(sFinalUpper))
+                                    oPolygon.append(sPoint1 + str(sFinalLower))
+                                    oPolygon.append(sPoint0 + str(sFinalLower))
 
                                     #Side panel
                                     oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
@@ -481,7 +494,7 @@ class Geojson2Kml:
 
 if __name__ == '__main__':
     sPath:str    = "../output/Tests/map/"
-    sSrcFile:str = "20210127_BPa_FR-ZSM_Protection-des-rapaces.geojson"   #20210201_airspaces-freeflight-geoFrenchAlps.geojson - 20210123_BPa_FR-ZSM_Protection-des-rapaces.geojson - 20210111_airspaces-freeflight-gpsWithTopo-geoFrenchAll.geojson
+    sSrcFile:str = "20210325_All-Parcs.geojson"   #20210201_airspaces-freeflight-geoFrenchAlps.geojson - 20210123_BPa_FR-ZSM_Protection-des-rapaces.geojson - 20210111_airspaces-freeflight-gpsWithTopo-geoFrenchAll.geojson
     oKml = Geojson2Kml()
     oKml.readGeojsonFile(sPath + sSrcFile)
     sTilte:str = "Paragliding Openair Frensh Files"

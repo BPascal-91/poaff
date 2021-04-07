@@ -66,12 +66,14 @@ class GeoRefArea:
         if partialConstruct:
             #Pour acceleration des tests en mises au points
             self.AreasRef = {
-                    "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories"],
+                    #"geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories"],
                     "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country"],
-                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial"],
-                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial"],
-                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","---","--","Partial"],
-                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances","","FRA","FR","Partial"]
+                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial"],
+                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial"],
+                    #"geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial"],
+                    #"geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial"],
+                    #"geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","---","--","Partial"],
+                    #"geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances","","FRA","FR","Partial"],
                     }
         else:
             #Lotissement nominal des bordures à traiter

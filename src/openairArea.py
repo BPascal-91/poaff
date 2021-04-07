@@ -10,7 +10,10 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
-errLocalisationPoint:list = ["DP 45:00:00 N 005:00:00 W"]
+
+openairAixmHeader:str       = "***(aixmParser) "
+errLocalisationPoint:list   = ["DP 45:00:00 N 005:00:00 W"]
+
 
 def cleanLine(line:str) -> str:
     ret = line.strip()
@@ -60,16 +63,14 @@ class OpenairZone:
               self.sLower  != None
         return ret
 
-    def serializeArea(self, gpsType:str="") -> str:
-        if len(self.oBorder) == 0:
+    def serializeArea(self, gpsType:str="", digit:int=-1, epsilonReduce:float=-1, nbMaxSegment:int=-1,oLog:bpaTools.Logger=None) -> str:
+        iNbSegments:int = len(self.oBorder)
+        if iNbSegments == 0:
             return ""
-
-        area:str = ""
-        oZone:list = aixm2openair.makeOpenair(self.oCat, gpsType)
-        for oZn in oZone:
-            area += oZn + "\n"
-        for oBd in self.oBorder:
-            area += oBd + "\n"
+        oAirspace:dict = self.oCat
+        oAirspace.update({poaffCst.cstGeoGeometry:self.oBorder})
+        oZone:list = aixm2openair.makeOpenair(oAirspace, gpsType, digit=poaffCst.cstOpenairDigitOptimize, epsilonReduce=epsilonReduce, nbMaxSegment=nbMaxSegment, epsilonrDyn=True, oLog=oLog)
+        area:str = "\n".join(oZone) + "\n"
         return area
 
 
@@ -212,7 +213,7 @@ class OpenairArea:
 
                 #Maintenir ou Supprimer la LTA-France1 (originale ou spécifique) des cartes non-concernées par le territoire Français --> [D] LTA FRANCE 1 (Id=LTA13071) [FL115-FL195]
                 if bIsArea and oGlobalCat["id"] in ["LTA13071","BpFrenchSS"]:
-                    if sAreaKey=="" or (sAreaKey in ["geoFrench","geoFrenchAll"]):
+                    if sAreaKey in ["","geoFrench","geoFrenchAll"]:
                         sAddHeader = "'{0}' {1} - Symbolisation de la surface 'S' - Afin de simplifier cette carte, vous pouvez éventuellement supprimer cette couche limite du vol-libre (hors masifs-montagneux...)".format(oGlobalCat["nameV"], aixmReader.getSerializeAlt(oGlobalCat))
                     else:
                         bIsArea = False     #Ne pas afficher cette zone incohérente pour ces régions
@@ -261,12 +262,12 @@ class OpenairArea:
 
         sMsg:str = " file {0} - {1} areas in map".format(sFile, len(oOutOpenair))
         if len(oOutOpenair) == 0:
-            self.oLog.info("Unwritten" + sMsg, outConsole=False)
+            self.oLog.info("Openair unwritten" + sMsg, outConsole=False)
             bpaTools.deleteFile(sFile)
         else:
-            self.oLog.info("Write" + sMsg, outConsole=False)
-            oOp:OpenairArea = None
-            sOutOpenair:str = ""
+            self.oLog.info("Openair write" + sMsg, outConsole=False)
+
+            #Entête des fichiers
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             if sAreaKey in self.oGeoRefArea.AreasRef:
@@ -277,11 +278,26 @@ class OpenairArea:
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oOutOpenair)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
+
+            #Contexte pour optimisation du tracé
+            digit:float=poaffCst.cstOpenairDigitOptimize
+            epsilonReduce:float = poaffCst.cstOpenairEpsilonReduce      #Param d'optimisation standard de KML
+            nbMaxSegment:int = -1                                       #Nombre maxi de segment admissible (nécessaire pour génération des fichiers FAF)
+            if sFile.find("ffvl-cfd")>0:
+                epsilonReduce = poaffCst.cstOpenairCfdEpsilonReduce     #Imposer l'optimisation pour les sorties Openair CFD
+            else:
+                aToken = ["geoFrenchNorth", "geoFrenchSouth", "geoFrenchNESW", "geoFrenchVosgesJura", "geoFrenchPyrenees", "geoFrenchAlps"]
+                if sAreaKey in aToken:
+                    epsilonReduce = poaffCst.cstOpenairEpsilonReduceMR  #Optimisation moyenne résolution pour les sorties Openair régionnales
+                    nbMaxSegment = 100                                  #100 segments maxi pour création des fichiers FAF
+
             oTools = aixmReader.AixmTools(None)
-            sHeader = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, sAddHeader)
-            sOutOpenair += sHeader
+            sOutOpenair:str = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, sAddHeader, digit=digit, epsilonReduce=epsilonReduce)
+
+            #Sérialisation de toutes les zones
+            oOp:OpenairArea = None
             for oOp in oOutOpenair:
-                sOutOpenair += oOp.serializeArea(gpsType) + "\n"
+                sOutOpenair += oOp.serializeArea(gpsType, digit, epsilonReduce, nbMaxSegment, self.oLog) + "\n"
 
             bpaTools.writeTextFile(sFile, sOutOpenair)  #Sérialisation du fichier
         return
@@ -338,8 +354,17 @@ class OpenairArea:
         elif aLine[0] in ["SP","SB","AT","AY"]:
             return    #Pas besoin de récupération...
 
+        elif srcLine[0:len(openairAixmHeader)] == openairAixmHeader:
+            #Préserver lignes de commentaires specifiques de type:
+            #   ***(aixmParser) Warning Missing geoBorder GbrUid='1545002' Name=FRANCE_SWITZERLAND of LTA FRANCE 3 ALPES 7
+            #   ***(aixmParser) Missing Airspaces Borders AseUid=
+            #   ***(aixmParser) Openair Segments 9
+            #   ***(aixmParser) Segments optimisés à 1% (135->133) [rdp=0.0001]
+            self.oZone.oBorder.append(srcLine)
+            return
+
         elif aLine[0][0] == "*":
-            return    #Ignorer lignes de commentaires
+            return                      #Ignorer toutes les autres lignes de commentaires...
 
         else:
             if not self.oZone.isCorrectHeader():
@@ -355,7 +380,6 @@ class OpenairArea:
         #### Border - Traitement des bordures géographiques de zones
         if aLine[0] in ["AC","AN","AH","AL","SP","SB","AT","AY"]:
             None    #Traité plus haut dans la parties 'header'
-
         else:
             self.oZone.oBorder.append(srcLine)
         return
@@ -379,19 +403,24 @@ class OpenairArea:
         idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                       #Traitement du catalogue global complet
             idx+=1
+
             if oGlobalCat[airspacesCatalog.cstKeyCatalogKeySrcFile]==sKeyFile:
-               #self.oLog.info("  --> Openair airspace consolidation {0}".format(sGlobalKey), outConsole=False)
-               sUId = oGlobalCat["UId"]
-               #Depuis le 06/10 ; Préserver les zones particulières de type Point
-               if oGlobalCat.get("excludeAirspaceNotFfArea", False)==True and oGlobalCat.get("geometryType", "")!="Point":
-                   None     #Ne pas inclure cette zone sans bordure
-               elif sUId in self.oOpenair:
-                   oAs:OpenairZone = self.oOpenair[sUId]
-                   oAs.sGUId = sGlobalKey   #Stockage de la clé principale
-                   oAs.oCat = oGlobalCat   #Référencement du Catalog de propriétés de cette zone
-                   self.oGlobalOpenair.update({sGlobalKey:oAs})
-               else:
-                   self.oLog.error("Openair airspace not found in file - {0}".format(sUId), outConsole=False)
+                #self.oLog.info("  --> Openair airspace consolidation {0}".format(sGlobalKey), outConsole=False)
+                sUId = oGlobalCat["UId"]
+                #Depuis le 06/10 ; Préserver les zones particulières de type Point
+                if oGlobalCat.get("excludeAirspaceNotFfArea", False)==True and oGlobalCat.get("geometryType", "")!="Point":
+                    None     #Ne pas inclure cette zone sans bordure
+                elif sUId in self.oOpenair:
+                    if sGlobalKey[:len(poaffCst.cstPoaffCloneObject)]==poaffCst.cstPoaffCloneObject:    #Ex:'PoaffClone-1566263'
+                        #Cas spécifique d'un objet volontairement clôné dans le catalogue
+                        oAs:OpenairZone = deepcopy(self.oOpenair[sUId])     #Instentiation d'un clône d'objet source
+                    else:
+                        oAs:OpenairZone = self.oOpenair[sUId]               #Instentiation de l'objet source
+                    oAs.sGUId = sGlobalKey   #Stockage de la clé principale
+                    oAs.oCat = oGlobalCat    #Référencement du Catalog de propriétés de cette zone
+                    self.oGlobalOpenair.update({sGlobalKey:oAs})
+                else:
+                    self.oLog.error("Openair airspace not found in file - {0}".format(sUId), outConsole=False)
             barre.update(idx)
         barre.reset()
         return

@@ -56,7 +56,7 @@ class XmlSIA:
     def openFile(self, sSrcFile:str, sKeyFile:str) -> None:
         #self.sSrcFile = sSrcFile
         self.sKeyFile = sKeyFile
-        sTitle = "Xml parsing file - {0}".format(self.sKeyFile)
+        sTitle = "..oooOOOO  poaff.XmlSIA() parsing file - {0}".format(self.sKeyFile)
         self.oLog.info(sTitle, outConsole=True)
         self.doc = BeautifulSoup(open(sSrcFile, "r", encoding="utf-8"), "xml", from_encoding="utf-8")
         #self.doc = BeautifulSoup(open(sSrcFile, 'r', encoding="ISO-8859-1"), "xml", from_encoding="ISO-8859-1") 	   #or encoding="cp1252"

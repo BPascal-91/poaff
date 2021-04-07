@@ -26,8 +26,12 @@ except ImportError:
     module_dir = os.path.dirname(__file__)
     sys.path.append(os.path.join(module_dir, sLocalSrc))
     from geojson2kml import Geojson2Kml
-
+import poaffCst
 import xmlSIA
+
+
+mOpenairEpsilonReduce:float=-1
+
 
 def copyFile(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> bool:
     if os.path.exists(sSrcPath + sSrcFile):
@@ -51,7 +55,6 @@ def renameFile(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> bool:
         oLog.warning("Unrename file (not exist): {0}".format(sSrcFile), outConsole=False)
         return False
 
-
 def makeOpenair2Aixm(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> None:
     oParser = OpenairReader.OpenairReader(oLog)
     oParser.setFilters(sFilterClass, sFilterType, sFilterName)
@@ -62,7 +65,7 @@ def makeOpenair2Aixm(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> 
 
 def makeAixm2Geojson(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> None:
     aArgs = [appName, aixmReader.CONST.frmtGEOJSON, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optCleanLog]
-    aArgs += [aixmReader.CONST.optEpsilonReduce + "=0.0001"]
+    aArgs += [aixmReader.CONST.optEpsilonReduce + "=" + str(poaffCst.cstGeojsonEpsilonReduce)]
     oOpts = bpaTools.getCommandLineOptions(aArgs)
     aixmCtrl = aixmReader.AixmControler(sSrcPath + sSrcFile, sDstPath, "", oLog)        #Init controler
     aixmCtrl.execParser(oOpts)                                                          #Execution des traitements
@@ -71,6 +74,11 @@ def makeAixm2Geojson(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> 
 
 def makeAixm2Openair(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> None:
     aArgs = [appName, aixmReader.CONST.frmtOPENAIR, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optALL, aixmReader.CONST.optCleanLog]
+    aArgs += [aixmReader.CONST.optOpenairDigitOptimize + "=" + str(poaffCst.cstOpenairDigitOptimize)]
+    if mOpenairEpsilonReduce!=-1:
+        aArgs += [aixmReader.CONST.optEpsilonReduce + "=" + str(mOpenairEpsilonReduce)]
+    else:
+        aArgs += [aixmReader.CONST.optEpsilonReduce + "=" + str(poaffCst.cstOpenairEpsilonReduce)]
     oOpts = bpaTools.getCommandLineOptions(aArgs)
     aixmCtrl = aixmReader.AixmControler(sSrcPath + sSrcFile, sDstPath, "", oLog)        #Init controler
     aixmCtrl.bOpenairOptimizePoint = False
@@ -85,7 +93,7 @@ def makeGeojson2Kml(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> N
     sTilte:str = "Paragliding Openair Frensh Files"
     sDesc:str  = "Created at: " + bpaTools.getNowISO() + "<br/>http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/"
     oKml.createKmlDocument(sTilte, sDesc)
-    oKml.makeAirspacesKml(epsilonReduce=0.005)                     #epsilonReduce=0 / epsilonReduce=0.005
+    oKml.makeAirspacesKml(epsilonReduce=poaffCst.cstKmlEpsilonReduce)
     oKml.writeKmlFile(sDstPath + sDstFile, bExpand=1)
     oKml = None     #Free and clean file
     return
@@ -118,9 +126,10 @@ def makeAllFiles(sSrcPath:str, sSrcOpenairFile:str, sDstPath:str) -> None:
             oGEH.parseUnknownGroundHeightRef(sDstPath + sGeojsonFile)       #Execution des traitements
 
             #Nouvelle tentative de regénération des fichiers
-            oLog.resetFile()                                    #Clean du log
-            sMsg:str = "Forced reload by second phase"
-            oLog.warning("{0}".format(sMsg), outConsole=True)
+            #oLog.resetFile()                                   #Clean du log
+            oLog.resetCpt()                                     #Reset compteurs sans effacement du log
+            sMsg:str = "...oooOOO Forced reload by second phase OOOooo..."
+            oLog.info("{0}".format(sMsg), outConsole=True)
             makeAixm2Geojson(sDstPath, sAixmFile, sDstPath, sGeojsonFile)
 
         iActErr:int = oLog.CptCritical + oLog.CptError
@@ -137,13 +146,25 @@ def makeAllFiles(sSrcPath:str, sSrcOpenairFile:str, sDstPath:str) -> None:
         makeGeojson2Kml(sDstPath, sGeojsonFile, sDstPath, sKmlFile)
     return
 
+#### Paramétrage de l'optimisation des tracés ####
+def setConfEpsilonReduce(epsilonReduce:bool=None) -> None:
+    poaffCst.cstGeojsonCfdEpsilonReduce  = 0.0    if epsilonReduce else -1        #0.0    - Suppression de doublons pour tracés GeoJSON en sortie CFD
+    poaffCst.cstGeojsonEpsilonReduce     = 0.0001 if epsilonReduce else -1        #0.0001 - Simplification des tracés GeoJSON standard
+    poaffCst.cstKmlCfdEpsilonReduce      = 0.0001 if epsilonReduce else -1        #0.0001 - Faible simplification des tracés KML en sortie CFD
+    poaffCst.cstKmlEpsilonReduce         = 0.0005 if epsilonReduce else -1        #0.0005 - Réduction importante des tracés KML
+    poaffCst.cstOpenairCfdEpsilonReduce  = 0.0    if epsilonReduce else -1        #0.0    - Suppression de doublons pour tracés Openair standards
+    poaffCst.cstOpenairEpsilonReduce     = 0.0    if epsilonReduce else -1        #0.0    - Suppression de doublons pour tracés Openair standards
+    poaffCst.cstOpenairEpsilonReduceMR   = 0.0002 if epsilonReduce else -1        #0.0002 - Base de réduction moyenne des tracés Openair pour les zones régionnales "ISO_Perimeter=Partial" (gpsWithTopo or gpsWithoutTopo)[geoFrenchNorth, geoFrenchSouth, geoFrenchNESW, geoFrenchVosgesJura, geoFrenchPyrenees, geoFrenchAlps]
+    poaffCst.cstOpenairDigitOptimize     = 0      if epsilonReduce else -1        #openairDigitOptimize=-1 / 0 / 2
+    return
+
 
 if __name__ == '__main__':
     ### Context applicatif
     callingContext:str  = "Paragliding-OpenAir-FrenchFiles"         #Your app calling context
     appName:str         = bpaTools.getFileName(__file__)
     appPath:str         = bpaTools.getFilePath(__file__)            #or your app path
-    appVersion:str      = "1.0.0"                                   #or your app version
+    appVersion:str      = "1.1.2"                                   #or your app version
     appId:str           = appName + " v" + appVersion
     cstPoaffInPath:str  = "../../input/"
     cstPoaffOutPath:str = "../../output/"
@@ -153,7 +174,95 @@ if __name__ == '__main__':
     oLog = bpaTools.Logger(appId,logFile)
     oLog.resetFile()
 
+    setConfEpsilonReduce(epsilonReduce)     #### Paramétrage de l'optimisation des tracés ####
 
+    ###Gestion des Parcs naturels
+    sAllOpenair:str=""
+    oParcs:dict = {
+            "Jura":  ["Jura", "20210324_Parc-Jura.txt"],
+            "Bauges":  ["Bauges", "20210104_FFVL_ParcBauges.txt"],
+            "AnnecyMarais":  ["AnnecyMarais", "20200120_FFVL_ParcAnnecyMarais.txt"],
+            "Passy":  ["Passy", "20191129_FFVL_ParcPassy.txt"],
+            "Sixt-Passy":  ["Sixt-Passy", "20210305_Sixt-Passy.txt"],
+            "AiguillesRouges":  ["AiguillesRouges", "20210304_AiguillesRouges.txt"],
+            "Contamines":  ["Contamines", "20210304_Contamines.txt"],
+            "GrandeSassiere":  ["GrandeSassiere", "20210304_GrandeSassiere.txt"],
+            "Vanoise":  ["Vanoise", "20210325_Vanoise.txt"],
+            "Vercors":  ["Vercors", "20210305_Vercors.txt"],
+            "Ecrins":  ["Ecrins", "20210304_Ecrins.txt"],
+            "Mercantour":  ["Mercantour", "20210304_Mercantour.txt"],
+            "Champagne":  ["Champagne", "20210202_BPa_ParcsNat_Champagne.txt"],
+            "Cevennes":  ["Cevennes", "20210324_PascalW_ParcCevennes.txt"],
+            "BaieDeSomme":  ["BaieDeSomme", "20200729_SergeR_ParcNat_BaieDeSomme.txt"],
+            "Hourtin":  ["Hourtin", "20200729_SergeR_ParcNat_Hourtin.txt"],
+            "Pyrenees":  ["Pyrenees", "20210323_Pyrenees_hr.txt"],
+            "Ordessa":  ["Ordessa", "20210304_Ordessa.txt"],
+            "Italie":   ["Italie", "20210324_ParcsItaliens.txt"]
+    }
+    """
+    ###(deb) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc
+    aParc = oParcs["Passy"]
+    sInPath:str         = cstPoaffInPath + "Parcs/" + aParc[0] + "/"
+    sOutPath:str        = sInPath + "map/"
+    sRootSchemaLocation:str = cstPoaffInPath
+    makeAllFiles(sInPath, aParc[1], sOutPath)
+    ###(end) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc
+    """
+
+    ###(deb) Phase 2a - Consolidation de tous les parcs dans un unique fichier pour traitement automatisé via poaff
+    oUniqueKey:dict={}
+    for sKey, aParc in oParcs.items():
+        sInPath:str= cstPoaffInPath + "Parcs/" + aParc[0] + "/"
+        sSrcFile = sInPath + aParc[1]
+        sAllOpenair += "*"*(20+len(sSrcFile)) + "\n"
+        sAllOpenair += "*"*5 + " source file - " + sSrcFile + "\n"
+        sAllOpenair += "*"*(20+len(sSrcFile)) + "\n"
+        fopen = open(sSrcFile, "rt", encoding="cp1252", errors="ignore")
+        lines = fopen.readlines()
+        sMsg = "Parsing openair file - {}".format(sSrcFile)
+        oLog.info("{}".format(sMsg), outConsole=True)
+        barre = bpaTools.ProgressBar(len(lines), 20, title=sMsg)
+        idx = 0
+        for line in lines:
+            idx+=1
+            #Verifications pour qualité des données
+            sTocken:str = "*AUID"
+            if line[:len(sTocken)]==sTocken:
+                #Ex: '*AUID GUId=! UId=! Id=PJuraNord'
+                aAUID = line.split(" ")
+                #Contrôle que les identifiants ne sont pas renseignés
+                if aAUID[1]!="GUId=!" or aAUID[2]!="UId=!":
+                    raise Exception("Error - Identification error in line -" + line)
+                #Contrôle que l'identifiant local est bien unique dans l'ensemble des zones consolidés
+                aAUID[3] = aAUID[3].replace("\n", "")
+                sLocKey:str = aAUID[3].split("=")[1]
+                sFind:str = oUniqueKey.get(sLocKey, "...")
+                if sFind==sLocKey:
+                    raise Exception("Error - Duplicate identification " + aAUID[3] + " with " + sFind)
+                else:
+                    oUniqueKey.update({sLocKey:aAUID[3] + " in " + sSrcFile})
+            sAllOpenair += line
+            barre.update(idx)
+        sAllOpenair += "\n"*2
+        barre.reset()
+
+    sOutPath:str= cstPoaffInPath + "Parcs/__All-Parcs/"
+    sOutFile = "20210325_All-Parcs.txt"
+    if sAllOpenair:
+        sMsg = "Construct consolidated openair file - {}".format(sOutFile)
+        oLog.info("{}".format(sMsg), outConsole=True)
+        bpaTools.writeTextFile(sOutPath + sOutFile, sAllOpenair)
+    ###(end) Phase 2a - Consolidation de tous les parcs dans un unique fichier pour traitement automatisé via poaff
+
+    ###(deb) Phase 2b - Construction de l'aixm et des fichiers assimilés sur la base des parcs consolidés
+    sInPath:str  = sOutPath
+    sOutPath:str = sInPath + "map/"
+    sRootSchemaLocation:str = cstPoaffInPath
+    makeAllFiles(sInPath, sOutFile, sOutPath)
+    ###(fin) Phase 2b - Construction de l'aixm et des fichiers assimilés sur la base des parcs consolidés
+
+
+    """
     sInPath:str         = cstPoaffInPath  + "Tests/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
@@ -162,26 +271,25 @@ if __name__ == '__main__':
     #sSrcOpenairFile:str  = "99999999_BPa_Test4Circles_AlignArcs.txt"
     sSrcOpenairFile:str  = "99999999_ComplexArea.txt"
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
-
+    """
 
     """
     sInPath:str         = cstPoaffInPath  + "BPa/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
     #sSrcOpenairFile:str  = "20210208_BPa_FR-ZSM_Protection-des-rapaces.txt"
-    sSrcOpenairFile:str  = "20210116_BPa_FR-SIA-SUPAIP.txt"
+    #sSrcOpenairFile:str  = "20210116_BPa_FR-SIA-SUPAIP.txt"
+    sSrcOpenairFile:str  = "20210304_BPa_ZonesComplementaires.txt"
     #sFilterClass=["ZSM", "GP"]
     #sFilterName=["LaDaille", "LeFornet", "Bonneval", "Termignon", "PERCNOPTERE", "LeVillaron"]
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
     """
 
+
     """
     sInPath:str         = cstPoaffInPath  + "FFVL/"
     sPOutPath:str       = cstPoaffOutPath + "Tests/map/"
     sRootSchemaLocation:str = cstPoaffInPath
-    #sSrcOpenairFile:str  = "20200120_FFVL_ParcAnnecyMaraisBoutDuLac.txt"
-    #sSrcOpenairFile:str  = "20210202_BPa_ParcsNat_ChampagneBourgogne.txt"
-    #sSrcOpenairFile:str   = "20210202_PascalW_ParcCevennes.txt"
     sSrcOpenairFile:str  = "20210214_FFVL_ProtocolesParticuliers_BPa.txt"
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
     """
@@ -216,7 +324,6 @@ if __name__ == '__main__':
     #sFilterClass=["ZSM", "GP"]
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
     """
-
 
 
     #Clotures

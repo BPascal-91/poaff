@@ -5,7 +5,7 @@
 #aixmPaser							; necessary to parse sources files
 #aixmPaser.groundEstimatedHeight    ; necessary to complete input-data
 #openairPaser                       ; necessary to parse Openair files
-Shapely
+beautifulsoup4==4.8.0
+rdp==0.8
+Shapely==1.6.4
 #Sous Windows, 'Shapely' peut ne pas s'installer, si besoin le télécharger --> https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely
-beautifulsoup4
-rdp
