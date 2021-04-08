@@ -17,10 +17,11 @@ import geoRefArea
 
 
 ###################################################################################################
-# /!\ Change before generate html page !!! -> Sample - Cycle AIRAC 01/21 (28/01/2021 au 24/02/2021)
+# /!\ Change before generate html page !!! -> Sample - Cycle AIRAC 03/21 (25/03/2021 au 21/04/2021)
+# /!\ and cleen folder - poaff/output/_POAFF_www/files/
 ###################################################################################################
-cstAIRACdateStart:datetime = datetime.datetime(2021, 2, 25)
-cstAIRACdateEnd:datetime   = datetime.datetime(2021, 3, 24)
+cstAIRACdateStart:datetime = datetime.datetime(2021, 3, 25)
+cstAIRACdateEnd:datetime   = datetime.datetime(2021, 4, 21)
 ###################################################################################################
 
 

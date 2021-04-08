@@ -125,7 +125,7 @@ class OpenairArea:
     def saveOpenairAirspacesFile2(self, sFile:str, sContext:str="all", gpsType:str="", exceptDay:str="", sAreaKey:str="") -> None:
         oOutOpenair:list = []
         sContent:str = ""
-        sAddHeader:str = ""
+        aAddHeader:list = []
         lNbExcludeZone:int = 0
 
         oGlobalHeader = self.oAsCat.oGlobalCatalog[poaffCst.cstGeoHeaderFile]                   #Récupération de l'entete du catalogue global
@@ -214,7 +214,7 @@ class OpenairArea:
                 #Maintenir ou Supprimer la LTA-France1 (originale ou spécifique) des cartes non-concernées par le territoire Français --> [D] LTA FRANCE 1 (Id=LTA13071) [FL115-FL195]
                 if bIsArea and oGlobalCat["id"] in ["LTA13071","BpFrenchSS"]:
                     if sAreaKey in ["","geoFrench","geoFrenchAll"]:
-                        sAddHeader = "'{0}' {1} - Symbolisation de la surface 'S' - Afin de simplifier cette carte, vous pouvez éventuellement supprimer cette couche limite du vol-libre (hors masifs-montagneux...)".format(oGlobalCat["nameV"], aixmReader.getSerializeAlt(oGlobalCat))
+                        aAddHeader.append("'{0}' {1} - Symbolisation de la surface 'S' - Afin de simplifier cette carte, vous pouvez éventuellement supprimer cette couche limite du vol-libre (hors masifs-montagneux...)".format(oGlobalCat["nameV"], aixmReader.getSerializeAlt(oGlobalCat)))
                     else:
                         bIsArea = False     #Ne pas afficher cette zone incohérente pour ces régions
 
@@ -270,11 +270,11 @@ class OpenairArea:
             #Entête des fichiers
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
+            sAreaDesc:str = ""
             if sAreaKey in self.oGeoRefArea.AreasRef:
                 sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
                 oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})
-            else:
-                sAreaDesc:str = ""
+
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oOutOpenair)})
             oNewHeader.update({airspacesCatalog.cstKeyCatalogSrcFiles:oSrcFiles})
@@ -292,7 +292,7 @@ class OpenairArea:
                     nbMaxSegment = 100                                  #100 segments maxi pour création des fichiers FAF
 
             oTools = aixmReader.AixmTools(None)
-            sOutOpenair:str = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, sAddHeader, digit=digit, epsilonReduce=epsilonReduce)
+            sOutOpenair:str = oTools.makeHeaderOpenairFile(oNewHeader, oOutOpenair, sContext, gpsType, exceptDay, sAreaKey, sAreaDesc, aAddHeader, digit=digit, epsilonReduce=epsilonReduce)
 
             #Sérialisation de toutes les zones
             oOp:OpenairArea = None

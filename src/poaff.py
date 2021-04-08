@@ -46,10 +46,10 @@ globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cst
 ###################################
 debugLevel:bool         = 1         #Normaly = (0) ou 1 for generate % of RDP-optimization openair files; =2 in openair files and log
 epsilonReduce:bool      = True      #Normaly = True  or False for generate without optimization
-aixmPaserConstruct:bool = False       #Normaly = True
+aixmPaserConstruct:bool = True      #Normaly = True
 geojsonConstruct:bool   = True      #Normaly = True
 openairConstruct:bool   = True      #Normaly = True
-kmlConstruct:bool       = False      #Normaly = True
+kmlConstruct:bool       = True      #Normaly = True
 catalogConstruct:bool   = False     #Normaly = False or True for only catalog construct files
 partialConstruct:bool   = False     #Normaly = False or True for limited construct files (geoFrenchNorth + geoFrenchSouth)
 testMode:bool           = False     #Normaly = False or True for generate with tests files
