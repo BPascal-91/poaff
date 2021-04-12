@@ -1,3 +1,7 @@
+.. image:: res/poaff_lastVersion.svg
+   :target: https://github.com/BPascal-91/poaff
+   :alt: Paragliding OpenAir French Files
+
 .. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg
    :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
    :alt: Paragliding OpenAir French Files
@@ -63,7 +67,6 @@ geojson is compatible with Python 3.6, 3.7 and 3.8. The recommended way to insta
 	pip install -r requirements.txt
 
 
-
 Utilisation
 -----------
 
@@ -71,6 +74,15 @@ Utilisation
 
 	>>> #!/usr/bin/env python3  
 	>>> $ python3 poaff.py  
+
+Licence
+-------
+'_Licence-GPL3'_
+
+
+Crédits
+-------
+* `Pascal Bazile`_ main developper
 
 
 Liens externes
@@ -91,11 +103,6 @@ Liens externes
 .. [14] `Openair New Format`_ - Documentation des nouvelles évolutions du format Openair
 
 
-Crédits
--------
-* `Pascal Bazile`_ author of this software <pascal_bazile@yahoo.fr>
-* the many open source libraries, projects, and data sources used by this software (show file content of 'requirements.txt' for complete components detail)
-
 
 .. _Pascal Bazile: https://github.com/BPascal-91/
 .. _Paragliding OpenAir French Files: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
@@ -114,4 +121,5 @@ Crédits
 .. _KML: https://developers.google.com/kml/documentation
 .. _GeoJSON: http://geojson.org/
 .. _pip: http://www.pip-installer.org
+.. _Licence-GPL3: https://www.gnu.org/licenses/gpl-3.0.html
 
