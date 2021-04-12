@@ -77,7 +77,7 @@ Utilisation
 
 Licence
 -------
-'Licence-GPL3'_
+`Licence-GPL3`_
 
 
 Crédits
