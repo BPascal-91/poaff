@@ -1,5 +1,5 @@
 .. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg
-   :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
+   :target: `Paragliding OpenAir French Files`_
    :alt: Paragliding OpenAir French Files
 
 .. image:: res/poaff_lastVersion.svg
