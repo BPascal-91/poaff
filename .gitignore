@@ -8,10 +8,15 @@ __pycache__/
 
 # Local resources
 output/
+input/_*
 input/BPa
-dataGouv-fr
+input/dataGouv-fr
+input/DIRCAM
 input/EuCtrl
 input/FFVL
 input/FFVP
+input/LPO
+input/Parcs
 input/SIA
-input/Tests
+input/Tests/KML-tests
+

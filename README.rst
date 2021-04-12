@@ -1,11 +1,10 @@
-.. image:: res/poaff_lastVersion.svg
-   :target: https://github.com/BPascal-91/poaff
-   :alt: Paragliding OpenAir French Files
-
 .. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg
    :target: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
    :alt: Paragliding OpenAir French Files
 
+.. image:: res/poaff_lastVersion.svg
+   :target: https://github.com/BPascal-91/poaff
+   :alt: `Paragliding OpenAir French Files`_
 
 poaff - `Paragliding OpenAir French Files`_
 ==============
@@ -80,8 +79,8 @@ Licence
 `Licence-GPL3`_
 
 
-Crédits
--------
+Crédit
+------
 * `Pascal Bazile`_ main developper
 
 
