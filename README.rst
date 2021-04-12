@@ -8,15 +8,15 @@ poaff - `Paragliding OpenAir French Files`_
    :target: `Paragliding OpenAir French Files (on GitHub)`_
    :alt: `Paragliding OpenAir French Files`_
 
-.. code::
-
-	/!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.
-	/!\ WARNING  : Only official data must be used for air navigation
-
 Programme d'extraction et de formatage par lots ; basé sur des données issues des standards AIXM_ :code:`(Aeronautical Information Exchange Modele)` et XML_ du SIA-France_ :code:`(Service de l'Information Aéronautique)`.
 Ces traitements sont nécessaires pour la génération des centaines de cartographies publiées sur le blog `Paragliding OpenAir French Files`_.
 Les données sources utilisés pour la contruction de ce site sont majoritairement issues des sources officielles SIA-France_ et Eurocontrol_.
 Vous pouvez également suivre les évolutions via la page `Paragliding OpenAir French Files (on Facebook)`_.
+
+.. code::
+
+	/!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.
+	/!\ WARNING  : Only official data must be used for air navigation
 
 
 **Table of Contents**
