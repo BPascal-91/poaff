@@ -1,18 +1,17 @@
 .. image:: http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/img/Paragliding-OpenAir-FrenchFiles_SiaEurocontrol.jpg
    :target: `Paragliding OpenAir French Files`_
-   :alt: Paragliding OpenAir French Files
-
-.. image:: res/poaff_lastVersion.svg
-   :target: https://github.com/BPascal-91/poaff
    :alt: `Paragliding OpenAir French Files`_
 
 poaff - `Paragliding OpenAir French Files`_
 ==============
+.. image:: res/poaff_lastVersion.svg
+   :target: `Paragliding OpenAir French Files (on GitHub)`_
+   :alt: `Paragliding OpenAir French Files`_
 
 .. code::
+
 	/!\ ATTENTION: Seules des données officielles doivent êtres utilisées pour la navigation aérienne.
 	/!\ WARNING  : Only official data must be used for air navigation
-
 
 Programme d'extraction et de formatage par lots ; basé sur des données issues des standards AIXM_ :code:`(Aeronautical Information Exchange Modele)` et XML_ du SIA-France_ :code:`(Service de l'Information Aéronautique)`.
 Ces traitements sont nécessaires pour la génération des centaines de cartographies publiées sur le blog `Paragliding OpenAir French Files`_.
