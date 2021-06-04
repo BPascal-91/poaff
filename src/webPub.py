@@ -20,8 +20,9 @@ import geoRefArea
 # /!\ Change before generate html page !!! -> Sample - Cycle AIRAC 03/21 (25/03/2021 au 21/04/2021)
 # /!\ and cleen folder - poaff/output/_POAFF_www/files/
 ###################################################################################################
-cstAIRACdateStart:datetime = datetime.datetime(2021, 3, 25)
-cstAIRACdateEnd:datetime   = datetime.datetime(2021, 4, 21)
+cstPOAFFdateTrait:datetime = datetime.date(2021, 6, 4)      #bpaTools.getDateNow()  ||or||  datetime.date(2021, 5, 25)
+cstAIRACdateStart:datetime = datetime.date(2021, 5, 20)
+cstAIRACdateEnd:datetime   = datetime.date(2021, 6, 16)
 ###################################################################################################
 
 
@@ -52,12 +53,12 @@ cstTextUnderlined:str       = '<u>{0}</u>'
 
 
 cstDangersHeader:str = "Dangers sur "
-aTypeFiles:list =   [ ["-all"       , "Cartographie complète de l'espace aérien (IFR + VFR)"],
-                      ["-ifr"       , "Cartographie de l'espace aérien IFR (secteurs d'information radio et zones de haute altitude)"],
-                      ["-vfr"       , "Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL195/5944m)"],
-                      ["-ffvl-cfd"  , "Cartographie spécifique pour injection dans l'outillage de la CFD FFVL"],
-                      ["-freeflight", "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL195 + filtres et compléments)"]]
-
+## Namming format -    Nom source   , Nom dest.   , Description
+aTypeFiles:list =   [ ["-all"       , "-all"      , "Cartographie complète de l'espace aérien (IFR + VFR)"],
+                      ["-ifr"       , "-ifr"      , "Cartographie de l'espace aérien IFR (secteurs d'information radio et zones de haute altitude)"],
+                      ["-vfr"       , "-vfr"      , "Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL195/5944m)"],
+                      ["-ffvl-cfd"  , "-ffvl-cfd" , "Cartographie spécifique pour injection dans l'outillage de la CFD FFVL"],
+                      ["-freeflight", "-ff"       , "Cartographie de l'espace aérien dédiée Vol-Libre (VFR dessous FL195 + filtres et compléments)"]]
 
 class PoaffWebPage:
 
@@ -70,7 +71,7 @@ class PoaffWebPage:
         self.publishPathFiles:str   = self.publishPath + poaffCst.cstPoaffWebPathFiles
         self.publishPathCfd:str     = self.outPath + poaffCst.cstCfdWebPath
         self.sWebPageBuffer:str     = None
-        self.sHeadFileDate:str      = "{0}_".format(bpaTools.getDateNow())
+        self.sHeadFileDate:str      = "{0}_".format(bpaTools.getDate(cstPOAFFdateTrait, frmt="ymd", sep=""))
         self.aCatalogFiles:list     = None
         return
 
@@ -108,7 +109,6 @@ class PoaffWebPage:
                                   self.aCatalogFiles[0][2],
                                   "", "Reference Catalog of Last Versions Data / Catalogue partiel décrivant les dernières versions des fichiers conseillées","","",""]
 
-            #dstFileName:str     = dstBaseFileName + bpaTools.getDateNow(frmt="%Y%m%d-%H%M%S") + ".csv"
             dstFileName:str    = poaffCst.cstLastVersionFileName + "allExportDataset_poaff-fr.csv"
             aHeaderLine = ["id", "type", "layer", "spatial.granularity", "spatial.zones", "ISO_3166-1_3", "ISO_3166-1_2", "ISO_Perimeter", "title", "slug", "url", "organization", "organization_id", "description", "frequency", "license", "temporal_coverage.start", "temporal_coverage.end", "private", "featured", "created_at", "last_modified", "tags", ] #"metric.discussions", "metric.issues", "metric.reuses", "metric.followers", "metric.views"]
 
@@ -145,9 +145,9 @@ class PoaffWebPage:
             elif sFileExt == ".geojson":
                 sFileType = "GeoJSON"
 
-            if str(aLine[1]).find("-gpsWithTopo")>0:
+            if str(aLine[1]).find("-withT")>0:
                 sFileType += " gpsWithTopo"
-            if str(aLine[1]).find("-gpsWithoutTopo")>0:
+            if str(aLine[1]).find("-outT")>0:
                 sFileType += " gpsWithoutTopo"
 
             sFileLayer:str = ""
@@ -157,11 +157,11 @@ class PoaffWebPage:
                 sFileLayer = "IFR"
             elif str(aLine[1]).find("-vfr")>0:
                 sFileLayer = "VFR"
-            elif (str(aLine[1]).find("-freeflight")>0) or (str(aLine[1]).find("-ffvl-cfd")>0):
+            elif (str(aLine[1]).find("-ff")>0) or (str(aLine[1]).find("-ffvl-cfd")>0):
                 sFileLayer = "FreeFlight"
 
             if sFileExt in [".kml",".kmz",".txt",".geojson"]:
-                if str(aLine[1]).find("-warning")>0:
+                if str(aLine[1]).find("-wrn")>0:
                     sFileLayer += " Warning"
                 if str(aLine[1]).find("_border")>0:
                     sFileLayer += "Border"
@@ -215,11 +215,8 @@ class PoaffWebPage:
         fCatalog.close()
         return dstFileName
 
-    def createPoaffWebPage(self, sHeadFileDate:str=None) -> None:
+    def createPoaffWebPage(self) -> None:
         self.aCatalogFiles = []
-
-        if sHeadFileDate!=None:
-            self.sHeadFileDate = sHeadFileDate
 
         #### 1/ Recup du modèle page Web
         fTemplate = open(self.publishPath + cstTemplateWebPage, "r", encoding="utf-8", errors="ignore")   #or encoding="cp1252"
@@ -252,22 +249,23 @@ class PoaffWebPage:
 
 
         #### 2/ KML files
-        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -freeflight)
+        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         sFormat:str = " [format KML]"
         for aTypeFile in aTypeFiles:
             srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
-            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
+            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[1])
+            dstFileName = dstFileName.replace("airspaces-", "")
 
             if aTypeFile[0]=="-ffvl-cfd":
                 srcFileName2 = str(srcFileName).replace(".geojson", ".kml")
                 dstFileName2 = str(dstFileName).replace(".geojson", ".kml")
                 bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2)
                 if bCopyFile:
-                    sTitle:str = aTypeFile[1] + sFormat
+                    sTitle:str = aTypeFile[2] + sFormat
                     sTitle = sTitle.replace("Cartographie spécifique", "Cartographie 3D représentative des cartographies spécifiques")
                     self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
                     #Duplication du fichier "LastVersion"
-                    dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                    dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                         self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
                     sToken = str("@@file@@KML-airspaces-all@@").replace("-all", aTypeFile[0])
@@ -276,14 +274,18 @@ class PoaffWebPage:
             if aTypeFile[0] in ["-freeflight"]:
                 #Déclinaison de toutes les régionalisations
                 for sAreaKey, oAreaRef in geoRefArea.GeoRefArea(False).AreasRef.items():
-                    aSpecialization:list = ["","-warning"]
+                    aSpecialization:list = ["","-wrn"]
                     for sFileType in aSpecialization:
-                        #Fichier principal régionalisé (ex: 20210131_airspaces-freeflight-geoFrench.geojson)
-                        srcFileName2 = str(srcFileName).replace(".geojson", "-" + sAreaKey + sFileType + ".kml")
+                        #Fichier principal régionalisé (ex: 20210131_airspaces-ff-geoFrench.geojson)
+                        if sFileType == "-wrn":
+                            srcFileName2 = str(srcFileName).replace(".geojson", "-" + sAreaKey + "-warning" + ".kml")
+                        else:
+                            srcFileName2 = str(srcFileName).replace(".geojson", "-" + sAreaKey + sFileType + ".kml")
                         dstFileName2 = str(dstFileName).replace(".geojson", "-" + sAreaKey + sFileType + ".kml")
+                        dstFileName2 = str(dstFileName2).replace("-geo", "-")
                         if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                            sTitle:str = aTypeFile[1] + " / " + sAreaKey[1:] + sFileType + sFormat
-                            if sFileType == "-warning":
+                            sTitle:str = aTypeFile[2] + " / " + sAreaKey[1:] + sFileType + sFormat
+                            if sFileType == "-wrn":
                                 sTitle = cstDangersHeader + sTitle
                             self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, geoRefArea.GeoRefArea(False).AreasRef[sAreaKey])
                             sTocken:str = "@@file@@KML-airspaces-freeflight-" + sAreaKey + sFileType + "@@"
@@ -291,7 +293,7 @@ class PoaffWebPage:
 
                         #Duplication des fichiers "LastVersion" de la France
                         if sAreaKey in ["geoFrench"]:
-                            dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                            dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                             if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                                 self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
@@ -310,13 +312,14 @@ class PoaffWebPage:
         #### 3b/ GeoJSON map files
         sFormat:str = " [format GeoJSON]"
         sComplementaryFiles:str = ""
-        #Déclinaison de toutes les typologies de fichier racine (-all, -ifr, -vfr, -ffvl-cfd, -freeflight)
+        #Déclinaison de toutes les typologies de fichier racine (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         for aTypeFile in aTypeFiles:
             srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
-            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
+            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[1])
+            dstFileName = dstFileName.replace("airspaces-", "")
             bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName)
             if bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 if aTypeFile[0]=="-ffvl-cfd":
                     self.addFile2Catalog(False, dstFileName, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
                 else:
@@ -324,9 +327,9 @@ class PoaffWebPage:
                 sToken = str("@@file@@GeoJSON-airspaces-all@@").replace("-all", aTypeFile[0])
                 self.publishFile(dstFileName, sToken, sTitle)
 
-                #Fichier warning non-régionalisé (ex: 20210131_airspaces-freeflight-warning.geojson)
+                #Fichier warning non-régionalisé (ex: 20210131_airspaces-ff-wrn.geojson)
                 srcFileNameb = str(srcFileName).replace(".geojson", "-warning.geojson")
-                dstFileNameb = str(dstFileName).replace(".geojson", "-warning.geojson")
+                dstFileNameb = str(dstFileName).replace(".geojson", "-wrn.geojson")
                 bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileNameb, self.publishPathFiles, dstFileNameb)
                 if bWarningFile:
                     sTitleb:str = cstDangersHeader + sTitle
@@ -336,25 +339,26 @@ class PoaffWebPage:
 
             if aTypeFile[0]=="-ffvl-cfd":
                 #Duplication du fichier "LastVersion"
-                dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                 if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2):
-                    sTitle:str = aTypeFile[1] + sFormat
+                    sTitle:str = aTypeFile[2] + sFormat
                     self.addFile2Catalog(True, dstFileName2, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
 
             elif aTypeFile[0]=="-freeflight":
                 #Déclinaison de toutes les régionalisations
                 sNewTableRows:str = ""
                 for sAreaKey, oAreaRef in geoRefArea.GeoRefArea(False).AreasRef.items():
-                    #Fichier principal régionalisé (ex: 20210131_airspaces-freeflight-geoFrench.geojson)
+                    #Fichier principal régionalisé (ex: 20210131_airspaces-ff-geoFrench.geojson)
                     srcFileName2 = str(srcFileName).replace(aTypeFile[0], aTypeFile[0] + "-" + sAreaKey)
-                    dstFileName2 = str(dstFileName).replace(aTypeFile[0], aTypeFile[0] + "-" + sAreaKey)
+                    dstFileName2 = str(dstFileName).replace(aTypeFile[1][1:] + ".", aTypeFile[1][1:] + "-" + sAreaKey + ".")
+                    dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[1] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
-                        #Fichier warning régionalisé (ex: 20210131_airspaces-freeflight-geoFrench-warning.geojson)
+                        #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrench-wrn.geojson)
                         srcFileName2b = str(srcFileName2).replace(".geojson", "-warning.geojson")
-                        dstFileName2b = str(dstFileName2).replace(".geojson", "-warning.geojson")
+                        dstFileName2b = str(dstFileName2).replace(".geojson", "-wrn.geojson")
                         bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileName2b, self.publishPathFiles, dstFileName2b)
                         if bWarningFile:
                             sTitleb:str = cstDangersHeader + sTitle
@@ -373,14 +377,14 @@ class PoaffWebPage:
                     self.sWebPageBuffer = self.sWebPageBuffer.replace("<tr><td></td><td>@@TR@@GeoJSON-DynamicTableRow@@</td></tr>", sNewTableRows)
 
             elif bCopyFile:
-                sComplementaryFiles += self.makeLink4File("files", dstFileName, aTypeFile[1]) + " | "
+                sComplementaryFiles += self.makeLink4File("files", dstFileName, aTypeFile[2]) + " | "
 
             if aTypeFile[0]=="-freeflight":
-                #Complément du fichier optimisé 'global@airspaces-freeflight-geoFrench-optimized.geojson'
+                #Complément du fichier optimisé 'global@airspaces-ff-geoFrench-optimized.geojson'
                 srcFileName2 = str(srcFileName).replace(aTypeFile[0], aTypeFile[0] + "-geoFrench-optimized")
-                dstFileName2 = str(dstFileName).replace(aTypeFile[0], aTypeFile[0] + "-geoFrench-optimized")
+                dstFileName2 = str(dstFileName).replace(aTypeFile[1], aTypeFile[1] + "-geoFrench-optimized")
                 if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                    sTitle:str = aTypeFile[1] + sFormat.replace("]", "/Vecteurs optimisés]")
+                    sTitle:str = aTypeFile[2] + sFormat.replace("]", "/Vecteurs optimisés]")
                     self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, "geoFrench", geoRefArea.GeoRefArea(False).AreasRef["geoFrench"])
                     sToken = str("@@file@@GeoJSON-airspaces-freeflight-optimized@@")
                     self.publishFile(dstFileName2, sToken, sTitle)
@@ -391,13 +395,16 @@ class PoaffWebPage:
         #### 4a/ Openair files "-gpsWithTopo" for XCsoar / LK8000 / XCTrack etc...
         sFormat:str = " [format Openair/" + poaffCst.cstWithTopo[1:] + "]"
         sComplementaryFiles:str = ""
-        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -freeflight)
+        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         for aTypeFile in aTypeFiles:
             srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
-            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
+            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[1])
+            dstFileName = dstFileName.replace("airspaces-", "")
+            dstFileName = dstFileName.replace(poaffCst.cstWithTopo, "")
+            dstFileName = dstFileName.replace(".txt", "-withT.txt")
             bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName)
             if bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 if aTypeFile[0]=="-ffvl-cfd":
                     self.addFile2Catalog(False, dstFileName, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
                 else:
@@ -405,9 +412,9 @@ class PoaffWebPage:
                 sToken = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithTopo + "@@").replace("-all", aTypeFile[0])
                 self.publishFile(dstFileName, sToken, sTitle)
 
-                #Fichier warning non-régionalisé (ex: 20210131_airspaces-freeflight-gpsWithTopo-warning.txt)
+                #Fichier warning non-régionalisé (ex: 20210131_airspaces-ff-withT-wrn.txt)
                 srcFileNameb = str(srcFileName).replace(".txt", "-warning.txt")
-                dstFileNameb = str(dstFileName).replace(".txt", "-warning.txt")
+                dstFileNameb = str(dstFileName).replace("-withT", "-wrn-withT")
                 bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileNameb, self.publishPathFiles, dstFileNameb)
                 if bWarningFile:
                     sTitleb:str = cstDangersHeader + sTitle
@@ -417,9 +424,9 @@ class PoaffWebPage:
 
             if aTypeFile[0]=="-ffvl-cfd":
                 #Duplication du fichier "LastVersion"
-                dstFileName2b = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                dstFileName2b = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                 if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2b):
-                    sTitle:str = aTypeFile[1] + sFormat
+                    sTitle:str = aTypeFile[2] + sFormat
                     self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
 
             elif aTypeFile[0]=="-freeflight":
@@ -429,14 +436,15 @@ class PoaffWebPage:
                     if sAreaKey in ["geoFrenchNorth","geoFrenchSouth","geoFrenchNESW","geoFrenchVosgesJura","geoFrenchPyrenees","geoFrenchAlps"]:
                         continue
                     srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
-                    dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                    dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
+                    dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[1] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
-                        #Fichier warning régionalisé (ex: 20210131_airspaces-freeflight-geoFrench-gpsWithTopo-warning.txt)
+                        #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrench-withT-wrn.txt)
                         srcFileName2b = str(srcFileName2).replace(".txt", "-warning.txt")
-                        dstFileName2b = str(dstFileName2).replace(".txt", "-warning.txt")
+                        dstFileName2b = str(dstFileName2).replace("-withT", "-wrn-withT")
                         bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileName2b, self.publishPathFiles, dstFileName2b)
                         if bWarningFile:
                             sTitleb:str = cstDangersHeader + sTitle
@@ -454,12 +462,12 @@ class PoaffWebPage:
 
                         #Duplication des fichiers "LastVersion" de la France
                         if sAreaKey in ["geoFrench","geoCorse","geoLaReunion","geoPolynesieFr"]:
-                            dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                            dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                             if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                                 self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[1], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
                         if sAreaKey=="geoFrenchAll":
                             self.sWebPageBuffer = self.sWebPageBuffer.replace(sFind, sLinks)
                         else:
@@ -469,7 +477,7 @@ class PoaffWebPage:
                     self.sWebPageBuffer = self.sWebPageBuffer.replace("<tr><td></td><td>@@TR@@Openair-gpsWithTopo-DynamicTableRow@@</td></tr>", sNewTableRows)
 
             elif bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 sComplementaryFiles += self.makeLink4File("files", dstFileName, sTitle) + " | "
 
         self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@Openair-airspaces" + poaffCst.cstWithTopo + "-othersfileslist@@", sComplementaryFiles)
@@ -478,7 +486,7 @@ class PoaffWebPage:
         #### 4b/ Openair files "-gpsWithTopo" for 'Flymaster SDs' or LimitedMemory
         sFormat:str = " [format Openair/" + poaffCst.cstWithTopo[1:] + "]"
         sComplementaryFiles:str = ""
-        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -freeflight)
+        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         for aTypeFile in aTypeFiles:
             if aTypeFile[0]=="-freeflight":
                 #Déclinaison de toutes les régionalisations
@@ -487,14 +495,17 @@ class PoaffWebPage:
                     if not sAreaKey in ["geoFrenchNorth","geoFrenchSouth","geoFrenchNESW","geoFrenchVosgesJura","geoFrenchPyrenees","geoFrenchAlps"]:
                         continue
                     srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
-                    dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                    dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
+                    dstFileName2 = str(dstFileName2).replace("-geo", "-")
+                    #dstFileName2 = str(dstFileName2).replace(poaffCst.cstWithTopo, "")
+                    #dstFileName2 = str(dstFileName2).replace(".txt", "-withT.txt")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[1] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
-                        #Fichier warning régionalisé (ex: 20210131_airspaces-freeflight-geoFrenchNorth-gpsWithTopo-warning.txt)
+                        #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrenchNorth-withT-wrn.txt)
                         srcFileName2b = str(srcFileName2).replace(".txt", "-warning.txt")
-                        dstFileName2b = str(dstFileName2).replace(".txt", "-warning.txt")
+                        dstFileName2b = str(dstFileName2).replace("-withT", "-wrn-withT")
                         bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileName2b, self.publishPathFiles, dstFileName2b)
                         if bWarningFile:
                             sTitleb:str = cstDangersHeader + sTitle
@@ -505,14 +516,14 @@ class PoaffWebPage:
                         sNewTableRows += self.makeTableRow("Openair", sToken2, sAreaKey, oAreaRef, dstFileName2, sTitle)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[1], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
                         sNewTableRows= sNewTableRows.replace(sFind, sLinks)
 
                 if sNewTableRows:
                     self.sWebPageBuffer = self.sWebPageBuffer.replace("<tr><td></td><td>@@TR@@Openair-gpsWithTopo-LimitedMemory-DynamicTableRow@@</td></tr>", sNewTableRows)
 
             elif bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 sComplementaryFiles += self.makeLink4File("files", dstFileName, sTitle) + " | "
 
         self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@Openair-airspaces" + poaffCst.cstWithTopo + "-othersfileslist@@", sComplementaryFiles)
@@ -521,15 +532,17 @@ class PoaffWebPage:
         #### 4c/ Openair files "-gpsWithoutTopo" for Flytec / Brauniger
         sFormat:str = " [format Openair/" + poaffCst.cstWithoutTopo[1:] + "]"
         sComplementaryFiles:str = ""
-        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -freeflight)
+        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         for aTypeFile in aTypeFiles:
             srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
-            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[0])
+            dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllOpenairFileName).replace("-all", aTypeFile[1])
+            dstFileName = dstFileName.replace("airspaces-", "")
             srcFileName = srcFileName.replace(poaffCst.cstWithTopo, poaffCst.cstWithoutTopo)
-            dstFileName = dstFileName.replace(poaffCst.cstWithTopo, poaffCst.cstWithoutTopo)
+            dstFileName = dstFileName.replace(poaffCst.cstWithTopo, "")
+            dstFileName = dstFileName.replace(".txt", "-outT.txt")
             bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName)
             if bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 if aTypeFile[0]=="-ffvl-cfd":
                     self.addFile2Catalog(False, dstFileName, self.sHeadFileDate[:-1], sTitle, "geoFrenchAll", geoRefArea.GeoRefArea(False).AreasRef["geoFrenchAll"])
                 else:
@@ -537,9 +550,9 @@ class PoaffWebPage:
                 sToken = str("@@file@@Openair-airspaces-all"+ poaffCst.cstWithoutTopo + "@@").replace("-all", aTypeFile[0])
                 self.publishFile(dstFileName, sToken, sTitle)
 
-                #Fichier warning non-régionalisé (ex: 20210131_airspaces-freeflight-gpsWithoutTopo-warning.txt)
+                #Fichier warning non-régionalisé (ex: 20210131_airspaces-ff-outT-wrn.txt)
                 srcFileNameb = str(srcFileName).replace(".txt", "-warning.txt")
-                dstFileNameb = str(dstFileName).replace(".txt", "-warning.txt")
+                dstFileNameb = str(dstFileName).replace("-outT", "-wrn-outT")
                 bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileNameb, self.publishPathFiles, dstFileNameb)
                 if bWarningFile:
                     sTitleb:str = cstDangersHeader + sTitle
@@ -554,14 +567,15 @@ class PoaffWebPage:
                     if sAreaKey in ["geoFrenchNorth","geoFrenchSouth","geoFrenchNESW","geoFrenchVosgesJura","geoFrenchPyrenees","geoFrenchAlps"]:
                         continue
                     srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
-                    dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                    dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
+                    dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[1] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
-                        #Fichier warning régionalisé (ex: 20210131_airspaces-freeflight-geoFrench-gpsWithoutTopo-warning.txt)
+                        #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrench-outT-wrn.txt)
                         srcFileName2b = str(srcFileName2).replace(".txt", "-warning.txt")
-                        dstFileName2b = str(dstFileName2).replace(".txt", "-warning.txt")
+                        dstFileName2b = str(dstFileName2).replace("-outT", "-wrn-outT")
                         bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileName2b, self.publishPathFiles, dstFileName2b)
                         if bWarningFile:
                             sTitleb:str = cstDangersHeader + sTitle
@@ -579,12 +593,12 @@ class PoaffWebPage:
 
                         #Duplication des fichiers "LastVersion" de la France
                         if sAreaKey in ["geoFrench"]:
-                            dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                            dstFileName2b = dstFileName2.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                             if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                                 self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[1], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
                         if sAreaKey=="geoFrenchAll":
                             self.sWebPageBuffer = self.sWebPageBuffer.replace(sFind, sLinks)
                         else:
@@ -594,7 +608,7 @@ class PoaffWebPage:
                     self.sWebPageBuffer = self.sWebPageBuffer.replace("<tr><td></td><td>@@TR@@Openair-gpsWithoutTopo-DynamicTableRow@@</td></tr>", sNewTableRows)
 
             elif bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 sComplementaryFiles += self.makeLink4File("files", dstFileName, sTitle) + " | "
 
         self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@Openair-airspaces" + poaffCst.cstWithoutTopo + "-othersfileslist@@", sComplementaryFiles)
@@ -603,7 +617,7 @@ class PoaffWebPage:
         #### 4d/ Openair files "-gpsWithoutTopo" for 'Flymaster' or LimitedMemory
         sFormat:str = " [format Openair/" + poaffCst.cstWithoutTopo[1:] + "]"
         sComplementaryFiles:str = ""
-        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -freeflight)
+        #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         for aTypeFile in aTypeFiles:
             if aTypeFile[0]=="-freeflight":
                 #Déclinaison de toutes les régionalisations
@@ -612,14 +626,15 @@ class PoaffWebPage:
                     if not sAreaKey in ["geoFrenchNorth","geoFrenchSouth","geoFrenchNESW","geoFrenchVosgesJura","geoFrenchPyrenees","geoFrenchAlps"]:
                         continue
                     srcFileName2 = str(srcFileName).replace(".txt", "-" + sAreaKey + ".txt")
-                    dstFileName2 = str(dstFileName).replace(".txt", "-" + sAreaKey + ".txt")
+                    dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
+                    dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[1] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
-                        #Fichier warning régionalisé (ex: 20210131_airspaces-freeflight-geoFrenchNorth-gpsWithoutTopo-warning.txt)
+                        #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrenchNorth-outT-wrn.txt)
                         srcFileName2b = str(srcFileName2).replace(".txt", "-warning.txt")
-                        dstFileName2b = str(dstFileName2).replace(".txt", "-warning.txt")
+                        dstFileName2b = str(dstFileName2).replace("-outT", "-wrn-outT")
                         bWarningFile:bool = self.copyFile(self.sourcesPath, srcFileName2b, self.publishPathFiles, dstFileName2b)
                         if bWarningFile:
                             sTitleb:str = cstDangersHeader + sTitle
@@ -630,14 +645,14 @@ class PoaffWebPage:
                         sNewTableRows += self.makeTableRow("Openair", sToken2, sAreaKey, oAreaRef, dstFileName2, sTitle)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[1], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
                         sNewTableRows= sNewTableRows.replace(sFind, sLinks)
 
                 if sNewTableRows:
                     self.sWebPageBuffer = self.sWebPageBuffer.replace("<tr><td></td><td>@@TR@@Openair-gpsWithoutTopo-LimitedMemory-DynamicTableRow@@</td></tr>", sNewTableRows)
 
             elif bCopyFile:
-                sTitle:str = aTypeFile[1] + sFormat
+                sTitle:str = aTypeFile[2] + sFormat
                 sComplementaryFiles += self.makeLink4File("files", dstFileName, sTitle) + " | "
 
         self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@Openair-airspaces" + poaffCst.cstWithoutTopo + "-othersfileslist@@", sComplementaryFiles)
@@ -663,7 +678,7 @@ class PoaffWebPage:
             sParamPubDates:str = "webPublicationDates"
             oJsonParam = bpaTools.readJsonFile(self.publishPath + sFilePubDates)
             aPubDates:list = oJsonParam.get(sParamPubDates, list([]))
-            sFrDate:str = bpaTools.getDateNow(frmt="dmy", sep="/")
+            sFrDate:str = bpaTools.getDate(cstPOAFFdateTrait, frmt="dmy", sep="/")
             if not sFrDate in aPubDates:
                 aPubDates.append(sFrDate)
                 oJsonParam.update({sParamPubDates:aPubDates})
@@ -686,13 +701,14 @@ class PoaffWebPage:
 
     #Traitement de tous les fichiers complémentaires épurés par jour d'activité
     def publishFilesExeptDays(self, sToken:str, sSrcFile:str, sDstFile:str, sTypeFile:str, sGpsType:str, sAreaKey:str="", sAreaDesc:str="", oAreaRef:list=None) -> str:
-        aExeptDays:list =   [ ["-forSAT", "Fichier spécifiquement utilisable les 'SATerday/Samedis' (dépourvu des zones non-activables 'exceptSAT')"], \
-                              ["-forSUN", "Fichier spécifiquement utilisable les 'SUNday/Dimanches' (dépourvu des zones non-activables 'exceptSUN')"], \
-                              ["-forHOL", "Fichier spécifiquement utilisable les 'HOLiday/Jours-Fériés' (dépourvu des zones non-activables 'exceptHOL')"]]
+        aExeptDays:list =   [ ["-forSAT", "4SAT", "Fichier spécifiquement utilisable les 'SATerday/Samedis' (dépourvu des zones non-activables 'exceptSAT')"], \
+                              ["-forSUN", "4SUN", "Fichier spécifiquement utilisable les 'SUNday/Dimanches' (dépourvu des zones non-activables 'exceptSUN')"], \
+                              ["-forHOL", "4HOL", "Fichier spécifiquement utilisable les 'HOLiday/Jours-Fériés' (dépourvu des zones non-activables 'exceptHOL')"]]
         sDayFiles:str=""
-        for sDayKey, sDayDesc in aExeptDays:
+        for sDayKey, sDayDst, sDayDesc in aExeptDays:
             srcFileName = str(sSrcFile).replace(".txt", sDayKey + ".txt")
-            dstFileName = str(sDstFile).replace(".txt", sDayKey + ".txt")
+            #dstFileName = str(sDstFile).replace(sAreaKey[4:], sAreaKey[4:] + sDayDst) #frmt 20210525_ff-FrenchAll4SAT-outT.txt
+            dstFileName = str(sDstFile).replace("_ff", "_ff" + sDayDst)
             if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName):
                 sFormat:str = " [format Openair/"
                 if sAreaDesc:
@@ -704,7 +720,7 @@ class PoaffWebPage:
 
                 #Duplication du fichier "LastVersion" de la France
                 if sAreaKey in ["geoFrench"]:
-                    dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName)
+                    dstFileName2 = dstFileName.replace(self.sHeadFileDate, poaffCst.cstLastVersionFileName2)
                     if self.copyFile(self.sourcesPath, srcFileName, self.publishPathFiles, dstFileName2):
                         self.addFile2Catalog(True, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
@@ -721,14 +737,14 @@ class PoaffWebPage:
         sQualityMsg:str     = "(i) Qualité des données non garantie..."
         bQualityLight:bool  = sAreaKey[:9]!="geoFrench" and not sAreaKey in ["geoPWCFrenchAlps","geoCorse","geoLaReunion","geoGuyaneFr","geoStPierreEtMiquelon","geoAntillesFr","geoMayotte","geoPolynesieFr","geoNouvelleCaledonie"]
 
-        sWarnFile:str       = dstFileName.replace(".", "-warning.")
+        sWarnFile:str       = dstFileName.replace(sAreaKey[4:], sAreaKey[4:] + "-wrn")
         bWarnFile:bool      = os.path.exists(self.publishPathFiles + sWarnFile)
 
         sFileExt:str        = bpaTools.getFileExt(dstFileName)
         sKmlFile:str        = dstFileName.replace(sFileExt, ".kml")
-        sKmlFile            = sKmlFile.replace("-gpsWithTopo", "")
-        sKmlFile            = sKmlFile.replace("-gpsWithoutTopo", "")
-        sKmlWarnFile:str    = sKmlFile.replace(".", "-warning.")
+        sKmlFile            = sKmlFile.replace("-withT", "")            #sKmlFile.replace("-gpsWithTopo", "")
+        sKmlFile            = sKmlFile.replace("-outT", "")             #sKmlFile.replace("-gpsWithoutTopo", "")
+        sKmlWarnFile:str    = sKmlFile.replace(".", "-wrn.")
         bKmlFile:bool       = os.path.exists(self.publishPathFiles + sKmlFile)
         bKmlWarnFile:bool   = os.path.exists(self.publishPathFiles + sKmlWarnFile)
         if bKmlFile or bKmlWarnFile:
@@ -841,8 +857,7 @@ if __name__ == '__main__':
     oLog = bpaTools.Logger(appId, logFile)
     oLog.resetFile()
     oWeb = PoaffWebPage(oLog, outPath)
-    oWeb.createPoaffWebPage(None)                                   #Preparation pour publication
-    #oWeb.createPoaffWebPage("20200715_")                           #Pour révision d'une publication
+    oWeb.createPoaffWebPage()                                   #Preparation pour publication
 
     print()
     oLog.Report()

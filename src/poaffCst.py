@@ -19,6 +19,7 @@ cstAsAllOpenairFileName:str = "airspaces-all-gpsWithTopo.txt"
 cstWithTopo:str             = "-gpsWithTopo"
 cstWithoutTopo:str          = "-gpsWithoutTopo"
 cstLastVersionFileName:str  = "LastVersion_"
+cstLastVersionFileName2:str = "LastVers_"
 
 ### Spécificité applicative ###
 cstPoaffCloneObject:str     = "PoaffClone-"

@@ -52,7 +52,7 @@ def renameFile(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> bool:
         oLog.warning("Unrename file (not exist): {0}".format(sSrcFile), outConsole=False)
         return False
 
-def makeOpenair2Aixm(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> None:
+def makeOpenair2Aixm(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str, sRootSchemaLocation:str) -> None:
     oParser = OpenairReader.OpenairReader(oLog)
     oParser.setFilters(sFilterClass, sFilterType, sFilterName)
     oParser.parseFile(sSrcPath + sSrcFile)
@@ -95,7 +95,7 @@ def makeGeojson2Kml(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> N
     oKml = None     #Free and clean file
     return
 
-def makeAllFiles(sSrcPath:str, sSrcOpenairFile:str, sDstPath:str) -> None:
+def makeAllFiles(sSrcPath:str, sSrcOpenairFile:str, sDstPath:str, sRootSchemaLocation:str) -> None:
     bpaTools.createFolder(sDstPath)        #Init dossier
     if not copyFile(sSrcPath, sSrcOpenairFile, sDstPath, sSrcOpenairFile):
         None
@@ -108,7 +108,7 @@ def makeAllFiles(sSrcPath:str, sSrcOpenairFile:str, sDstPath:str) -> None:
         sKmlFile: str = sSrcOpenairFile.replace(".txt", ".kml")
 
         #Aixm generator
-        makeOpenair2Aixm(sDstPath, sSrcOpenairFile, sDstPath, sAixmFile)
+        makeOpenair2Aixm(sDstPath, sSrcOpenairFile, sDstPath, sAixmFile, sRootSchemaLocation)
 
         #Rename original file with "_org" flag
         renameFile(sDstPath, sSrcOpenairFile, sDstPath, sSrcOriginFile)
@@ -156,26 +156,9 @@ def setConfEpsilonReduce(epsilonReduce:bool=None) -> None:
     return
 
 
-if __name__ == '__main__':
-    ### Context applicatif
-    callingContext: str = "Paragliding-OpenAir-FrenchFiles"         #Your app calling context
-    appName: str = bpaTools.getFileName(__file__)
-    appPath: str = bpaTools.getFilePath(__file__)            #or your app path
-    appVersion: str = "1.1.2"                                   #or your app version
-    appId: str = appName + " v" + appVersion
-    cstPoaffInPath: str = "../../input/"
-    cstPoaffOutPath: str = "../../output/"
-    logFile: str = cstPoaffOutPath + "_" + appName + ".log"
-    sFilterClass:list=None; sFilterType:list=None; sFilterName:list=None
 
-    oLog = bpaTools.Logger(appId,logFile)
-    oLog.resetFile()
-
-    mOpenairEpsilonReduce:float     = -1
-    epsilonReduce:bool              = True      #Normaly = True  or False for generate without optimization
-    setConfEpsilonReduce(epsilonReduce)         #### Paramétrage de l'optimisation des tracés ####
-
-    ###Gestion des Parcs naturels
+### Gestion des Parcs naturels
+def parcsConsolidation() -> None:
     sAllOpenair: str = ""
     oParcs:dict = {
         "Jura":             ["Jura", "20210324_Parc-Jura.txt"],
@@ -193,6 +176,7 @@ if __name__ == '__main__':
         "Champagne":        ["Champagne", "20210202_BPa_ParcsNat_Champagne.txt"],
         "Cevennes":         ["Cevennes", "20210324_PascalW_ParcCevennes.txt"],
         "BaieDeSomme":      ["BaieDeSomme", "20200729_SergeR_ParcNat_BaieDeSomme.txt"],
+        "Vauville":         ["Vauville", "20210528_Mare-de-Vauville.txt"],
         "Hourtin":          ["Hourtin", "20200729_SergeR_ParcNat_Hourtin.txt"],
         "Pyrenees":         ["Pyrenees", "20210323_Pyrenees_hr.txt"],
         "Ordessa":          ["Ordessa", "20210304_Ordessa.txt"],
@@ -201,14 +185,13 @@ if __name__ == '__main__':
         "Scandola":         ["Scandola", "20210420_Scandola.txt"],
         "Italie":           ["Italie", "20210324_ParcsItaliens.txt"]
     }
-    iConstructParc: int = 2                             #Phase de construction des Parcs: 0, 1, 2
+    iConstructParc: int = 1                             #Phase de construction des Parcs: 0=Rien, 1=Phase1, 2=Phase2
     if iConstructParc == 1:
         ###(deb) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc
-        aParc = oParcs["Calanques"]
+        aParc = oParcs["Vauville"]
         sInPath: str = cstPoaffInPath + "Parcs/" + aParc[0] + "/"
         sOutPath: str = sInPath + "map/"
-        sRootSchemaLocation: str = cstPoaffInPath
-        makeAllFiles(sInPath, aParc[1], sOutPath)
+        makeAllFiles(sInPath, aParc[1], sOutPath, cstPoaffInPath)
         ###(end) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc
 
     if iConstructParc == 2:
@@ -260,43 +243,63 @@ if __name__ == '__main__':
         ###(deb) Phase 2b - Construction de l'aixm et des fichiers assimilés sur la base des parcs consolidés
         sInPath: str = sOutPath
         sOutPath: str = sInPath + "map/"
-        sRootSchemaLocation: str = cstPoaffInPath
-        makeAllFiles(sInPath, sOutFile, sOutPath)
+        makeAllFiles(sInPath, sOutFile, sOutPath, cstPoaffInPath)
         ###(fin) Phase 2b - Construction de l'aixm et des fichiers assimilés sur la base des parcs consolidés
+    return
 
 
+
+if __name__ == '__main__':
+    ### Context applicatif
+    callingContext: str = "Paragliding-OpenAir-FrenchFiles"         #Your app calling context
+    appName: str = bpaTools.getFileName(__file__)
+    appPath: str = bpaTools.getFilePath(__file__)            #or your app path
+    appVersion: str = "1.1.2"                                   #or your app version
+    appId: str = appName + " v" + appVersion
+    cstPoaffInPath: str = "../../input/"
+    cstPoaffOutPath: str = "../../output/"
+    logFile: str = cstPoaffOutPath + "_" + appName + ".log"
+    sFilterClass:list=None; sFilterType:list=None; sFilterName:list=None
+
+    oLog = bpaTools.Logger(appId,logFile)
+    oLog.resetFile()
+
+    mOpenairEpsilonReduce:float     = -1
+    epsilonReduce:bool              = True      #Normaly = True  or False for generate without optimization
+    setConfEpsilonReduce(epsilonReduce)         #### Paramétrage de l'optimisation des tracés ####
+
+
+    parcsConsolidation()
 
 
     """
     sInPath: str = cstPoaffInPath  + "Tests/"
     sPOutPath: str = cstPoaffOutPath + "Tests/map/"
-    sRootSchemaLocation: str = cstPoaffInPath
     #sSrcOpenairFile: str = "99999999_BPa_TestOpenair-RTBA.txt"
     #sSrcOpenairFile: str = "99999999_BPa_Test4Circles_Arcs.txt"  #99999999_BPa_Test4Circles.txt
     #sSrcOpenairFile: str = "99999999_BPa_Test4Circles_AlignArcs.txt"
     sSrcOpenairFile: str = "99999999_ComplexArea.txt"
-    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
+    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, cstPoaffInPath)
     """
+
 
     """
     sInPath: str = cstPoaffInPath  + "BPa/"
     sPOutPath: str = cstPoaffOutPath + "Tests/map/"
-    sRootSchemaLocation: str = cstPoaffInPath
-    #sSrcOpenairFile: str = "20210208_BPa_FR-ZSM_Protection-des-rapaces.txt"
+    sSrcOpenairFile: str = "20210528_BPa_FR-ZSM_Protection-des-rapaces.txt"
     #sSrcOpenairFile: str = "20210116_BPa_FR-SIA-SUPAIP.txt"
-    sSrcOpenairFile: str = "20210304_BPa_ZonesComplementaires.txt"
+    #sSrcOpenairFile: str = "20210304_BPa_ZonesComplementaires.txt"
     #sFilterClass=["ZSM", "GP"]
     #sFilterName=["LaDaille", "LeFornet", "Bonneval", "Termignon", "PERCNOPTERE", "LeVillaron"]
-    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
+    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, cstPoaffInPath)
     """
 
 
     """
     sInPath: str = cstPoaffInPath  + "FFVL/"
     sPOutPath: str = cstPoaffOutPath + "Tests/map/"
-    sRootSchemaLocation: str = cstPoaffInPath
     sSrcOpenairFile: str = "20210214_FFVL_ProtocolesParticuliers_BPa.txt"
-    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
+    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, cstPoaffInPath)
     """
 
 
@@ -305,7 +308,6 @@ if __name__ == '__main__':
     sPoaffPublicationPathName: str    = "_POAFF_www/files/"
     sInPath: str = cstPoaffOutPath  + sPoaffPublicationPathName
     sPOutPath: str = cstPoaffOutPath + "Tests/map/"
-    sRootSchemaLocation: str = cstPoaffInPath
     sSrcOpenairFile: str = "20210111_airspaces-freeflight-gpsWithTopo-geoFrenchAll.txt"
     #### Strat - Samples of specific filters ###
     #sFilterClass = ["ZSM"]
@@ -315,7 +317,7 @@ if __name__ == '__main__':
     #sFilterName = ["Faucon Pelerin","Megeve"]
     #sFilterClass = ["C"]; sFilterType=["TMA"]; sFilterName=["LYON"]
     #### End - Samples of specific filters ###
-    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
+    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, cstPoaffInPath)
     """
 
 
@@ -324,10 +326,9 @@ if __name__ == '__main__':
     sPwcPathName: str = "FFVL/PWC-FrenchAlps/"
     sInPath: str = cstPoaffInPath  + sPwcPathName
     sPOutPath: str = cstPoaffOutPath + sPwcPathName
-    sRootSchemaLocation: str = "../" + cstPoaffInPath
     sSrcOpenairFile: str = "20210120_PWC-FrenchAlps_Airspace-mondiaux_BPa-20210120.txt"
     #sFilterClass=["ZSM", "GP"]
-    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath)
+    makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, "../" + cstPoaffInPath)
     """
 
 
