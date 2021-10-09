@@ -1,0 +1,35 @@
+
+AC FFVP
+AN FFVP-Prot RMZ WHISKEY 1 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPWHISKEY1
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+DP 45:30:00 N 000:43:27 W
+**DP 45:30:00 N 000:31:33 W
+V X=45:35:37 N 000:25:34 W
+V D=+
+DB 45:30:00 N 000:31:33 W, 45:39:34 N 000:33:49 W
+**DP 45:39:34 N 000:33:49 W
+DP 45:39:34 N 000:47:07.62 W
+**DP 45:30:00 N 000:43:27 W
+
+AC D
+AN CTA COGNAC (FFVP-Prot)
+*AAlt ["1500FT AMSL/FL065", "457m/1981m"]
+*AUID GUId=CTA4721 UId=1564427 Id=CTA4721
+*ADescr LF R 49 E2 can substitute to this airspace for the benefit of unmanned remote controlled aircraft. OAT/GAT procedures. CTA deactivation announced on: RAI frequency 132.45 or AQUITAINE INFO 120.575, LA ROCHELLE INFO 124.200, LIMOGES INFO 124.050, POITIERS INFO 118.075. Flying over COGNAC AD BLW 1000ft ASFC is prohibited H24.
+*AActiv [HO] (Pascal Bazile: Voir protocole https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf) - Activable H24. Possible activation H24
+*ADecla Yes
+AH FL065
+AL 1500FT AMSL
+V X=45:49:26N 0:1:58W
+V D=+
+DB 45:54:39N 0:8:40W, 45:43:47N 0:3:58E
+V X=45:35:37N 0:25:34W
+V D=+
+DB 45:30:29N 0:18:46W, 45:41:16N 0:31:28W
+

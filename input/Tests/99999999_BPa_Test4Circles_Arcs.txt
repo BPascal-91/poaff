@@ -1,0 +1,464 @@
+***********************
+**** Tests pour précision des tracés de Cercle ****
+***********************
+
+
+*-------
+AC R
+AN Rayon 50m 
+AH FL115
+AL SFC
+V X=47:57:10.00 N 001:00:00.00 W
+DC 0.027
+
+AC R
+AN Rayon 150m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:30:10.12 N 001:00:00.00 W
+DC 0.08
+
+AC R
+AN Rayon 300m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:10:10.12 N 001:00:00.00 W
+DC 0.162
+
+AC R
+AN Rayon 500m 
+AH FL115
+AL SFC
+V X=47:00:10.12 N 001:00:00.00 W
+DC 0.27
+
+AC R
+AN Rayon 900m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=46:50:10.12 N 001:00:00.00 W
+DC 0.486
+
+
+*-------
+AC R
+AN Rayon 1100m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:57:10.00 N 000:00:00.00 W
+DC 0.6
+
+AC R
+AN Rayon 1400m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:30:10.00 N 000:00:00.00 W
+DC 0.75
+
+AC R
+AN Rayon 1600m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:10:10.00 N 000:00:00.00 W
+DC 0.863
+
+AC R
+AN Rayon 1900m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=46:50:10.00 N 000:00:00.00 W
+DC 1.03
+
+*-------
+
+AC R
+AN Rayon 2100m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:57:10.00 N 001:00:00.25 E
+DC 1.134
+
+AC R
+AN Rayon 2900m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:30:10.00 N  001:00:00.25 E
+DC 1.565
+
+AC R
+AN Rayon 3100m 
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:10:10.00 N 001:00:00.25 E
+DC 1.68
+
+AC R
+AN Rayon 4900m
+AH FL075
+AL 1000FT AGL
+V X=47:00:10.00 N 001:00:00.25 E
+DC 2.65
+
+*-------
+AC R
+AN Rayon 5100m
+AH FL075
+AL 1000FT AGL
+V X=47:57:10 N 002:00:00 E
+DC 2.76
+
+AC R
+AN Rayon 7500m
+AH FL075
+AL 1000FT AGL
+V X=47:30:10 N 002:00:00 E
+DC 4.05
+
+AC R
+AN Rayon 9900m
+AH FL075
+AL 1000FT AGL
+V X=47:10:10 N 002:00:00 E
+DC 5.35
+
+
+*-------
+AC R
+AN Rayon 11000m
+AH 5000FT AMSL
+AL 500FT AGL
+V X=47:57:10 N 003:40:00 E
+DC 5.94
+
+AC R
+AN Rayon 14900m
+AH 5000FT AMSL
+AL 500FT AGL
+V X=47:30:10 N 003:40:00 E
+DC 8.04
+
+AC R
+AN Rayon 151000m
+AH 5000FT AMSL
+AL 500FT AGL
+V X=47:00:10 N 003:40:00 E
+DC 8.16
+
+AC R
+AN Rayon 19900m
+AH 5000FT AMSL
+AL 500FT AGL
+V X=46:30:10 N 003:40:00 E
+DC 10.74
+
+
+*-------
+AC R
+AN Rayon 21000m
+AH 5000FT AGL
+AL 500FT AGL
+V X=47:57:10 N 006:00:00 E
+DC 11.34
+
+AC R
+AN Rayon 29900m
+AH 5000FT AGL
+AL 500FT AGL
+V X=47:00:10 N 006:00:00 E
+DC 16.14
+
+AC R
+AN Rayon 31000m
+AH 5000FT AGL
+AL 500FT AGL
+V X=46:25:10 N 006:00:00 E
+DC 16.74
+
+
+*-------
+AC R
+AN Rayon 49900m
+AH 2500FT AGL
+AL 500FT AGL
+V X=47:57:10 N 009:00:00 E
+DC 26.94
+
+AC R
+AN Rayon 51000m
+AH 2500FT AGL
+AL 500FT AGL
+V X=47:00:10 N 009:00:00 E
+DC 27.53
+
+AC R
+AN Rayon 100000m
+AH 2500FT AGL
+AL 500FT AGL
+V X=46:00:10 N 009:00:00 E
+DC 54
+
+AC R
+AN Rayon 200000m
+AH 2500FT AGL
+AL 500FT AGL
+V X=45:00:10 N 009:00:00 E
+DC 108
+
+
+
+***********************
+**** Tests Cercles ****
+***********************
+AC Q
+AN Cercle classique
+AH 500FT AGL
+AL SFC
+V X=50:40:45 N 002:34:10 E
+DC 10
+
+AC Q
+AN Cercle horaire
+AH 500FT AGL
+AL SFC
+V X=50:40:45 N 003:34:10 E
+V D=+
+DC 10
+
+AC FFVL
+AN Cercle anti-horaire
+AH 500FT AGL
+AL SFC
+V X=50:40:45 N 004:34:10 E
+V D=-
+DC 10
+
+
+
+********************
+**** Tests Arcs ****
+********************
+AC FFVL
+AN FFVL-Prot LE TOUQUET Twr(118.450) (PARAGLIDER)
+*AAlt ["SFC/1000FT AGL", "0m/423m"]
+*AUID GUId=! UId=! Id=FFVLLFAT
+*ADescr (c) FFVL 06/09/2012 - Protocole établie pour tous les pilotes parapente qui utilisent les sites Danne-Camier et de Frencq. Autorisation de vol donnée sur demande auprès de la tour de contôle du Touquet: Tel 0321066286, 0321066271 ou 0321066273. L'altitude maximale devra être fournie à la tour par le pilote en charge de la demande. L'autorisation de vol acceptée n'impose pas la nécessité d'emport de radio, ni de transpondeur au pied de cette zone [D] CTR LE TOUQUET - https://federation.ffvl.fr/sites/ffvl.fr/files/CTR_LE_TOUQUET.pdf
+*AMhz {"TWR": ["118.450"]}
+*AActiv [HX] Demande d'autorisation de vol auprès de la tour de contôle du Touquet Tel 0321066286, 0321066271 ou 0321066273. Altitude max estimée à fournir à la tour. Veille radio fortement conseillée sur la fréquence 118.450 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/CTR_LE_TOUQUET.pdf
+*ATimes {"1": ["UTC(01/01->31/12)", "ANY(06:00->20:00)"]}
+AH 1000FT AGL
+AL SFC
+DP 50:40:45 N 001:34:10 E
+DP 50:29:30 N 001:52:24 E
+DP 50:22:40 N 001:42:02 E
+**DP 50:25:12 N 001:37:52 E
+V X=50:25:23 N 001:35:31 E
+V D=-
+DB 50:25:12 N 001:37:52 E, 50:26:16 N 001:33:37 E
+**DP 50:26:16 N 001:33:37 E
+DP 50:26:16 N 001:33:16 E
+DP 50:32:59 N 001:22:21 E
+
+AC FFVP
+AN FFVP-Prot RMZ WHISKEY 1 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPWHISKEY1
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+DP 45:30:00 N 000:43:27 W
+**DP 45:30:00 N 000:31:33 W
+V X=45:35:37 N 000:25:34 W
+V D=+
+DB 45:30:00 N 000:31:33 W, 45:39:34 N 000:33:49 W
+**DP 45:39:34 N 000:33:49 W
+DP 45:39:34 N 000:47:08 W
+DP 45:30:00 N 000:43:27 W
+
+AC FFVP
+AN FFVP-Prot RMZ WHISKEY 3 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPWHISKEY3
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+DP 45:39:34 N 000:33:49 W
+**DP 45:51:03 N 000:32:33 W
+V X=45:39:34 N 000:18:42 W
+V D=+
+DB 45:51:03 N 000:32:33 W, 45:54:34 N 000:18:42 W
+**DP 45:54:34 N 000:18:42 W
+DP 45:39:34 N 000:33:49 W
+
+AC FFVP
+AN FFVP-Prot RMZ WHISKEY 4 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPWHISKEY4
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+**DP 45:51:03 N 000:32:33 W
+V X=45:39:34 N 000:18:42 W
+V D=+
+DB 45:51:03 N 000:32:33 W, 45:54:34 N 000:18:42 W
+**DP 45:54:34 N 000:18:42 W
+**DP 46:04:34 N 000:18:42 W
+V X=45:39:34 N 000:18:42 W
+V D=-
+DB 46:04:34 N 000:18:42 W, 46:03:04 N 000:31:01 W
+**DP 46:03:04 N 000:31:01 W
+DP 45:59:56 N 000:29:22 W
+DP 45:52:21 N 000:34:06 W
+DP 45:51:03 N 000:32:33 W
+
+AC FFVP
+AN FFVP-Prot RMZ WHISKEY 5 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPWHISKEY5
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+**DP 46:03:04 N 000:31:01 W
+V X=45:39:34 N 000:18:42 W
+V D=+
+DB 46:03:04 N 000:31:01 W, 46:04:34 N 000:18:42 W
+**DP 46:04:34 N 000:18:42 W
+**DP 46:19:34 N 000:18:42 W
+V X=45:39:34 N 000:18:42 W
+V D=-
+DB 46:19:34 N 000:18:42 W, 46:17:09 N 000:38:30 W
+**DP 46:17:09 N 000:38:30 W
+DP 46:03:04 N 000:31:01 W
+
+AC FFVP
+AN FFVP-Prot RMZ WHISKEY 6 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPWHISKEY6
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+**DP 46:17:09 N 000:38:30 W
+V X=45:39:34 N 000:18:42 W
+V D=+
+DB 46:17:09 N 000:38:30 W, 46:19:34 N 000:18:42 W
+**DP 46:19:34 N 000:18:42 W
+DP 46:30:00 N 000:18:42 W
+DP 46:30:00 N 000:45:22 W
+DP 46:17:09 N 000:38:30 W
+
+AC FFVP
+AN FFVP-Prot RMZ ECHO 1 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3300FT AMSL/4000FT AMSL", "1005m/1219m"]
+*AUID GUId=! UId=! Id=FFVPECHO1
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3300FT AMSL
+DP 45:30:00 N 000:02:13 W
+DP 45:30:00 N 000:05:37 E
+DP 45:27:00 N 000:10:00 E
+**DP 45:24:46 N 000:10:00 E
+V X=45:39:34 N 000:18:42 W
+V D=-
+DB 45:24:46 N 000:10:00 E, 45:37:23 N 000:16:55 E
+**DP 45:37:23 N 000:16:55 E
+DP 45:38:16 N 000:02:40 E
+V X=45:39:34 N 000:18:42 W
+V D=+
+DB 45:38:16 N 000:02:40 E, 45:30:00 N 000:02:13 W
+
+AC FFVP
+AN FFVP-Prot RMZ ECHO 2 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3300FT AMSL/4000FT AMSL", "1005m/1219m"]
+*AUID GUId=! UId=! Id=FFVPECHO2
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3300FT AMSL
+DP 45:38:16 N 000:02:40 E
+DP 45:37:23 N 000:16:54 E
+DP 45:46:50 N 000:20:11 E
+DP 46:00:00 N 000:23:19 E
+DP 45:53:54 N 000:10:44 E
+**DP 45:48:38 N 000:08:00 E
+V X=45:49:26 N 000:01:58 W
+V D=+
+DB 45:48:38 N 000:08:00 E, 45:45:41 N 000:06:29 E
+**DP 45:45:41 N 000:06:29 E
+DP 45:38:16 N 000:02:40 E
+
+AC FFVP
+AN FFVP-Prot RMZ ECHO 3 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3300FT AMSL/4000FT AMSL", "1005m/1219m"]
+*AUID GUId=! UId=! Id=FFVPECHO3
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3300FT AMSL
+DP 45:53:54 N 000:10:44 E
+DP 46:00:00 N 000:23:19 E
+**DP 46:06:16 N 000:24:15 E
+V X=45:39:34 N 000:18:42 W
+V D=-
+DB 46:06:16 N 000:24:15 E, 46:12:20 N 000:14:28 E
+**DP 46:12:20 N 000:14:28 E
+**DP 45:53:54 N 000:10:44 E
+
+AC FFVP
+AN FFVP-Prot RMZ ECHO 4 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3300FT AMSL/4000FT AMSL", "1005m/1219m"]
+*AUID GUId=! UId=! Id=FFVPECHO4
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3300FT AMSL
+DP 46:06:16 N 000:24:15 E
+DP 46:15:32 N 000:25:40 E
+DP 46:28:18 N 000:34:22 E
+DP 46:28:33 N 000:31:06 E
+**DP 46:12:20 N 000:14:27 E
+V X=45:39:34 N 000:18:42 W
+V D=+
+DB 46:12:20 N 000:14:27 E, 46:06:16 N 000:24:15 E
+**DP 46:06:16 N 000:24:15 E
+
+AC FFVP
+AN FFVP-Prot RMZ ECHO 5 App(122.550 puis 122.500) (GLIDER)
+*AAlt ["3000FT AMSL/4000FT AMSL", "914m/1219m"]
+*AUID GUId=! UId=! Id=FFVPECHO5
+*ADescr (c) FFVP 13/03/2017 - COULOIRS DE TRANSIT COGNAC - Premier contact à réaliser sur fréquence 122.550 Mhz (répondeur automatique si terrain fermé). Après premier contact, veille sur la fréquence vol à voile 122.500 Mhz ou autre fréquence particulière annoncée par le planeur aux contrôleurs de Cognac. L’approche de Cognac précisera, lors de ce premier contact, l’altitude maximale utilisable dans le couloir. Les planeurs devront être sur la fréquence 122.55 Mhz pour toute évolution au-dessus de cette altitude définie ou en dehors des couloirs. De plus, un report de position devra être fait sur la fréquence 122.55 Mhz toutes les 30 min, et/ouavant de quitter la zone. https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+*AMhz {"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}
+*AActiv [HX] Premier contact sur fréquence 122.550 Mhz. Ensuite, veille radio permanente sur 122.500 Mhz - https://federation.ffvl.fr/sites/ffvl.fr/files/Cognac_0.pdf
+AH 4000FT AMSL
+AL 3000FT AMSL
+DP 46:12:20 N 000:14:27 E
+DP 46:28:33 N 000:31:06 E
+**DP 46:28:47 N 000:28:28 E
+V X=46:34:53 N 000:17:53 E
+V D=+
+DB 46:28:47 N 000:28:28 E, 46:25:22 N 000:17:21 E
+**DP 46:25:22 N 000:17:21 E
+**DP 46:21:24 N 000:15:04 E
+V X=46:35:40 N 000:18:53 E
+V D=+
+DB 46:21:24 N 000:15:04 E, 46:25:02 N 000:04:34 E
+**DP 46:25:02 N 000:04:34 E
+DP 46:28:32 N 000:07:36 E
+DP 46:30:00 N 000:06:02 E
+DP 46:30:00 N 000:03:39 W
+DP 46:22:45 N 000:00:37 W
+DP 46:12:20 N 000:14:27 E
+
