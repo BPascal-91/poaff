@@ -178,6 +178,18 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 		<codeDistVerMax>HEI</codeDistVerMax>
 		<valDistVerMax>1000</valDistVerMax>
 		<uomDistVerMax>FT</uomDistVerMax>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-10</dateValidTil>
+				<codeDay>MON</codeDay>
+				<codeDayTil>FRI</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+		</Att>
 		<txtRmk>un test</txtRmk>
 	</Ase>
 	<Ase>
