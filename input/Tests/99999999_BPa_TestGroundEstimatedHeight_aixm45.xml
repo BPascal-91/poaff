@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../input/_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2021-02-28T10:45:36.197828" effective="2021-02-28T10:45:36.197828">
+	<Ase>
+		<AseUid mid="27">
+			<codeType>ZSM</codeType>
+			<codeId>LLPlagne</codeId>
+		</AseUid>
+		<txtName>Peisey-Nancroix / Lac-de-La-Plagne / Gypaete Barbu 150m/nid</txtName>
+		<codeActivity>BIRD</codeActivity>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>493</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>15-08</dateValidTil>
+				<codeDay>ANY</codeDay>
+				<codeDayTil>ANY</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-11</dateValidWef>
+				<dateValidTil>31-12</dateValidTil>
+				<codeDay>ANY</codeDay>
+				<codeDayTil>ANY</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+			<txtRmkWorkHr>Survol à éviter du 01/11 au 15/08 à moins de 150m du nid</txtRmkWorkHr>
+		</Att>
+		<txtRmk>(c) Pascal Bazile - 20/11/2019, rev 20/01/2021 - Bulle de rayon 150m jusqu'à 150m/nid - (11/2020) https://www.vanoise-parcnational.fr/fr/actualites/les-gypaetes-barbus-de-vanoise-preparent-une-nouvelle-saison-de-reproduction - (11/2018) https://www.vanoise-parcnational.fr/fr/actualites/chut-les-gypaetes-barbus-se-preparent</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="10">
+			<codeType>ZSM</codeType>
+			<codeId>Montarbe</codeId>
+		</AseUid>
+		<txtName>Bauges Gresy-Montarbe / Aigle Royal 150m/nid</txtName>
+		<codeActivity>BIRD</codeActivity>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>493</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-08</dateValidTil>
+				<codeDay>ANY</codeDay>
+				<codeDayTil>ANY</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+			<txtRmkWorkHr>Survol à éviter de janvier à fin-aout à moins de 150 du nid</txtRmkWorkHr>
+		</Att>
+		<txtRmk>(c) PNR Bauges 2020 - Bulle de rayon 150m jusqu'à 150m/nid - (2020) http://pnr-bauges.dyndns.org:8180/nextcloud/index.php/s/f9eAydwtJFdQatn?path=%2FBulles%20de%20qui%C3%A9tude%20Rapaces</txtRmk>
+	</Ase>
+	<Abd>
+		<AbdUid mid="27">
+			<AseUid mid="27">
+				<codeType>ZSM</codeType>
+				<codeId>LLPlagne</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>452910N</geoLatCen>
+			<geoLongCen>0065000E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>0.081</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="10">
+			<AseUid mid="10">
+				<codeType>ZSM</codeType>
+				<codeId>Montarbe</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>453710N</geoLatCen>
+			<geoLongCen>0061520E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>0.081</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+</AIXM-Snapshot>

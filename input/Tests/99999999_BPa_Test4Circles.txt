@@ -1,0 +1,55 @@
+**************************************************
+*   software - (aixmParser v2.21.0) Paragliding-OpenAir-French-Files - http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/
+*   created - 2021-02-02T12:00:08.466494
+*   content - airspaces-all
+*   allMap - True
+*   numberOfAreas - 6
+*   srcFiles:
+*      1 - {"srcAixmFile": "../../poaff/input/Tests/99999999_BPa_Test4Circles_aixm45.xml", "srcAixmOrigin": "BPa", "srcAixmVersion": "4.5", "srcAixmCreated": "2020-03-18T17:50:01.141+01:00", "srcAixmEffective": "2019-12-05T00:00:00.000+01:00"}
+*   --------------------------------------------
+*   (i)Information - 'ALL Map' - Cartographie complète de l'espace aérien (IFR + VFR)
+*   /!\Warning - 'gpsWithTopo' - Cartographie pour XCsoar / LK8000 / XCTrack / FlyMe / Compass / Syride ; et tout autres appareils/logiciels AVEC Carte-Topographique (en capacité de connaître les altitudes terrain)
+**************************************************
+
+AC R
+AN R 506 A
+AH FL115
+AL SFC
+V X=47:57:10.00 N 000:00:00.00 E
+DC 0.3
+
+AC R
+AN R 506 A
+AH 3500FT AMSL
+AL 500FT AMSL
+V X=47:57:10.12 N 001:00:00.25 E
+DC 0.8
+
+AC R
+AN R 506 A
+AH FL075
+AL 1000FT AGL
+V X=47:57:10 N 002:00:00 E
+DC 5.0
+
+AC R
+AN R 239
+AH 5000FT AMSL
+AL 500FT AGL
+V X=47:57:10 N 003:40:00 E
+DC 20.0
+
+AC R
+AN R 278
+AH 5000FT AGL
+AL 500FT AGL
+V X=47:57:10 N 006:00:00 E
+DC 50.0
+
+AC R
+AN R 278
+AH 2500FT AGL
+AL 500FT AGL
+V X=47:57:10 N 008:00:00 E
+DC 100.0
+

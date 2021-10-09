@@ -1,0 +1,23 @@
+AC R
+AN RTBA 139 (SeeNotam)
+*AAlt ["800FT AGL/3000FT AMSL", "439m/914m"]
+*AUID GUId=LFR139 UId=1563139 Id=LFR139
+*ADescr Administrator: CDPGE Athis- Mons. Upper limit: 2100ft AMSL within AVORD TMA 1.1 lateral limits. Avoidance mandatory during activity. Activation timetable available on: - Internet: www.sia.aviation- civile.gouv.fr ( pre-flight section/ AZBA Charts) - Internet: www.dircam.air.defense.gouv.fr/dia (Information section/short term/ NOTAM), - Toll-free TEL number: 0800 24 54 66 - APP LIMOGES, APP AVORD.
+*AActiv [NOTAM] Activation by NOTAM. Except HOL: - MON: 0930-1100 - TUE, THU: 0930-1100 and SS-2359 - WED, FRI: 0000-0059 and 0930-1100 SUM: - 1HR.
+*ATimes {"1": ["UTCW(01/01->31/12)", "TUE(09:30->11:00)"], "2": ["UTCW(01/01->31/12)", "THU(SS->23:59)"], "3": ["UTCW(01/01->31/12)", "WED(09:30->11:00)"], "4": ["UTCW(01/01->31/12)", "WED(00:00->00:59)"], "5": ["UTCW(01/01->31/12)", "FRI(00:00->00:59)"], "6": ["UTCW(01/01->31/12)", "TUE(SS->23:59)"], "7": ["UTCW(01/01->31/12)", "FRI(09:30->11:00)"], "8": ["UTCW(01/01->31/12)", "THU(09:30->11:00)"], "9": ["UTCW(01/01->31/12)", "MON(09:30->11:00)"]}
+*AExSAT True
+*AExSUN True
+*AExHOL True
+*ASeeNOTAM Yes
+AH 3000FT AMSL
+AL 800FT AGL
+DP 47:04:15 N 002:58:35 E
+DP 46:51:45 N 002:53:40 E
+DP 46:41:20 N 002:33:10 E
+DP 46:35:30 N 002:21:50 E
+DP 46:29:15 N 002:12:12 E
+DP 46:30:45 N 001:56:30 E
+DP 46:55:03 N 002:33:29 E
+DP 46:56:26 N 002:47:15 E
+DP 47:00:20 N 002:49:35 E
+DP 47:02:30 N 002:49:20 E

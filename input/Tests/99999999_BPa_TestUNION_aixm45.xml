@@ -1,0 +1,194 @@
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" version="4.5" effective="2020-12-31T00:00:00" origin="EAD-SDO" created="2020-12-31T00:00:00">
+<Ase>
+	<AseUid mid="400001448459077">
+		<codeType>RAS</codeType>
+		<codeId>EHSRMZLE</codeId>
+	</AseUid>
+	<txtLocalType>RMZ</txtLocalType>
+	<txtName>RMZ LELYSTAD</txtName>
+	<codeClass>G</codeClass>
+	<codeDistVerUpper>ALT</codeDistVerUpper>
+	<valDistVerUpper>1500</valDistVerUpper>
+	<uomDistVerUpper>FT</uomDistVerUpper>
+	<codeDistVerLower>HEI</codeDistVerLower>
+	<valDistVerLower>0</valDistVerLower>
+	<uomDistVerLower>FT</uomDistVerLower>
+	<Att>
+		<codeWorkHr>OTHER</codeWorkHr>
+		<txtRmkWorkHr>RMZ active outside OPR HR CTR.</txtRmkWorkHr>
+	</Att>
+	<txtRmk>[General:]Outside OPR HR Dutch MIL FIS and ALRS.</txtRmk>
+</Ase>
+<Ase>
+	<AseUid mid="400003172517719">
+		<codeType>CTR</codeType>
+		<codeId>EHLE</codeId>
+	</AseUid>
+	<txtName>LELYSTAD CTR</txtName>
+	<codeClass>D</codeClass>
+	<codeDistVerUpper>ALT</codeDistVerUpper>
+	<uomDistVerUpper>FT</uomDistVerUpper>
+	<codeDistVerLower>HEI</codeDistVerLower>
+	<uomDistVerLower>FT</uomDistVerLower>
+	<Att>
+		<codeWorkHr>HO</codeWorkHr>
+	</Att>
+</Ase>
+<Ase>
+	<AseUid mid="400003172517721">
+		<codeType>CTR-P</codeType>
+		<codeId>EHLE1</codeId>
+	</AseUid>
+	<txtName>LELYSTAD CTR 1</txtName>
+	<codeClass>D</codeClass>
+	<codeDistVerUpper>ALT</codeDistVerUpper>
+	<valDistVerUpper>1500</valDistVerUpper>
+	<uomDistVerUpper>FT</uomDistVerUpper>
+	<codeDistVerLower>HEI</codeDistVerLower>
+	<valDistVerLower>0</valDistVerLower>
+	<uomDistVerLower>FT</uomDistVerLower>
+</Ase>
+<Ase>
+	<AseUid mid="400003172517723">
+		<codeType>CTR-P</codeType>
+		<codeId>EHLE2</codeId>
+	</AseUid>
+	<txtName>LELYSTAD CTR 2</txtName>
+	<codeClass>D</codeClass>
+	<codeDistVerUpper>ALT</codeDistVerUpper>
+	<valDistVerUpper>2500</valDistVerUpper>
+	<uomDistVerUpper>FT</uomDistVerUpper>
+	<codeDistVerLower>HEI</codeDistVerLower>
+	<valDistVerLower>0</valDistVerLower>
+	<uomDistVerLower>FT</uomDistVerLower>
+</Ase>
+<Adg>
+	<AdgUid mid="400001448459077">
+		<AseUid mid="400001448459077">
+			<codeType>RAS</codeType>
+			<codeId>EHSRMZLE</codeId>
+		</AseUid>
+	</AdgUid>
+	<AseUidSameExtent mid="400003172517719">
+		<codeType>CTR</codeType>
+		<codeId>EHLE</codeId>
+	</AseUidSameExtent>
+</Adg>
+<Adg>
+	<AdgUid mid="400003172517719">
+		<AseUid mid="400003172517719">
+			<codeType>CTR</codeType>
+			<codeId>EHLE</codeId>
+		</AseUid>
+	</AdgUid>
+	<AseUidBase mid="400003172517721">
+		<codeType>CTR-P</codeType>
+		<codeId>EHLE1</codeId>
+	</AseUidBase>
+	<codeOpr>UNION</codeOpr>
+	<AseUidComponent mid="400003172517723">
+		<codeType>CTR-P</codeType>
+		<codeId>EHLE2</codeId>
+	</AseUidComponent>
+</Adg>
+<Abd>
+	<AbdUid mid="400003172517721">
+		<AseUid mid="400003172517721">
+			<codeType>CTR-P</codeType>
+			<codeId>EHLE1</codeId>
+		</AseUid>
+	</AbdUid>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>522804.2800N</geoLat>
+		<geoLong>0052510.9140E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>E47AE9C2</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>521619.8223N</geoLat>
+		<geoLong>0052510.8609E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>3A2A2EDF</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>521609.6150N</geoLat>
+		<geoLong>0052448.9380E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>53226EAC</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>521617.3290N</geoLat>
+		<geoLong>0052154.2660E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>1BB3AA26</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>522101.7300N</geoLat>
+		<geoLong>0051511.6830E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>64CCBC7D</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>522230.8710N</geoLat>
+		<geoLong>0051517.6400E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>0579CEE9</valCrc>
+	</Avx>
+</Abd>
+<Abd>
+	<AbdUid mid="400003172517723">
+		<AseUid mid="400003172517723">
+			<codeType>CTR-P</codeType>
+			<codeId>EHLE2</codeId>
+		</AseUid>
+	</AbdUid>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>523446.8190N</geoLat>
+		<geoLong>0053712.5920E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>03AA5B0E</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>523021.0200N</geoLat>
+		<geoLong>0054349.5830E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>CEC95AAE</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>522306.6230N</geoLat>
+		<geoLong>0053050.0230E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>F4462F90</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>522024.1520N</geoLat>
+		<geoLong>0053357.2130E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>B32FC1A4</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>521619.8223N</geoLat>
+		<geoLong>0052510.8610E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>7C5AABB5</valCrc>
+	</Avx>
+	<Avx>
+		<codeType>GRC</codeType>
+		<geoLat>522804.2800N</geoLat>
+		<geoLong>0052510.9140E</geoLong>
+		<codeDatum>WGE</codeDatum>
+		<valCrc>E47AE9C2</valCrc>
+	</Avx>
+</Abd>
+</AIXM-Snapshot>
