@@ -267,7 +267,11 @@ class Geojson2Kml:
                         oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche IFR", sVisiblility, "Couche de l'espace aérien IFR ; zones hautes (UTA=UpperControlArea, OCA=OceanicControlArea, OTA=OceanicTransitionArea, ...) et autres espaces-aériens nécessaires aux transmissions radards ou radios (FIR=FlightInformationRegion, UIR=UpperFlightInformationRegion, SECTOR=ControlSector, ...")
 
                     for sKeyClass, oClassZone in oTypeZone.items():
-                        oFolderClass = self.createKmlFolder(oFolderType, "Folder", "Classe " + sKeyClass, sVisiblility)
+                        if sKeyClass in ["A","B","C","D","E","F","G"]:
+                            sLib:str = "Classe " + sKeyClass
+                        else:
+                            sLib:str = "Zone " + sKeyClass
+                        oFolderClass = self.createKmlFolder(oFolderType, "Folder", sLib, sVisiblility)
 
                         for oZone in oClassZone:
                             idx+=1

@@ -176,7 +176,7 @@ def parcsConsolidation() -> None:
         "Champagne":        ["Champagne", "20210202_BPa_ParcsNat_Champagne.txt"],
         "Cevennes":         ["Cevennes", "20210324_PascalW_ParcCevennes.txt"],
         "BaieDeSomme":      ["BaieDeSomme", "20200729_SergeR_ParcNat_BaieDeSomme.txt"],
-        "Vauville":         ["Vauville", "20210528_Mare-de-Vauville.txt"],
+        "Vauville":         ["Vauville", "20210615_Mare-de-Vauville.txt"],
         "Hourtin":          ["Hourtin", "20200729_SergeR_ParcNat_Hourtin.txt"],
         "Pyrenees":         ["Pyrenees", "20210323_Pyrenees_hr.txt"],
         "Ordessa":          ["Ordessa", "20210304_Ordessa.txt"],
@@ -185,7 +185,7 @@ def parcsConsolidation() -> None:
         "Scandola":         ["Scandola", "20210420_Scandola.txt"],
         "Italie":           ["Italie", "20210324_ParcsItaliens.txt"]
     }
-    iConstructParc: int = 1                             #Phase de construction des Parcs: 0=Rien, 1=Phase1, 2=Phase2
+    iConstructParc: int = 2                            #Phase de construction des Parcs: 0=Rien, 1=Phase1, 2=Phase2
     if iConstructParc == 1:
         ###(deb) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc
         aParc = oParcs["Vauville"]

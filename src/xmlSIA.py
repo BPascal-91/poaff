@@ -7,7 +7,7 @@ import aixmReader
 
 cstFreqTypePriority:list = ["APP","TWR","FIS","AFIS","ATIS"]  #Priorisation des typologies de fréquence radio
 
-def getMasterFrequecy(oFreqs:dict, sTypeZone:str="") -> str:
+def getMasterFrequecy(oFreqs:dict, sTypeZone:str="", bVerbose:bool=False) -> str:
     sFreqType:str = "xxx"
     sFreq:str = None
     sPhone:str = None
@@ -35,10 +35,11 @@ def getMasterFrequecy(oFreqs:dict, sTypeZone:str="") -> str:
     if sFreq!=None:
         if sFreq[-1]=="*":
             sFreq = sFreq[:-1]
-        sFreq = sFreqType[0].upper() + sFreqType[1:].lower() + "(" + sFreq
-        if sPhone!=None:
-            sFreq += " / " + sPhone
-        sFreq += ")"
+        if bVerbose:
+            sFreq = sFreqType[0].upper() + sFreqType[1:].lower() + "(" + sFreq
+            if sPhone!=None:
+                sFreq += " / " + sPhone
+            sFreq += ")"
     return sFreq
 
 class XmlSIA:

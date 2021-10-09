@@ -2,7 +2,7 @@
 *********************************
 #### poaff - Procedure d'intégration des fichiers
 
-	a/ Recupération des fic SIA
+	1/ Recupération des fic SIA
 		https://www.sia.aviation-civile.gouv.fr/produits-numeriques-en-libre-disposition/exports-de-donnees.html
 		Fichiers a placer 
 			Zip a placer ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA\src
@@ -18,75 +18,25 @@
 				a modifier en - <?xml version="1.0" encoding="UTF-8"?>
 			Enregistrer sous ... meme nom avec '_BPa' à la fin
 
-	b/ Récupérer le fic Eurocontrol
-		Se connecter dans mon DRIVE, document partagés - https://drive.google.com/drive/u/1/shared-with-me
-		Récupérer le fichier et le Renommer aux format: 20201008_aixm4.5_Eurocontrol-FR.xml
+	2/ Récupérer le fic Eurocontrol
+		### Procedure de récupération des fichiers ###
+		Demarrer l'application "Cisco AnyConnect Secure Mobility Client"
+			Ouvrir une session sur le 1er VPN - vpn1.ead-it.com  (ou vpn2.ead-it.com)
+		Avec Navigateur Chrome - Aller sur la page d'accueil d'Eurocontrol
+			http://vead03.prod.ead-itp.com:8888/publicuser/public/du/login.do
+			se connecter : EAD: User Name + Password
+			Enregistrer le fichier jnlp
+			Presser sur le bouton de l'application pour executer l'appli Java
+			Ouvrir les fichiers : double clic sur menu 'IFS'
+			Ouverture automatique de la page sous un navigateur ; 
+			puis les fichiers sont dans le dossier '/home/sdo/download/ffvl'
 		Placeer le fic Zip a placer ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\EuCtrl
-		----------------------------------------------------------------------------------------------
-		Le traitement ci-dessous n'est plus nécessaire depuis le fichier '20210225_aixm4.5_Eurocontrol-Euro', Eurocontrol a modifié le plancher/plafond !
-		----------------------------------------------------------------------------------------------
-			Ouvrir le fichier avec Notepad++ (XMLspy plante pour Europe) et appliquer les modifications si nécessaire:
-			Enregistrer sous ... meme nom avec '_BPa' à la fin
-			--> rechercher <AseUid mid="311103234">
-				<!-- Correction BPascal - inversion Upper / Lower -->
-					<codeDistVerUpper>STD</codeDistVerUpper>
-					<valDistVerUpper>195</valDistVerUpper>
-					<uomDistVerUpper>FL</uomDistVerUpper>
-					<codeDistVerLower>HEI</codeDistVerLower>
-					<valDistVerLower>1000</valDistVerLower>
-					<uomDistVerLower>FT</uomDistVerLower>		
-				pour la zone aérienne suivante (Upper et Lower sont inversés):
-				<Ase>
-					<AseUid mid="311103234">
-						<codeType>CLASS</codeType>
-						<codeId>LECP_A</codeId>
-					</AseUid>
-					<txtName>PALMA TMA</txtName>
-					<codeClass>A</codeClass>
-					<codeDistVerUpper>HEI</codeDistVerUpper>
-					<valDistVerUpper>1000</valDistVerUpper>
-					<uomDistVerUpper>FT</uomDistVerUpper>
-					<codeDistVerLower>STD</codeDistVerLower>
-					<valDistVerLower>195</valDistVerLower>
-					<uomDistVerLower>FL</uomDistVerLower>
-					<txtRmk>1000ft AGL/ Upper limit CTR-FL195</txtRmk>
-				</Ase>
-		----------------------------------------------------------------------------------------------
 
 		
-	c/ Récupérer les SUPAIP SIA-FR
-		c1/ Récupérer SUPAIP METROPOLE   (France-Metropolitaine)	(filtrer VFR) - https://www.sia.aviation-civile.gouv.fr/documents/supaip/aip/id/6  - Dernière vérification = 008/2021 - ok au 14/01/2021
-		c2/ Récupérer SUPAIP CAR SAM NAM (Guyane-Fr, Antilles-Fr)	(filtrer VFR) - https://www.sia.aviation-civile.gouv.fr/documents/supaip/aip/id/7  - Dernière vérification = 004/2020 - ok au 14/01/2021
-		c3/ Récupérer SUPAIP PAC N     	 (Nouvelle-Calédonie)		(filtrer VFR) - https://www.sia.aviation-civile.gouv.fr/documents/supaip/aip/id/8  - Dernière vérification = 001/2021 - ok au 14/01/2021
-		c4/ Récupérer SUPAIP PAC P     	 (Polynésie-Fr)				(filtrer VFR) - https://www.sia.aviation-civile.gouv.fr/documents/supaip/aip/id/9  - Dernière vérification = ---/---- - ok au 14/01/2021
-		c5/ Récupérer SUPAIP RUN     	 (Mayotte)					(filtrer VFR) - https://www.sia.aviation-civile.gouv.fr/documents/supaip/aip/id/10 - Dernière vérification = ---/---- - ok au 14/01/2021
-
-		c6/ Post activité
-			- Déplacer tous les SUPAIP dans le dossier - D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\BPa\_SIA_SUP-AIP
-			- Homogeneisation des nommages de fichier. Placer date début/fin d'activation au format: 20210225-20211201_pacn_sup_a_2021_001_fr.pdf (pour un fichier original - pacn_sup_a_2021_001_fr.pdf)
-			- Intégrer les chagements dans le fichier de référence: (Dossier)D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\BPa  (Fichier)20210114_BPa_FR-SIA-SUPAIP_aixm45.xml
-			
-	d/ Contrôle des SUPAIP SIA-FR
-		d1/ Pour chacune des zones aérienne: Vérifier si sa date d'activation n'est pas révolue:
-			Se reporter au contenu du SUPAIP dupliqué ici - <txtRmkWorkHr>Zone temporaire active du 02/04/2020 au 21/04/2021</txtRmkWorkHr>
-			-> Si la date de fin est dépassée ; supprimer cette zone (tag <Ase>) et sa bordure associée (tag <Bdr>)
-			
-		d2/ Pour chacune des zones aérienne encore activable (date de fin pas encore dépassée): Vérifier si la description de l'interval d'activation est toujours valide...
-		Se reporter au contenu du SUPAIP dupliqué ici -
-			<Att>
-				<codeWorkHr>TIMSH</codeWorkHr>
-				<Timsh>
-					<codeTimeRef>UTCW</codeTimeRef>
-					<dateValidWef>01-01</dateValidWef>
-					<dateValidTil>21-04</dateValidTil>
-					<codeDay>ANY</codeDay>
-					<codeDayTil>ANY</codeDayTil>
-					<timeWef>00:00</timeWef>
-					<timeTil>23:59</timeTil>
-				</Timsh>
-			</Att>
+	3/ Récupérer les SUPAIP SIA-FR
+		Suivre fichier -> D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA\_SIA_SUP-AIP\___Suivi-des-SUPAIP.txt
 		
-		d3/ faire autres contrôles...
+		
 	
 	
 	

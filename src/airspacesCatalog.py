@@ -417,7 +417,7 @@ class AsCatalog:
             ### fin - Protocoles FFVL ou FFVP
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Français (geoFrench*)
-            if oAs["id"] in ["LFST3","LECM C","LEBL","LEBL_C","LEBL_D","LEBL_G","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
+            if oAs["id"] in ["LESO", "LFST3","LECM C","LEBL","LEBL_C","LEBL_D","LEBL_G","LECBFIR_E","LECMFIR_E","LICTAMM4","LICTAMM7","LIR64","LSR24","LSAG","LSR23",
                   "LSR21","LSGG5","LSAZ","LSR81","LSR80","LSR26","LSR28","LSR27","EUC25SL1","EUC25SL2","LSR29","LFSB22C","LFSB80","LFSB24D",
                   "LFSB85","LFSB02S","LSR75_2","LSR75_1","LFSB1S","LFSB3","LFSB2","LFSB17D","LFSB17C","LFSB30.20","LFSB30","LFSB16D","LFSB16C",
                   "LFSB20","LFSB01A","LFSB01S","LFSB01D1","LFSB1D1","LFSB03S2","LFSB03S","LFSB03S1","LFSB04S","LFSB20.20","LFSB15C","LFSBNORD",
@@ -426,7 +426,7 @@ class AsCatalog:
                   "EBD26","EBS161","ELLX5","EBSOUTH3","EBHTA06","EBHTA04A","EBFS","EBS02","EBS30","EBHTA10D","EBS182","LFQQ2","EBHTA10C",
                   "EBKT TMZ","EBKT RMZ","EBR25","EBHTA10A","EBOS1","EBLFA11","EBR24B","ETXUTE","LFST30","ELLX2F1","ELLX2F2",
                   "EDCLCN","LFSBDLN","LFSBCLDSE","LFSB21L.20","LFSBDLSE","LFSBCLDSW1","LFSB22L.20","LFSBDLSW1","LFSB01AN.2",
-                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","EBS87","LICTAMM18","EBTRA SA","EBTRA15","EBTSA15","EBTRA WC","EBTRA WA","EBTSA27A","EBTSA27D","EBTSA27E"]:
+                  "EGJA-2","EGJJS","EGJJ", "EGJJ1","EBS87","LICTAMM18","EBTRA SA","EBTRAW", "EBTRA15","EBTSA15","EBTRA WC","EBTRA WA","EBTSA27A","EBTSA27D","EBTSA27E"]:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire: geoFrenchNESW (supprimer les LTA Pyrénées, trop lourdes pour la mémoire des Flymaster)
@@ -503,7 +503,7 @@ class AsCatalog:
             #    oAs.update({"ExtOfIreland":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Italy / Italie (geoItaly)
-            if oAs["id"] in ["LTA130736","LTA130736.","LTA130735","LTA130735.","LTA130731","LFR221A","LFR19630","LFR19610","LFR196A2","LFMN14","LFMN13","LFR30B",
+            if oAs["id"] in ["LTA130736","LTA130736.","LTA130735","LTA130735.","LTA130731","LFR221A","LFR19630","LFR19610","LFR196A2","LFMN14","LFMN13","LFR30B","LFR30C",
                   "LSAG","LSR24","LSR32","LSAZ","LSZL6","LSR62","LSR54","LSR55","LS-R11A","LSR56","LOCE","LJDT","LJDT2_D","LJDO1_D","LJDO",
                   "LJPZ","LJPZ"]:
                 oAs.update({"ExtOfItaly":True})       #Exclusion volontaire sur base de l'Id
@@ -561,10 +561,11 @@ class AsCatalog:
                 oAs.update({"ExtOfSpain":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: Switzerland / Suisse (geoSwitzerland)
-            if oAs["id"] in ["TMA161645","LFR158A","EUC25FE","LFSB07","LFSB04F","LFSB03F","LFSB02F","LFSB1","LFSB01F","LFSB18D","LFSB18C","LFSB40",
-                  "LFSB40.20","LFSB02D","LFSB02A","LFSB01D2","LFSB1D2","LFSB01A","LFSB2","LFSB01D1","LFSB1D1","LSZH9","EDNYTMZA","EDNY1","LOCE",
-                  "LOR18","LICTAMM1","LITMAMM5","LTA130736.","LFR30B","LTA130737","LTA130737.","LTA130736","LICTAMM18","EDCLCN","LFSB07F",
-                  "LFSB1FS","LFSB01"]:
+            if oAs["id"] in ["LFSBCLD01S","17.20","LFSBCLD01S","LFSB4D","LFSB4","LFSBDZZ1D","LFSB30Z.20","LFSBCLDAZ1","LFSBCLD02","LFSBCLD02","LFSBDZZ2D",
+                  "LFSB32Z.20","LFSBCLDAZ2","LFSBDZZ3DS","TMA16167","LFSBDLSW2D","LFSB23L.20","LFSBCLDSW2","LFSB01AN.2","LFSBCLD01N","LFSBCLD01N","LFSB2D",
+                  "TMA161645","LFR158A","EUC25FE","LFSB07","LFSB04F","LFSB03F","LFSB02F","LFSB1","LFSB01F","LFSB18D","LFSB18C","LFSB40","LFSB40.20","LFSB02D",
+                  "LFSB02A","LFSB01D2","LFSB1D2","LFSB01A","LFSB2","LFSB01D1","LFSB1D1","LSZH9","EDNYTMZA","EDNY1","LOCE","LOR18","LICTAMM1","LITMAMM5",
+                  "LTA130736.","LFR30B","LTA130737","LTA130737.","LTA130736","LICTAMM18","EDCLCN","LFSB07F","LFSB1FS","LFSB01"]:
                 oAs.update({"ExtOfSwitzerland":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones des territoires: United-Kingdom / Royaume-Uni (geoUnitedKingdom)
