@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<!--<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" created="2019-11-20T10:43:01.141+01:00" origin="Sia-France" version="4.5" effective="2019-12-05T00:00:00.000+01:00">
+-->
+<AIXM-Snapshot created="2020-03-18T17:50:01.141+01:00" origin="BPa" version="4.5" effective="2019-12-05T00:00:00.000+01:00">
+	<Ase>
+		<AseUid mid="1561477">
+			<codeType>TMA</codeType>
+			<codeId>TMA4347</codeId>
+		</AseUid>
+		<txtName>SAINT PIERRE</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>6000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>700</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HO</codeWorkHr>
+		</Att>
+		<txtRmk>SUM : from 2nd SUN MAR to 1st SUN NOV excluded#MON-SAT: 1000-2000#SUN: 1700-2000#WIN : from 1st SUN NOV to 2nd SUN MAR excluded#MON-SAT: 1100-2100#SUN: 1800-2100#Outside these SKED, ATS by GANDER ACC.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="1564397">
+			<codeType>TMA</codeType>
+			<codeId>TFFF1</codeId>
+		</AseUid>
+		<txtName>MARTINIQUE 1</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>105</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>1500</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="1562531">
+			<codeType>CTR</codeType>
+			<codeId>CTR4676</codeId>
+		</AseUid>
+		<txtName>JULIANA</txtName>
+		<codeClass>C</codeClass>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>55</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HO</codeWorkHr>
+			<txtRmkWorkHr>HOR ATS : 1100 - 0100</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="1560371">
+			<codeType>TMA</codeType>
+			<codeId>TFFR</codeId>
+		</AseUid>
+		<txtName>POINTE A PITRE</txtName>
+	</Ase>
+	<Ase>
+		<AseUid mid="1561473">
+			<codeType>TMA</codeType>
+			<codeId>TFFR1</codeId>
+		</AseUid>
+		<txtName>POINTE A PITRE 1</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>105</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>ALT</codeDistVerLower>
+		<valDistVerLower>2500</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<codeDistVerMnm>HEI</codeDistVerMnm>
+		<valDistVerMnm>1000</valDistVerMnm>
+		<uomDistVerMnm>FT</uomDistVerMnm>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="1561163">
+			<codeType>D</codeType>
+			<codeId>SO1</codeId>
+		</AseUid>
+		<txtName>1</txtName>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>999</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HX</codeWorkHr>
+			<txtRmkWorkHr>By NOTAM</txtRmkWorkHr>
+		</Att>
+		<txtRmk>(GUYANA)#
+Penetration prohibited during activity.#
+Activity known on : CAYENNE ACC.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="1561155">
+			<codeType>P</codeType>
+			<codeId>SO3</codeId>
+		</AseUid>
+		<txtName>3</txtName>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>245</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+			<txtRmkWorkHr>H24</txtRmkWorkHr>
+		</Att>
+		<txtRmk>(GUYANA)#
+Managing authority : CCM CALYPSO RADAR 122.1 MHz.#
+Entry prohibited.#
+Possible live firing air/sea within the sector of "les battures de Malmanoury".</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="1561401">
+			<codeType>CTR</codeType>
+			<codeId>LFAQ</codeId>
+		</AseUid>
+		<txtName>ALBERT BRAY</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTC</codeTimeRef>
+				<dateValidWef>EDLST</dateValidWef>
+				<dateValidTil>SDLST</dateValidTil>
+				<codeDay>SAT</codeDay>
+				<codeDayTil>SAT</codeDayTil>
+				<timeWef>08:30</timeWef>
+				<timeTil>16:00</timeTil>
+			</Timsh>
+			<Timsh>
+				<codeTimeRef>UTC</codeTimeRef>
+				<dateValidWef>SDLST</dateValidWef>
+				<dateValidTil>EDLST</dateValidTil>
+				<codeDay>SAT</codeDay>
+				<codeDayTil>SAT</codeDayTil>
+				<timeWef>07:30</timeWef>
+				<timeTil>16:00</timeTil>
+			</Timsh>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-12</dateValidTil>
+				<codeDay>WD</codeDay>
+				<codeDayTil>WD</codeDayTil>
+				<timeWef>08:00</timeWef>
+				<timeTil>18:00</timeTil>
+			</Timsh>
+			<txtRmkWorkHr>WIN :#MON-FRI : 0800-1800#SAT : 0830-1600
+#SUM:- #MON-FRI : 0700-1700#SAT : 0730-1600#SUN and public HOL : not provided</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Outside these SKED, PPR last working day before 1300 to AD operator.#Users information on request through ALBERT TWR or LILLE APP.</txtRmk>
+	</Ase>
+    <Ase>
+        <AseUid mid="1561449">
+            <codeType>CTR</codeType>
+            <codeId>LFMU1</codeId>
+        </AseUid>
+        <txtName>BEZIERS 1</txtName>
+        <codeClass>D</codeClass>
+        <codeDistVerUpper>ALT</codeDistVerUpper>
+        <valDistVerUpper>1500</valDistVerUpper>
+        <uomDistVerUpper>FT</uomDistVerUpper>
+        <codeDistVerLower>HEI</codeDistVerLower>
+        <valDistVerLower>0</valDistVerLower>
+        <uomDistVerLower>FT</uomDistVerLower>
+        <Att>
+            <codeWorkHr>NOTAM</codeWorkHr>
+            <txtRmkWorkHr>See NOTAM</txtRmkWorkHr>
+        </Att>
+        <txtRmk>SKED extension known on : BEZIERS TWR and announced on ATIS BEZIERS</txtRmk>
+    </Ase>	
+	
+	
+	
+	
+	<Abd>
+		<AbdUid mid="1568614">
+			<AseUid mid="1561477">
+				<codeType>TMA</codeType>
+				<codeId>TMA4347</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>CCA</codeType>
+			<geoLat>472002.00N</geoLat>
+			<geoLong>0555755.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>464615.00N</geoLatArc>
+			<geoLongArc>0561114.00W</geoLongArc>
+			<valRadiusArc>35</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>464000.00N</geoLat>
+			<geoLong>0552111.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>CCA</codeType>
+			<geoLat>464431.00N</geoLat>
+			<geoLong>0555707.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>464615.00N</geoLatArc>
+			<geoLongArc>0561114.00W</geoLongArc>
+			<valRadiusArc>10</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>465545.00N</geoLat>
+			<geoLong>0560731.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1570192">
+			<AseUid mid="1564397">
+				<codeType>TMA</codeType>
+				<codeId>TFFF1</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>140641.00N</geoLat>
+			<geoLong>0612005.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>142826.00N</geoLat>
+			<geoLong>0612628.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>143527.00N</geoLatArc>
+			<geoLongArc>0610122.00W</geoLongArc>
+			<valRadiusArc>25</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>141853.00N</geoLat>
+			<geoLong>0604131.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>141036.00N</geoLat>
+			<geoLong>0604944.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>141300.00N</geoLat>
+			<geoLong>0605200.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1570008">
+			<AseUid mid="1562531">
+				<codeType>CTR</codeType>
+				<codeId>CTR4676</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>RHL</codeType>
+			<geoLat>180900.00N</geoLat>
+			<geoLong>0631527.74W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>180900.00N</geoLat>
+			<geoLong>0625318.07W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>175910.00N</geoLat>
+			<geoLong>0625645.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>180227.00N</geoLatArc>
+			<geoLongArc>0630634.00W</geoLongArc>
+			<valRadiusArc>10</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>180535.00N</geoLat>
+			<geoLong>0631641.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1568602">
+			<AseUid mid="1561473">
+				<codeType>TMA</codeType>
+				<codeId>TFFR1</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>172500.00N</geoLat>
+			<geoLong>0604600.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>164810.00N</geoLat>
+			<geoLong>0603210.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>160240.00N</geoLat>
+			<geoLong>0611650.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>161554.70N</geoLatArc>
+			<geoLongArc>0613224.50W</geoLongArc>
+			<valRadiusArc>20</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>155550.00N</geoLat>
+			<geoLong>0613157.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>163000.00N</geoLat>
+			<geoLong>0622330.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>165000.00N</geoLat>
+			<geoLong>0611500.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1568714">
+			<AseUid mid="1561163">
+				<codeType>D</codeType>
+				<codeId>SO1</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>051425.00N</geoLat>
+			<geoLong>0524607.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>052203.00N</geoLat>
+			<geoLong>0525344.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>062944.00N</geoLat>
+			<geoLong>0532953.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>051425.00N</geoLatArc>
+			<geoLongArc>0524607.00W</geoLongArc>
+			<valRadiusArc>87</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>064125.00N</geoLat>
+			<geoLong>0524606.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1568676">
+			<AseUid mid="1561155">
+				<codeType>P</codeType>
+				<codeId>SO3</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>050630.00N</geoLat>
+			<geoLong>0523140.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>045930.00N</geoLat>
+			<geoLong>0523614.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>051330.00N</geoLat>
+			<geoLong>0530100.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>051815.00N</geoLatArc>
+			<geoLongArc>0525005.00W</geoLongArc>
+			<valRadiusArc>11.5</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>053000.00N</geoLat>
+			<geoLong>0525200.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>051635.00N</geoLat>
+			<geoLong>0523520.00W</geoLong>
+			<codeDatum>WGE</codeDatum>
+		</Avx>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1568888">
+			<AseUid mid="1561401">
+				<codeType>CTR</codeType>
+				<codeId>LFAQ</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>500318N</geoLat>
+			<geoLong>0024309E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>495819N</geoLatArc>
+			<geoLongArc>0024347E</geoLongArc>
+			<valRadiusArc>5</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+			<valCrc>AA313C4D</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>495320N</geoLat>
+			<geoLong>0024423E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>99995C0B</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>495303N</geoLat>
+			<geoLong>0023852E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>495802N</geoLatArc>
+			<geoLongArc>0023815E</geoLongArc>
+			<valRadiusArc>5</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+			<valCrc>3C96B2F7</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>500137N</geoLat>
+			<geoLong>0023250E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>C5C46DAD</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>500148N</geoLat>
+			<geoLong>0023358E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>04FA2432</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>500223N</geoLat>
+			<geoLong>0023427E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>495802N</geoLatArc>
+			<geoLongArc>0023815E</geoLongArc>
+			<valRadiusArc>5</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+			<valCrc>0933A8D7</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>500300N</geoLat>
+			<geoLong>0023736E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>3824EB41</valCrc>
+		</Avx>
+	</Abd>
+    <Abd>
+        <AbdUid mid="1568684">
+            <AseUid mid="1561449">
+                <codeType>CTR</codeType>
+                <codeId>LFMU1</codeId>
+            </AseUid>
+        </AbdUid>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>432624.00N</geoLat>
+            <geoLong>0032112.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>432623.00N</geoLat>
+            <geoLong>0033256.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>431919.00N</geoLat>
+            <geoLong>0033343.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>431617.00N</geoLat>
+            <geoLong>0033040.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>431632.00N</geoLat>
+            <geoLong>0032802.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>431726.00N</geoLat>
+            <geoLong>0032541.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>CWA</codeType>
+            <geoLat>431654.00N</geoLat>
+            <geoLong>0031213.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+            <geoLatArc>431924.00N</geoLatArc>
+            <geoLongArc>0032112.00E</geoLongArc>
+            <valRadiusArc>7</valRadiusArc>
+            <uomRadiusArc>NM</uomRadiusArc>
+        </Avx>
+    </Abd>	
+	
+	
+	<Adg>
+		<AdgUid>
+			<AseUid mid="1560371">
+				<codeType>TMA</codeType>
+				<codeId>TFFR</codeId>
+			</AseUid>
+		</AdgUid>
+		<AseUidBase mid="1561473">
+			<codeType>TMA</codeType>
+			<codeId>TFFR1</codeId>
+		</AseUidBase>
+		<codeOpr>UNION</codeOpr>
+		<AseUidComponent mid="1561469">
+			<codeType>TMA</codeType>
+			<codeId>TFFR2</codeId>
+		</AseUidComponent>
+		<codeOpr>UNION</codeOpr>
+		<AseUidComponent mid="1561467">
+			<codeType>TMA</codeType>
+			<codeId>TFFR3</codeId>
+		</AseUidComponent>
+		<codeOpr>UNION</codeOpr>
+		<AseUidComponent mid="1561463">
+			<codeType>TMA</codeType>
+			<codeId>TFFR4</codeId>
+		</AseUidComponent>
+	</Adg>
+</AIXM-Snapshot>

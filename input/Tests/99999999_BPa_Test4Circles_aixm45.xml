@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<!--<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" created="2019-11-20T10:43:01.141+01:00" origin="Sia-France" version="4.5" effective="2019-12-05T00:00:00.000+01:00">
+-->
+<AIXM-Snapshot created="2020-03-18T17:50:01.141+01:00" origin="BPa" version="4.5" effective="2019-12-05T00:00:00.000+01:00">
+	<Ase>
+		<AseUid mid="1613148-tst">
+			<codeType>R</codeType>
+			<codeId>LFR506A</codeId>
+		</AseUid>
+		<txtName>506 A</txtName>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>115</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>ALT</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+	</Ase>
+	<Ase>
+		<AseUid mid="1613148-1">
+			<codeType>R</codeType>
+			<codeId>LFR506A</codeId>
+		</AseUid>
+		<txtName>506 A</txtName>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>3500</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>500</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+	</Ase>
+	<Ase>
+		<AseUid mid="1613148-2">
+			<codeType>R</codeType>
+			<codeId>LFR506A</codeId>
+		</AseUid>
+		<txtName>506 A</txtName>
+		<codeDistVerUpper>STD</codeDistVerUpper>
+		<valDistVerUpper>75</valDistVerUpper>
+		<uomDistVerUpper>FL</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>1000</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+	</Ase>
+	<Ase>
+		<AseUid mid="17782506">
+			<codeType>R</codeType>
+			<codeId>LFR239</codeId>
+		</AseUid>
+		<txtName>239</txtName>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>5000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>5000</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+	</Ase>
+	<Ase>
+		<AseUid mid="13555652">
+			<codeType>R</codeType>
+			<codeId>LFR278</codeId>
+		</AseUid>
+		<txtName>278</txtName>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>2500</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>500</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+	</Ase>
+	<Ase>
+		<AseUid mid="13555652-2">
+			<codeType>R</codeType>
+			<codeId>LFR278</codeId>
+		</AseUid>
+		<txtName>278</txtName>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>2500</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>500</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+	</Ase>
+	<Abd>
+		<AbdUid mid="1613322">
+			<AseUid mid="1613148-tst">
+				<codeType>R</codeType>
+				<codeId>LFR506A</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>475710.00N</geoLatCen>
+			<geoLongCen>0000000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>0.3</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>0E7C2798</valCrc>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1613322">
+			<AseUid mid="1613148-1">
+				<codeType>R</codeType>
+				<codeId>LFR506A</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>475710.00N</geoLatCen>
+			<geoLongCen>0010000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>0.8</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>0E7C2798</valCrc>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1613322">
+			<AseUid mid="1613148-2">
+				<codeType>R</codeType>
+				<codeId>LFR506A</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>475710.00N</geoLatCen>
+			<geoLongCen>0020000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>5</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>0E7C2798</valCrc>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="17782508">
+			<AseUid mid="17782506">
+				<codeType>R</codeType>
+				<codeId>LFR239</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>475710.00N</geoLatCen>
+			<geoLongCen>0034000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>20</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>03CA3F5B</valCrc>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1573762">
+			<AseUid mid="13555652">
+				<codeType>R</codeType>
+				<codeId>LFR278</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>475710.00N</geoLatCen>
+			<geoLongCen>0060000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>50</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>057F252C</valCrc>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1573762">
+			<AseUid mid="13555652-2">
+				<codeType>R</codeType>
+				<codeId>LFR278</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>475710.00N</geoLatCen>
+			<geoLongCen>0080000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>100</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>057F252C</valCrc>
+		</Circle>
+	</Abd>
+</AIXM-Snapshot>

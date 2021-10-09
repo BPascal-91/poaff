@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" version="4.5" effective="2020-12-31T00:00:00" origin="EAD-SDO" created="2020-12-31T00:00:00">
+	<Ase>
+		<AseUid mid="101002322787959">
+			<codeType>AWY</codeType>
+			<codeId>LDL1</codeId>
+		</AseUid>
+		<txtName>CORRIDOR L-1</txtName>
+		<codeMil>MIL</codeMil>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>1000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>NOTAM</codeWorkHr>
+			<txtRmkWorkHr>Activation time is promulgated by NOTAM, and could also be obtained from Zadar APP;FREQ: 128.525 MHZTEL: +385 23 203428</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Information on activation is promulgated by NOTAM.Low level military flight corridors and training areas activation shall be strictly authorized by Minister of Defence, in accordance with the Aviation Act and other respective regulations.</txtRmk>
+	</Ase>
+	<Acr>
+		<AcrUid mid="101002322787959">
+			<AseUid mid="101002322787959">
+				<codeType>AWY</codeType>
+				<codeId>LDL1</codeId>
+			</AseUid>
+		</AcrUid>
+		<valWidth>3</valWidth>
+		<uomWidth>NM</uomWidth>
+		<txtRmk>LOW LEVEL MILITARY FLIGHT CORRIDOR AND TRAINING AREA</txtRmk>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>442632N</geoLat>
+			<geoLong>0150307E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>F7A3C67B</valCrc>
+			<txtRmk>PAG 1</txtRmk>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>441717N</geoLat>
+			<geoLong>0144215E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>C118E89E</valCrc>
+			<txtRmk>Ot. SKARDA</txtRmk>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>434124N</geoLat>
+			<geoLong>0153049E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>A07E7827</valCrc>
+			<txtRmk>Ot. KURBA VELA</txtRmk>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>434847N</geoLat>
+			<geoLong>0153539E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>09A0429E</valCrc>
+			<txtRmk>MURTER</txtRmk>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>440901N</geoLat>
+			<geoLong>0145958E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>2D12F9E0</valCrc>
+			<txtRmk>Ot. SESTRUNJ</txtRmk>
+		</Avx>
+		<Avx>
+			<codeType>END</codeType>
+			<geoLat>442633N</geoLat>
+			<geoLong>0150308E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>4CF04E0D</valCrc>
+			<txtRmk>PAG 2</txtRmk>
+		</Avx>
+	</Acr>
+</AIXM-Snapshot>
