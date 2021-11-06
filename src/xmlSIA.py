@@ -2,10 +2,14 @@
 
 import json
 from bs4 import BeautifulSoup
+import re
 import bpaTools
 import aixmReader
 
 cstFreqTypePriority:list = ["APP","TWR","FIS","AFIS","ATIS"]  #Priorisation des typologies de fréquence radio
+cstMhz:str = "Mhz"
+cstNameV:str = "nameV"
+cstDesc:str = "desc"
 
 def getMasterFrequecy(oFreqs:dict, sTypeZone:str="", bVerbose:bool=False) -> str:
     sFreqType:str = "xxx"
@@ -106,10 +110,15 @@ class XmlSIA:
             #Complement de recherche pour extension de zone
             #Exp: LFBD + LFBD1-1 + LFBD1-2 + LFBD2-1 + LFBD2-2 ../.. + LFBD7 + LFBD7.10 + LFBD7.20 + ../.. + LFBD10
             #Exp: LFLC + LFLC1 + LFLC1.20 + LFLC2.1 + LFLC2.1.20
-            #Warning! des '-', des '.' ou des '0' finaux commes LFBD7.10 et LFBD7.20
+            #Warning! des '-', des '.' mais aussi des '0' en début commes LFLL08.1 ; LFLL09.21 ou en finaux comme LFBD7.10 et LFBD7.20
             for lIdx1 in range(1, 20):
                 #Ajout indice sur clé locale pour localiser les extentions des zone
-                sGUID1:str = sGUID + str(lIdx1)
+                sGUID1:str = sGUID + str(lIdx1)                         #Ex: LFLC1
+                self.affecFrequecies(oCat, sGUID1, oNewFrequencies)
+                self.syncGUIDdoublons(oCat, sGUID1, oNewFrequencies)
+                self.syncGUID0(oCat, sGUID1, oNewFrequencies, "-")
+                self.syncGUID0(oCat, sGUID1, oNewFrequencies, ".")
+                sGUID1:str = sGUID + "0" + str(lIdx1)                   #Ex: LFLL08
                 self.affecFrequecies(oCat, sGUID1, oNewFrequencies)
                 self.syncGUIDdoublons(oCat, sGUID1, oNewFrequencies)
                 self.syncGUID0(oCat, sGUID1, oNewFrequencies, "-")
@@ -124,13 +133,13 @@ class XmlSIA:
     #Complement de recherche pour déboublonnage de zone
     def syncGUIDdoublons(self, oCat:dict, sGUID:str, oNewFrequencies) -> None:
         for lIdx in range(1, 10):
-            sGUID0:str = sGUID + "@@-" + str(lIdx)     #Ajout indice de déblonnage de clé locale
+            sGUID0:str = sGUID + "@@-" + str(lIdx)          #Ajout indice de déblonnage de clé locale
             self.affecFrequecies(oCat, sGUID0, oNewFrequencies)
         return
 
     #Ajout indice sur clé locale pour localiser les extentions des zone
     def syncGUID0(self, oCat:dict, sGUID:str, oNewFrequencies, sSep:str) -> None:
-        for lIdx in range(1, 20):
+        for lIdx in range(1, 30):
             sGUID0:str = sGUID + sSep + str(lIdx)
             self.affecFrequecies(oCat, sGUID0, oNewFrequencies)
             self.syncGUID1(oCat, sGUID0, oNewFrequencies, "-")
@@ -141,7 +150,7 @@ class XmlSIA:
 
     #Ajout indice sur clé locale pour localiser les extentions des zone
     def syncGUID1(self, oCat:dict, sGUID:str, oNewFrequencies, sSep:str) -> None:
-        for lIdx in range(1, 20):
+        for lIdx in range(1, 30):
             sGUID0:str = sGUID + sSep + str(lIdx)
             self.affecFrequecies(oCat, sGUID0, oNewFrequencies)
             sGUID0 += "0"
@@ -151,8 +160,8 @@ class XmlSIA:
     def affecFrequecies(self, oCat:dict, sGUID:str, oNewFrequencies) -> None:
         if sGUID in oCat:       #test de présence
             oAs = oCat[sGUID]
-            oAs.update({"Mhz":oNewFrequencies})
-            oAs.update({"nameV":aixmReader.getVerboseName(oAs)})
+            oAs.update({cstMhz:oNewFrequencies})
+            oAs.update({cstNameV:aixmReader.getVerboseName(oAs)})
             #Data Quality Control
             #if "desc" in oAs:
             #    sDesc = oAs["desc"]
@@ -198,7 +207,7 @@ class XmlSIA:
             idx+=1
             if len(o)>1:                                            #Exclure les tags interne de type '<Frequence>360.125</Frequence>'
                 sFreq = o.Frequence.string
-                if (float(sFreq)>=118) and (float(sFreq)<=136):
+                if (float(sFreq)>=118) and (float(sFreq)<=137):
                     sLocKey:str = o["lk"]                           #lk="[LF][RK][TWR CAEN Tour][134.525]
                     sLocKey = sLocKey.replace("[", "")
                     aLocKey:list = sLocKey.split("]")
@@ -206,7 +215,7 @@ class XmlSIA:
                         sAsKey:str = aLocKey[0] + aLocKey[1]        #AirspaceKey  = 'LFRK'
                         aFreqKey:list = aLocKey[2].split(" ")
                         sFreqKey:str = aFreqKey[0]                  #FrequenceKey = 'TWR','APP' etc...
-                        bExclude:bool = bool(sFreqKey in ["VDF","UAC","UTA","SRE","CEV","PAR"])   #Exclure certains typage de fréquences
+                        bExclude:bool = bool(sFreqKey in ["VDF","UAC","UTA","SRE","CEV","PAR","A/A"])   #Exclure certains typage de fréquences
                         if not bExclude and o.Remarque:     #Exclure certaines fréquences non utiles
                             sRem:str = o.Remarque.string
                             bExclude = bExclude or ("ur instruction" in sRem.lower())   #'Sur instruction ../..' ou 'FREQ sur instruction' etc...
@@ -284,4 +293,53 @@ class XmlSIA:
                 elif sRet and (not sChar in [" ","."]):
                     break
         return sRet
+
+
+    #Recherche l'éventuel présence d'information concernant des fréquences Radio dans le nommage de la zone ou dans sa description
+    def findFrequecies(self, oCat:dict) -> None:
+        sTitle = "Airspaces frequencies"
+        sMsg = "Complementary Find {0}".format(sTitle)
+        self.oLog.info(sMsg)
+        barre = bpaTools.ProgressBar(len(oCat), 20, title=sMsg)
+        idx = 0
+        #Analyse de toutes les zones aérienne
+        for oZone in oCat.items():
+            oProps:dict = oZone[1]
+            #Au moins 1 fréquence embarquée via le fichier XML du SIA; ne pas analyser les contenus textuels...
+            if cstMhz in oProps:
+                continue
+
+            #Règle de base : Ne rechercher que les Fréquences >=118 and <=137
+            reFind = re.compile("1[1-3][0-9]\.[0-9][0-9]?[0-9]?")       #Pattern pour limiter l'intervale de 110.0[00] à 139.0[00]
+            #Sample of oFreqList = {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
+
+            #Recherche de fréquences dans le nommage de la zone
+            oFreqs:list = reFind.findall(oProps[cstNameV])
+            if len(oFreqs)>0:
+                oFreqList:dict = {}
+                for sFreq in oFreqs:
+                    sFreqKey:str = "APP"
+                    if len(oFreqList)>0:
+                        sFreqKey += str(len(oFreqList))
+                    oFreqList.update({sFreqKey:[sFreq]})
+                oProps.update({cstMhz:oFreqList})
+                #oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})    #Ne pas remettre a jour le nommage !
+                continue
+
+            #Recherche de fréquences dans la description de la zone
+            if cstDesc in oProps:
+                oFreqs:list = reFind.findall(oProps[cstDesc])
+                if len(oFreqs)>0:
+                    oFreqList:dict = {}
+                    for sFreq in oFreqs:
+                        sFreqKey:str = "APP"
+                        if len(oFreqList)>0:
+                            sFreqKey += str(len(oFreqList))
+                        oFreqList.update({sFreqKey:[sFreq]})
+                    oProps.update({cstMhz:oFreqList})
+                    oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})     #Reformater le nommage de la zone
+
+            barre.update(idx)
+        barre.reset()
+        return
 

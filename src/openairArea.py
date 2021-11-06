@@ -351,7 +351,7 @@ class OpenairArea:
         elif aLine[0] in ["*AAlt","*ADescr","*AActiv","*AExSAT","*AExSUN","*AExHOL", "*ASeeNOTAM"]:
             return    #Pas besoin de récupération ; déjà en catalogue
 
-        elif aLine[0] in ["SP","SB","AT","AY"]:
+        elif aLine[0] in ["SP","SB","AT","AY","AF","AR"]:
             return    #Pas besoin de récupération...
 
         elif srcLine[0:len(openairAixmHeader)] == openairAixmHeader:
