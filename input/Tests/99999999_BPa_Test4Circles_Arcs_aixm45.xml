@@ -32,8 +32,8 @@
       <codeId> </codeId>
     </AseUid>
     <txtName>Cercle anti-horaire</txtName>
-    <codeActivity>PARAGLIDER</codeActivity>
     <codeClass>FFVL</codeClass>
+    <codeActivity>PARAGLIDER</codeActivity>
     <codeDistVerUpper>HEI</codeDistVerUpper>
     <valDistVerUpper>500</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -50,8 +50,8 @@
       <Mhz>{"TWR": ["118.450"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVL-Prot LE TOUQUET</txtName>
-    <codeActivity>PARAGLIDER</codeActivity>
     <codeClass>FFVL</codeClass>
+    <codeActivity>PARAGLIDER</codeActivity>
     <codeDistVerUpper>HEI</codeDistVerUpper>
     <valDistVerUpper>1000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -82,8 +82,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ WHISKEY 1</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -105,8 +105,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ WHISKEY 3</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -128,8 +128,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ WHISKEY 4</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -151,8 +151,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ WHISKEY 5</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -174,8 +174,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ WHISKEY 6</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -197,8 +197,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ ECHO 1</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -220,8 +220,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ ECHO 2</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -243,8 +243,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ ECHO 3</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -266,8 +266,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ ECHO 4</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>
@@ -289,8 +289,8 @@
       <Mhz>{"APP": ["122.550 puis 122.500"], "APP1": ["122.550"], "APP2": ["122.500"]}</Mhz>
     </PoaffAdding>
     <txtName>FFVP-Prot RMZ ECHO 5</txtName>
-    <codeActivity>GLIDER</codeActivity>
     <codeClass>FFVP</codeClass>
+    <codeActivity>GLIDER</codeActivity>
     <codeDistVerUpper>ALT</codeDistVerUpper>
     <valDistVerUpper>4000</valDistVerUpper>
     <uomDistVerUpper>FT</uomDistVerUpper>

@@ -33,7 +33,7 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 	<Ase>
 		<AseUid mid="zone-2">
 			<codeType>ZSM</codeType>
-			<codeId>LFSX9.2</codeId>
+			<codeId>LFSX09.21</codeId>
 		</AseUid>
 		<txtName>Test-Zone2 (sans plafond)</txtName>
 		<codeDistVerLower>ALT</codeDistVerLower>
@@ -53,7 +53,7 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 			<codeId>Test1</codeId>
 		</AseUid>
 		<txtLocalType>TMZ</txtLocalType>
-		<txtName>Test1</txtName>
+		<txtName>Test1 App(118.000)</txtName>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
 		<uomDistVerUpper>FT</uomDistVerUpper>
@@ -83,7 +83,7 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 			<codeWorkHr>H24</codeWorkHr>
 			<txtRmkWorkHr>H24</txtRmkWorkHr>
 		</Att>
-		<txtRmk>Administrator: NIL.#Avoidance mandatory except for exemption granted by the prefect of la Manche, after West DSAC consultation.</txtRmk>
+		<txtRmk>Avoidance mandatory during activity except for ACFT to and from Brienne le Château AD, helicopter to and from Blignicourt heliport and aircraft for air dropping after radio contact on 123.425 MHz.#Activation known on:# PARIS INFO: 126.1 MHz# SEINE INFO: 120.325 MHz#SAINT DIZIER APP: 134.775#PARIS ACC: 120.950 MHz.</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test3">
