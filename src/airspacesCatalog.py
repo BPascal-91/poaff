@@ -598,7 +598,7 @@ class AsCatalog:
 
         #Fonctionnalité d'Exclusion volontaire de certaines zones de protection d'oiseaux
         if sKeyFile=="BPa-ZonesComp":
-            if oAs["id"] in ["CdR-Neige"]:
+            if oAs["id"] in ["LFRoseland-Neige"]:
                 oAs.update({"ExtOfPWCFrenchAlps":True})       #Exclusion volontaire sur base de l'Id
 
         #Fonctionnalité spécifique pour exclusion standard et intégratrion spécifique pour la CFD

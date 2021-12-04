@@ -120,7 +120,7 @@ class GeojsonArea:
                 bIsArea = oGlobalCat.get("geoFrenchAll", False)        #Filtrage sur la totalité des territoires Français
 
             #Maintenir ou Supprimer la LTA-France1 (originale ou spécifique) des cartes non-concernées par le territoire Français --> [D] LTA FRANCE 1 (Id=LTA13071) [FL115-FL195]
-            elif oGlobalCat["id"] in ["LTA13071","BpFrenchSS"]:
+            elif oGlobalCat["id"] in ["LTA13071","LFBpaFrenchSS"]:
                 if not sAreaKey in [None, "geoFrench","geoFrenchAll"]:
                     bIsArea = False
 

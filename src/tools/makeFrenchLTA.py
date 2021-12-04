@@ -97,7 +97,7 @@ if __name__ == '__main__':
     sNewFrenchSurfaceS += "\n"
     sNewFrenchSurfaceS += oFrenchSurfaceS.sClass + "\n"
     sNewFrenchSurfaceS += "AN LTA FRANCE 1 [BPa - 'Surface S' en France]" + "\n"
-    sNewFrenchSurfaceS += "*AUID GUId=! UId=! Id=BpFrenchSS" + "\n"
+    sNewFrenchSurfaceS += "*AUID GUId=! UId=! Id=LFBpaFrenchSS" + "\n"
     sNewFrenchSurfaceS += "*ADescr " + sDescription + "\n"
     sNewFrenchSurfaceS += "*AActiv [H24]" + "\n"
     sNewFrenchSurfaceS += oFrenchSurfaceS.sUpper + "\n"

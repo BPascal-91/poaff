@@ -212,7 +212,7 @@ class OpenairArea:
                     bIsArea = False
 
                 #Maintenir ou Supprimer la LTA-France1 (originale ou spécifique) des cartes non-concernées par le territoire Français --> [D] LTA FRANCE 1 (Id=LTA13071) [FL115-FL195]
-                if bIsArea and oGlobalCat["id"] in ["LTA13071","BpFrenchSS"]:
+                if bIsArea and oGlobalCat["id"] in ["LTA13071","LFBpaFrenchSS"]:
                     if sAreaKey in ["","geoFrench","geoFrenchAll"]:
                         aAddHeader.append("'{0}' {1} - Symbolisation de la surface 'S' - Afin de simplifier cette carte, vous pouvez éventuellement supprimer cette couche limite du vol-libre (hors masifs-montagneux...)".format(oGlobalCat["nameV"], aixmReader.getSerializeAlt(oGlobalCat)))
                     else:

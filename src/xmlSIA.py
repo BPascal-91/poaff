@@ -6,10 +6,11 @@ import re
 import bpaTools
 import aixmReader
 
-cstFreqTypePriority:list = ["APP","TWR","FIS","AFIS","ATIS"]  #Priorisation des typologies de fréquence radio
-cstMhz:str = "Mhz"
-cstNameV:str = "nameV"
-cstDesc:str = "desc"
+cstFreqTypePriority:list = ["APP","TWR","FIS","AFIS","ATIS","Mhz"]  #Priorisation des typologies de fréquence radio
+cstMhz:str      = "Mhz"
+cstNameV:str    = "nameV"
+cstDesc:str     = "desc"
+cstActDesc:str  = "activationDesc"
 
 def getMasterFrequecy(oFreqs:dict, sTypeZone:str="", bVerbose:bool=False) -> str:
     sFreqType:str = "xxx"
@@ -305,20 +306,20 @@ class XmlSIA:
         #Analyse de toutes les zones aérienne
         for oZone in oCat.items():
             oProps:dict = oZone[1]
-            #Au moins 1 fréquence embarquée via le fichier XML du SIA; ne pas analyser les contenus textuels...
+            #Au moins 1 fréquence embarquée via le fichier XML du SIA
             if cstMhz in oProps:
-                continue
+                continue            #Ne pas analyser les contenus textuels
 
             #Règle de base : Ne rechercher que les Fréquences >=118 and <=137
             reFind = re.compile("1[1-3][0-9]\.[0-9][0-9]?[0-9]?")       #Pattern pour limiter l'intervale de 110.0[00] à 139.0[00]
             #Sample of oFreqList = {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
 
-            #Recherche de fréquences dans le nommage de la zone
+            #Recherche d'éventuelle fréquence dans le nommage de la zone
             oFreqs:list = reFind.findall(oProps[cstNameV])
             if len(oFreqs)>0:
                 oFreqList:dict = {}
                 for sFreq in oFreqs:
-                    sFreqKey:str = "APP"
+                    sFreqKey:str = "Mhz"
                     if len(oFreqList)>0:
                         sFreqKey += str(len(oFreqList))
                     oFreqList.update({sFreqKey:[sFreq]})
@@ -326,13 +327,26 @@ class XmlSIA:
                 #oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})    #Ne pas remettre a jour le nommage !
                 continue
 
-            #Recherche de fréquences dans la description de la zone
+            #Recherche d'éventuelles fréquences dans la description de l'activation de la zone
+            if cstActDesc in oProps:
+                oFreqs:list = reFind.findall(oProps[cstActDesc])
+                if len(oFreqs)>0:
+                    oFreqList:dict = {}
+                    for sFreq in oFreqs:
+                        sFreqKey:str = "Mhz"
+                        if len(oFreqList)>0:
+                            sFreqKey += str(len(oFreqList))
+                        oFreqList.update({sFreqKey:[sFreq]})
+                    oProps.update({cstMhz:oFreqList})
+                    oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})     #Reformater le nommage de la zone
+
+            #Recherche d'éventuelles fréquences dans la description de la zone
             if cstDesc in oProps:
                 oFreqs:list = reFind.findall(oProps[cstDesc])
                 if len(oFreqs)>0:
                     oFreqList:dict = {}
                     for sFreq in oFreqs:
-                        sFreqKey:str = "APP"
+                        sFreqKey:str = "Mhz"
                         if len(oFreqList)>0:
                             sFreqKey += str(len(oFreqList))
                         oFreqList.update({sFreqKey:[sFreq]})

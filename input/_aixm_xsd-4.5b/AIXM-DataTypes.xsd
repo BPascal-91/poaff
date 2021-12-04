@@ -1534,6 +1534,8 @@
 			<xsd:enumeration value="E"/>
 			<xsd:enumeration value="F"/>
 			<xsd:enumeration value="G"/>
+			<xsd:enumeration value="FFVL"/>
+			<xsd:enumeration value="FFVP"/>
 			<xsd:enumeration value="OTHER"/>
 		</xsd:restriction>
 	</xsd:simpleType>
@@ -3139,6 +3141,8 @@
 			<xsd:enumeration value="TMZ/RMZ"/>
 			<xsd:enumeration value="ZIT"/>
 			<xsd:enumeration value="ZSM"/>
+			<xsd:enumeration value="FFVL-Prot"/>
+			<xsd:enumeration value="FFVP-Prot"/>
 			<xsd:enumeration value="LTA"/>
 			<xsd:enumeration value="ICAO">
 				<xsd:annotation>

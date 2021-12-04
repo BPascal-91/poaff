@@ -157,22 +157,26 @@ class Geojson2Kml:
                 #Classification pour organisation des zones
                 if "freeFlightZone" in oAsPro:
                     if   (oAsPro.get("freeFlightZoneExt",None)==True) and (oAsPro.get("freeFlightZone",None)==False):
-                        sTypeZone:str = "vfrZoneExt"
+                        sTypeZone:str = "LTA"       #LTA=Lower Traffic Area
                     elif (oAsPro.get("vfrZoneExt",None)==True) and (oAsPro.get("vfrZone",None)==False):
-                        sTypeZone:str = "vfrZoneExt"
+                        sTypeZone:str = "LTA"
                     elif oAsPro.get("vfrZone",None)==True:
-                        sTypeZone:str = "vfrZone"
+                        sTypeZone:str = "LTA"       #LTA=Lower Traffic Area
                     elif oAsPro.get("vfrZone",None)==False:
-                        sTypeZone:str = "ifrZone"
+                        sTypeZone:str = "UTA"       #UTA=Upper Traffic Area
                 elif "lowerM" in oAsPro:
                     if   float(sLowerM) < 3500:
                         sTypeZone:str = "vfrZone"
                     elif float(sLowerM) < 5940:
-                        sTypeZone:str = "vfrZoneExt"
+                        sTypeZone:str = "LTA"       #LTA=Lower Traffic Area
                     else:
-                        sTypeZone:str = "ifrZone"
+                        sTypeZone:str = "UTA"       #UTA=Upper Traffic Area
                 else:
                     sTypeZone:str = "Airspace"
+
+                #Répartition du VFR en deux blocs : "vfrZone" et "vfrZoneComp"
+                if sTypeZone == "vfrZone" and sClassZone in ["E","G","G","Q"]:
+                    sTypeZone = "vfrZoneComp"
 
                 oTypeZone:dict = self.oKmlTmp.get(sTypeZone, {})
                 oClassZone:list = oTypeZone.get(sClassZone, [])
@@ -209,9 +213,6 @@ class Geojson2Kml:
 
             #Construction de l'organisation des polygons dans le KML
             if len(self.oKmlTmp)>0:
-                sTitle = "KML generator"
-                #if self.oLog:
-                #    self.oLog.info("makeAirspacesKml() " + sTitle, outConsole=False)
 
                 #https://developers.google.com/kml/documentation/kmlreference#color
                 #The first two hex characters define the alpha band, or opacity.
@@ -250,170 +251,184 @@ class Geojson2Kml:
                 self.createKmlStyle(self.oKmlDoc, "transYellowPoly",    "ff00ffff", "6f00ffff")
                 #self.createKmlStyle(self.oKmlDoc, "noFillYellowPoly","ff00ffff", "1f00ffff")
 
-                barre = bpaTools.ProgressBar(len(oFeatures), 20, title=sTitle)
-                idx = 0
-                for sKeyType, oTypeZone in self.oKmlTmp.items():
+                #Construction du KML avec ordonancement des dossiers
+                aTypeList = ["UTA","LTA","vfrZoneComp","vfrZone","Airspace"]
+                for sKeyType in aTypeList:
+                    oTypeZone = self.oKmlTmp.get(sKeyType, None)
+                    self.makeFolder(sKeyType, oTypeZone)
+        return
 
-                    sVisiblility:str="0" #default value
-                    if sKeyType == "Airspace":
-                        sVisiblility:str="1"
-                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Airspace", sVisiblility, "Espace aérien")
-                    elif sKeyType == "vfrZone":
-                        sVisiblility:str="1"
-                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR", sVisiblility, "Couche de l'espace aérien VFR ; dont le plancher s'étand depuis la surface de la terre (SFC/AGL) jusqu'à l'altitude limite de la surface 'S' (FL115)")
-                    elif sKeyType == "vfrZoneExt":
-                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR-Ext", sVisiblility, "Couche de l'espace aérien VFR étandue ; zones dont le plafond s'élève jusqu'à la limite maximum de FL195")
-                    elif sKeyType == "ifrZone":
-                        oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche IFR", sVisiblility, "Couche de l'espace aérien IFR ; zones hautes (UTA=UpperControlArea, OCA=OceanicControlArea, OTA=OceanicTransitionArea, ...) et autres espaces-aériens nécessaires aux transmissions radards ou radios (FIR=FlightInformationRegion, UIR=UpperFlightInformationRegion, SECTOR=ControlSector, ...")
+    #Contruction du dossier interne KML
+    def makeFolder(self, sKeyType, oTypeZone) -> None:
+        if oTypeZone == None:
+            return
 
-                    for sKeyClass, oClassZone in oTypeZone.items():
-                        if sKeyClass in ["A","B","C","D","E","F","G"]:
-                            sLib:str = "Classe " + sKeyClass
+        sVisiblility:str="0" #default value
+        if sKeyType == "Airspace":
+            sVisiblility:str="1"
+            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Airspace", sVisiblility, "Espace aérien")
+        elif sKeyType == "vfrZone":
+            sVisiblility:str="1"
+            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR", sVisiblility, "Couche de l'espace aérien VFR (Visual Flight Rule) ; dont le plancher s'étand depuis la surface de la terre (SFC/AGL) jusqu'à l'altitude limite de la surface 'S' (FL115)")
+        elif sKeyType == "vfrZoneComp":
+            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Zones VFR complémentaires", sVisiblility, "Zones complémentaires de la couche de l'espace aérien VFR (Visual Flight Rule). Il s'agit des Classes de type E, F, G ou des zones Dangereues...")
+        elif sKeyType == "LTA":             #LTA=Lower Traffic Area
+            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche LTA", sVisiblility, "Couche de l'espace aérien LTA (Lower Traffic Area) ; zones intermédiaires dont le plancher s'élève depuis le FL115 et jusqu'au plafond maximum de FL195")
+        elif sKeyType == "UTA":
+            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche UTA", sVisiblility, "Couche de l'espace aérien UTA (Upper Traffic Area) ; zones hautes dont le plancher s'élève au delà du FL195")
+
+        sTitle = "KML generator: " + sKeyType
+        barre = bpaTools.ProgressBar(len(oTypeZone.items()), 20, title=sTitle)
+        idxBarre = 0
+        for sKeyClass, oClassZone in oTypeZone.items():
+            idxBarre+=1
+            if sKeyClass in ["A","B","C","D","E","F","G"]:
+                sLib:str = "Classe " + sKeyClass
+            else:
+                sLib:str = "Zone " + sKeyClass
+            oFolderClass = self.createKmlFolder(oFolderType, "Folder", sLib, sVisiblility)
+
+            for oZone in oClassZone:
+
+                sZoneName:str       = oZone[0]
+                sDesc:str           = oZone[1]
+                sTypezZone:str      = oZone[2]
+                sDeclassifiable:str = oZone[3]
+                sUpperM:str         = oZone[4]
+                sLowerM:str         = oZone[5]
+                sOrdUpperM:str      = oZone[6]          #Ordinal AGL value
+                sOrdLowerM:str      = oZone[7]          #Ordinal AGL value
+                sMinGroundHeight    = oZone[8]
+                sMaxGroundHeight    = oZone[9]
+                oCoords:list        = oZone[10]
+
+                #Red and fill
+                if  sKeyClass in ["P","ZIT"]:
+                    sStyle = "#fillRedPoly"
+                #Red and fill
+                elif  sKeyClass in ["A","B","C","CTR","CTR-P","TMA","TMA-P","TMZ","RMZ/TMZ","TMZ/RMZ"]:
+                    if sLowerM==0:
+                        sStyle = "#fillRedPoly"
+                    else:
+                        sStyle = "#transRedPoly"
+                #Red and No-Fill
+                elif sKeyClass in ["CTA","CTA-P","FIR","FIR-P","NO-FIR","PART","CLASS","SECTOR","SECTOR-C","OCA","OCA-P","OTA","OTA-P","UTA","UTA-P","UIR","UIR-P","TSA","CBA","RCA","RAS","TRA","AMA","ASR","ADIZ","POLITICAL","OTHER","AWY"]:
+                    sStyle = "#noFillRedPoly"
+                #Purple and No-fill
+                elif sKeyClass=="D" and sTypezZone=="LTA":
+                    sStyle = "#noFillPurplePoly"
+                #Red and fill
+                elif sKeyClass in ["D","D-AMC"] and not bool(sDeclassifiable):
+                    if sLowerM==0:
+                        sStyle = "#fillRedPoly"
+                    else:
+                        sStyle = "#transRedPoly"
+                #Purple and fill
+                elif sKeyClass in ["D","D-AMC"] and bool(sDeclassifiable):
+                    if sLowerM==0:
+                        sStyle = "#fillRedPurplePoly"
+                    else:
+                        sStyle = "#transRedPurplePoly"
+                #Purple and fill
+                elif sKeyClass in ["R","R-AMC"] and sTypezZone!="RTBA":
+                    if sLowerM==0:
+                        sStyle = "#fillPurplePoly"
+                    else:
+                        sStyle = "#transPurplePoly"
+                #Brown and fill
+                elif sKeyClass in ["R","R-AMC"] and sTypezZone=="RTBA":
+                    if sLowerM==0:
+                        sStyle = "#fillBrownPoly"
+                    else:
+                        sStyle = "#transBrownPoly"
+                #Orange
+                elif sKeyClass in ["GP","Q","VV","VL","BA","PA"]:       #Danger; Vol à voile; Vol libre; Ballon; Parachutisme
+                    sStyle = "#noFillOrangePoly"
+                #Orange and No-Fill
+                elif sKeyClass in ["RMZ","W"]:
+                    if sLowerM==0:
+                        sStyle = "#fillOrangePoly"
+                    else:
+                        sStyle = "#transOrangePoly"
+                #Blue
+                elif sKeyClass in ["ZSM","BIRD","PROTECT","D-OTHER","SUR","AER","TRPLA","TRVL","VOL","REFUEL"]:
+                    if sLowerM==0:
+                        sStyle = "#transBluePoly"
+                    else:
+                        sStyle = "#noFillBluePoly"
+                #Green
+                elif sKeyClass in ["E","F","G","SIV","FIS","FFVL","FFVP"]:
+                    if sLowerM==0:
+                        sStyle = "#transGreenPoly"
+                    else:
+                        sStyle = "#noFillGreenPoly"
+                #Yellow
+                else:
+                    sStyle = "#transYellowPoly"
+                    if self.oLog:
+                        self.oLog.warning("KML Color not found for Class={0}".format(sKeyClass), outConsole=False)
+
+                oPlacemark = self.createKmlFolder(oFolderClass, "Placemark", sZoneName, sVisibility=sVisiblility, sDescription=sDesc)
+                self.oKml.addTag(oPlacemark, "styleUrl", sValue=sStyle)
+                oMultiGeo = self.oKml.addTag(oPlacemark, "MultiGeometry")
+
+                oPolygon:list = []
+                sAltitudeMode:str = "absolute"
+                sFinalUpper:str = sUpperM           #Standard AMSL value
+                if sOrdUpperM:                      #Ordinal AGL value
+                    sFinalUpper = int(sMaxGroundHeight) + int(sOrdUpperM)    #New - Elevation au dessus du point géographique le plus élevé de la zone
+
+                if sLowerM==0:     #Le plancher est plaqué au sol
+                    #Construct top panel
+                    for oAs in oCoords:
+                        sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+                        oPolygon.append(sPoint + str(sFinalUpper))
+                    #add top panel
+                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1", sAltitudeMode=sAltitudeMode)
+                    oKmlCoords.text = " ".join(oPolygon)
+                else:
+                    sFinalLower:str = sLowerM           #Standard AMSL value
+                    if sOrdLowerM:                      #Ordinal AGL value
+                        sFinalLower = int(sMinGroundHeight) + int(sOrdLowerM)    #New - Elevation au dessus du point géographique le moins élevé de la zone
+
+                    #Construct top panel
+                    for oAs in oCoords:
+                        sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+                        oPolygon.append(sPoint + str(sFinalUpper))
+                    #add top panel
+                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
+                    oKmlCoords.text = " ".join(oPolygon)
+
+                    #Construct bottom panel
+                    oPolygon:list = []
+                    for oAs in oCoords:
+                        sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+                        oPolygon.append(sPoint + str(sFinalLower))
+                    #add bottom panel
+                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
+                    oKmlCoords.text = " ".join(oPolygon)
+
+                    #Construct sides panels
+                    for idx, oAs in enumerate(oCoords):
+                        sPoint0:str = str(oCoords[idx][0]) + "," + str(oCoords[idx][1]) + ","
+                        if idx+1 == len(oCoords):
+                            sPoint1:str = str(oCoords[0][0]) + "," + str(oCoords[0][1]) + ","
                         else:
-                            sLib:str = "Zone " + sKeyClass
-                        oFolderClass = self.createKmlFolder(oFolderType, "Folder", sLib, sVisiblility)
+                            sPoint1:str = str(oCoords[idx+1][0]) + "," + str(oCoords[idx+1][1]) + ","
 
-                        for oZone in oClassZone:
-                            idx+=1
-                            sZoneName:str       = oZone[0]
-                            sDesc:str           = oZone[1]
-                            sTypezZone:str      = oZone[2]
-                            sDeclassifiable:str = oZone[3]
-                            sUpperM:str         = oZone[4]
-                            sLowerM:str         = oZone[5]
-                            sOrdUpperM:str      = oZone[6]          #Ordinal AGL value
-                            sOrdLowerM:str      = oZone[7]          #Ordinal AGL value
-                            sMinGroundHeight    = oZone[8]
-                            sMaxGroundHeight    = oZone[9]
-                            oCoords:list        = oZone[10]
+                        oPolygon:list = []
+                        oPolygon.append(sPoint0 + str(sFinalLower))
+                        oPolygon.append(sPoint0 + str(sFinalUpper))
+                        oPolygon.append(sPoint1 + str(sFinalUpper))
+                        oPolygon.append(sPoint1 + str(sFinalLower))
+                        oPolygon.append(sPoint0 + str(sFinalLower))
 
-                            #Red and fill
-                            if  sKeyClass in ["P","ZIT"]:
-                                sStyle = "#fillRedPoly"
-                            #Red and fill
-                            elif  sKeyClass in ["A","B","C","CTR","CTR-P","TMA","TMA-P","TMZ","RMZ/TMZ","TMZ/RMZ"]:
-                                if sLowerM==0:
-                                    sStyle = "#fillRedPoly"
-                                else:
-                                    sStyle = "#transRedPoly"
-                            #Red and No-Fill
-                            elif sKeyClass in ["CTA","CTA-P","FIR","FIR-P","NO-FIR","PART","CLASS","SECTOR","SECTOR-C","OCA","OCA-P","OTA","OTA-P","UTA","UTA-P","UIR","UIR-P","TSA","CBA","RCA","RAS","TRA","AMA","ASR","ADIZ","POLITICAL","OTHER","AWY"]:
-                                sStyle = "#noFillRedPoly"
-                            #Purple and No-fill
-                            elif sKeyClass=="D" and sTypezZone=="LTA":
-                                sStyle = "#noFillPurplePoly"
-                            #Red and fill
-                            elif sKeyClass in ["D","D-AMC"] and not bool(sDeclassifiable):
-                                if sLowerM==0:
-                                    sStyle = "#fillRedPoly"
-                                else:
-                                    sStyle = "#transRedPoly"
-                            #Purple and fill
-                            elif sKeyClass in ["D","D-AMC"] and bool(sDeclassifiable):
-                                if sLowerM==0:
-                                    sStyle = "#fillRedPurplePoly"
-                                else:
-                                    sStyle = "#transRedPurplePoly"
-                            #Purple and fill
-                            elif sKeyClass in ["R","R-AMC"] and sTypezZone!="RTBA":
-                                if sLowerM==0:
-                                    sStyle = "#fillPurplePoly"
-                                else:
-                                    sStyle = "#transPurplePoly"
-                            #Brown and fill
-                            elif sKeyClass in ["R","R-AMC"] and sTypezZone=="RTBA":
-                                if sLowerM==0:
-                                    sStyle = "#fillBrownPoly"
-                                else:
-                                    sStyle = "#transBrownPoly"
-                            #Orange
-                            elif sKeyClass in ["GP","Q","VV","VL","BA","PA"]:       #Danger; Vol à voile; Vol libre; Ballon; Parachutisme
-                                sStyle = "#noFillOrangePoly"
-                            #Orange and No-Fill
-                            elif sKeyClass in ["RMZ","W"]:
-                                if sLowerM==0:
-                                    sStyle = "#fillOrangePoly"
-                                else:
-                                    sStyle = "#transOrangePoly"
-                            #Blue
-                            elif sKeyClass in ["ZSM","BIRD","PROTECT","D-OTHER","SUR","AER","TRPLA","TRVL","VOL","REFUEL"]:
-                                if sLowerM==0:
-                                    sStyle = "#transBluePoly"
-                                else:
-                                    sStyle = "#noFillBluePoly"
-                            #Green
-                            elif sKeyClass in ["E","F","G","SIV","FIS","FFVL","FFVP"]:
-                                if sLowerM==0:
-                                    sStyle = "#transGreenPoly"
-                                else:
-                                    sStyle = "#noFillGreenPoly"
-                            #Yellow
-                            else:
-                                sStyle = "#transYellowPoly"
-                                if self.oLog:
-                                    self.oLog.warning("KML Color not found for Class={0}".format(sKeyClass), outConsole=False)
+                        #Side panel
+                        oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
+                        oKmlCoords.text = " ".join(oPolygon)
 
-                            oPlacemark = self.createKmlFolder(oFolderClass, "Placemark", sZoneName, sVisibility=sVisiblility, sDescription=sDesc)
-                            self.oKml.addTag(oPlacemark, "styleUrl", sValue=sStyle)
-                            oMultiGeo = self.oKml.addTag(oPlacemark, "MultiGeometry")
-
-                            oPolygon:list = []
-                            sAltitudeMode:str = "absolute"
-                            sFinalUpper:str = sUpperM           #Standard AMSL value
-                            if sOrdUpperM:                      #Ordinal AGL value
-                                sFinalUpper = int(sMaxGroundHeight) + int(sOrdUpperM)    #New - Elevation au dessus du point géographique le plus élevé de la zone
-
-                            if sLowerM==0:     #Le plancher est plaqué au sol
-                                #Construct top panel
-                                for oAs in oCoords:
-                                    sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                                    oPolygon.append(sPoint + str(sFinalUpper))
-                                #add top panel
-                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1", sAltitudeMode=sAltitudeMode)
-                                oKmlCoords.text = " ".join(oPolygon)
-                            else:
-                                sFinalLower:str = sLowerM           #Standard AMSL value
-                                if sOrdLowerM:                      #Ordinal AGL value
-                                    sFinalLower = int(sMinGroundHeight) + int(sOrdLowerM)    #New - Elevation au dessus du point géographique le moins élevé de la zone
-
-                                #Construct top panel
-                                for oAs in oCoords:
-                                    sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                                    oPolygon.append(sPoint + str(sFinalUpper))
-                                #add top panel
-                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
-                                oKmlCoords.text = " ".join(oPolygon)
-
-                                #Construct bottom panel
-                                oPolygon:list = []
-                                for oAs in oCoords:
-                                    sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                                    oPolygon.append(sPoint + str(sFinalLower))
-                                #add bottom panel
-                                oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
-                                oKmlCoords.text = " ".join(oPolygon)
-
-                                #Construct sides panels
-                                for idx, oAs in enumerate(oCoords):
-                                    sPoint0:str = str(oCoords[idx][0]) + "," + str(oCoords[idx][1]) + ","
-                                    if idx+1 == len(oCoords):
-                                        sPoint1:str = str(oCoords[0][0]) + "," + str(oCoords[0][1]) + ","
-                                    else:
-                                        sPoint1:str = str(oCoords[idx+1][0]) + "," + str(oCoords[idx+1][1]) + ","
-
-                                    oPolygon:list = []
-                                    oPolygon.append(sPoint0 + str(sFinalLower))
-                                    oPolygon.append(sPoint0 + str(sFinalUpper))
-                                    oPolygon.append(sPoint1 + str(sFinalUpper))
-                                    oPolygon.append(sPoint1 + str(sFinalLower))
-                                    oPolygon.append(sPoint0 + str(sFinalLower))
-
-                                    #Side panel
-                                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
-                                    oKmlCoords.text = " ".join(oPolygon)
-
-                        barre.update(idx)
-                barre.reset()
+            barre.update(idxBarre)
+        barre.reset()
         return
 
     #Contruction dynamique du tableau de présentation
@@ -497,8 +512,8 @@ class Geojson2Kml:
         return sHtmlDesc
 
 if __name__ == '__main__':
-    sPath:str    = "../output/Tests/map/"
-    sSrcFile:str = "20210325_All-Parcs.geojson"   #20210201_airspaces-freeflight-geoFrenchAlps.geojson - 20210123_BPa_FR-ZSM_Protection-des-rapaces.geojson - 20210111_airspaces-freeflight-gpsWithTopo-geoFrenchAll.geojson
+    sPath:str    = "../output/_POAFF/"                          #../output/Tests/map/
+    sSrcFile:str = "global@airspaces-ifr.geojson"               #global@airspaces-ifr.geojson
     oKml = Geojson2Kml()
     oKml.readGeojsonFile(sPath + sSrcFile)
     sTilte:str = "Paragliding Openair Frensh Files"

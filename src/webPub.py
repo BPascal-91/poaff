@@ -70,6 +70,9 @@ class PoaffWebPage:
         self.publishPath:str        = self.outPath + poaffCst.cstPoaffWebPath
         self.publishPathFiles:str   = self.publishPath + poaffCst.cstPoaffWebPathFiles
         self.publishPathCfd:str     = self.outPath + poaffCst.cstCfdWebPath
+        bpaTools.createFolder(self.publishPath)         #Initialisation
+        bpaTools.createFolder(self.publishPathFiles)    #Initialisation
+        bpaTools.createFolder(self.publishPathCfd)      #Initialisation
         self.sWebPageBuffer:str     = None
         self.sHeadFileDate:str      = "{0}_".format(bpaTools.getDate(cstPOAFFdateTrait, frmt="ymd", sep=""))
         self.aCatalogFiles:list     = None
@@ -83,7 +86,7 @@ class PoaffWebPage:
             aFile.append(oAreaRef[6])   #ISO_Perimeter: Countries; All-Territories; Country; Partial; Additional-Territory
         else:
             sFileExt:str = bpaTools.getFileExt(sFileName)
-            if sFileExt in [".txt",".geojson"]:
+            if sFileExt in [".txt",".geojson",".kml"]:
                 aFile.append("---")
                 aFile.append("--")
                 aFile.append("Countries")
@@ -251,10 +254,23 @@ class PoaffWebPage:
         #### 2/ KML files
         #Déclinaison de toutes les typologies de fichier racine  (-all, -ifr, -vfr, -ffvl-cfd, -ff)
         sFormat:str = " [format KML]"
+        sComplementaryFiles:str = ""
         for aTypeFile in aTypeFiles:
             srcFileName = poaffCst.cstGlobalHeader + poaffCst.cstSeparatorFileName + str(poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[0])
             dstFileName = str(self.sHeadFileDate + poaffCst.cstAsAllGeojsonFileName).replace("-all", aTypeFile[1])
             dstFileName = dstFileName.replace("airspaces-", "")
+
+            if aTypeFile[0] in ["-ifr","-vfr"]:
+                srcFileName2 = str(srcFileName).replace(".geojson", ".kml")
+                dstFileName2 = str(dstFileName).replace(".geojson", ".kml")
+                bCopyFile:bool = self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2)
+                if bCopyFile:
+                    sTitle:str = aTypeFile[2] + sFormat
+                    sTitle = sTitle.replace("Cartographie spécifique", "Cartographie 3D représentative des cartographies spécifiques")
+                    self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, "geoAll")
+                    sToken = str("@@file@@KML-airspaces-all@@").replace("-all", aTypeFile[0])
+                    self.publishFile(dstFileName2, sToken, sTitle)
+                    sComplementaryFiles += self.makeLink4File("files", dstFileName2, aTypeFile[2]) + " | "
 
             if aTypeFile[0]=="-ffvl-cfd":
                 srcFileName2 = str(srcFileName).replace(".geojson", ".kml")
@@ -297,6 +313,7 @@ class PoaffWebPage:
                             if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2b):
                                 self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
+        self.sWebPageBuffer = self.sWebPageBuffer.replace("@@file@@KML-airspaces-othersfileslist@@", sComplementaryFiles)
 
         #### 3a/ GeoJSON border files
         #Déclinaison de toutes les régionalisations
