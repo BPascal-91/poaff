@@ -6,7 +6,7 @@ import re
 import bpaTools
 import aixmReader
 
-cstFreqTypePriority:list = ["APP","TWR","FIS","AFIS","ATIS","Mhz"]  #Priorisation des typologies de fréquence radio
+cstFreqTypePriority:list = ["APP","TWR","AFIS","ATIS","ACC","FIS","MHZ"]  #Priorisation des typologies de fréquence radio
 cstMhz:str      = "Mhz"
 cstNameV:str    = "nameV"
 cstDesc:str     = "desc"
@@ -306,54 +306,64 @@ class XmlSIA:
         #Analyse de toutes les zones aérienne
         for oZone in oCat.items():
             oProps:dict = oZone[1]
+
             #Au moins 1 fréquence embarquée via le fichier XML du SIA
             if cstMhz in oProps:
-                continue            #Ne pas analyser les contenus textuels
+                continue            #Ne pas analyser plus loin les contenus textuels
 
             #Règle de base : Ne rechercher que les Fréquences >=118 and <=137
             reFind = re.compile("1[1-3][0-9]\.[0-9][0-9]?[0-9]?")       #Pattern pour limiter l'intervale de 110.0[00] à 139.0[00]
-            #Sample of oFreqList = {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
+            oFreqList:dict = {}     #Content sample -> {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
 
             #Recherche d'éventuelle fréquence dans le nommage de la zone
             oFreqs:list = reFind.findall(oProps[cstNameV])
-            if len(oFreqs)>0:
-                oFreqList:dict = {}
-                for sFreq in oFreqs:
-                    sFreqKey:str = "Mhz"
-                    if len(oFreqList)>0:
-                        sFreqKey += str(len(oFreqList))
-                    oFreqList.update({sFreqKey:[sFreq]})
-                oProps.update({cstMhz:oFreqList})
-                #oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})    #Ne pas remettre a jour le nommage !
-                continue
-
-            #Recherche d'éventuelles fréquences dans la description de l'activation de la zone
-            if cstActDesc in oProps:
-                oFreqs:list = reFind.findall(oProps[cstActDesc])
-                if len(oFreqs)>0:
-                    oFreqList:dict = {}
-                    for sFreq in oFreqs:
-                        sFreqKey:str = "Mhz"
-                        if len(oFreqList)>0:
-                            sFreqKey += str(len(oFreqList))
-                        oFreqList.update({sFreqKey:[sFreq]})
-                    oProps.update({cstMhz:oFreqList})
-                    oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})     #Reformater le nommage de la zone
+            self.addFrequecies(oProps[cstNameV], oFreqs, oFreqList)
 
             #Recherche d'éventuelles fréquences dans la description de la zone
             if cstDesc in oProps:
                 oFreqs:list = reFind.findall(oProps[cstDesc])
-                if len(oFreqs)>0:
-                    oFreqList:dict = {}
-                    for sFreq in oFreqs:
-                        sFreqKey:str = "Mhz"
-                        if len(oFreqList)>0:
-                            sFreqKey += str(len(oFreqList))
-                        oFreqList.update({sFreqKey:[sFreq]})
-                    oProps.update({cstMhz:oFreqList})
-                    oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})     #Reformater le nommage de la zone
+                self.addFrequecies(oProps[cstDesc], oFreqs, oFreqList)
+
+            #Recherche d'éventuelles fréquences dans la description de l'activation de la zone
+            if cstActDesc in oProps:
+                oFreqs:list = reFind.findall(oProps[cstActDesc])
+                self.addFrequecies(oProps[cstActDesc], oFreqs, oFreqList)
+
+            if len(oFreqList)>0:
+                oProps.update({cstMhz:oFreqList})
+                oProps.update({cstNameV:aixmReader.getVerboseName(oProps)})     #Reformater le nommage de la zone
 
             barre.update(idx)
         barre.reset()
         return
+
+    def addFrequecies(self, sTxt:str, oFreqs:list, oFreqList:dict) -> None:
+        if len(oFreqs)>0:
+            for sFreq in oFreqs:
+                #sFreqKey:str = "Mhz"
+                #if len(oFreqList)>0:
+                #    sFreqKey += str(len(oFreqList))
+                sFreqKey:str = self.findFrequecyType(sTxt, sFreq)
+                sFreqKey = self.makeNewKey(sFreqKey, oFreqList)
+                oFreqList.update({sFreqKey:[sFreq]})
+        return
+
+    #Identification du typage de la fréquence dans la description
+    #Sample of sTxt content
+    #   <txtName>Test2 App(111.069)</txtName>
+    #   <txtRmk>Dropping after radio contact on 123.425 MHz. #Activation known on:# PARIS INFO: 126.1 MHz# SEINE INFO : 120.325 MHz#SAINT DIZIER APP : 134.775#PARIS ACC : 120.950 MHz.</txtRmk>
+    #   <txtRmkWorkHr>H24.  DEAUVILLE APP : 120.350 MHz DEAUVILLE FIS : 121.425 MHz ..etc.. and AFIS 120.2MHz absence</txtRmkWorkHr>
+    def findFrequecyType(self, sTxt:str, sFreq:str) -> str:
+        sRet:str = "MHZ"                    #Default return
+        sFind:str = sTxt.replace("INFO", "AFIS").lower()
+        lFreq:int = sFind.find(sFreq)       #Frequecy position
+        if lFreq != -1:
+            lStart:int = lFreq-10           #Left shift with 10 chars max
+            if lStart < 0:
+                lStart = 0
+            sTmp:str = sFind[lStart:lFreq]
+            for sFreqType in cstFreqTypePriority:
+                if sFreqType.lower() in sTmp:
+                    return sFreqType
+        return sRet
 
