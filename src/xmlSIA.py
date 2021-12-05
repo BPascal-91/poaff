@@ -6,7 +6,72 @@ import re
 import bpaTools
 import aixmReader
 
-cstFreqTypePriority:list = ["APP","TWR","AFIS","ATIS","ACC","FIS","MHZ"]  #Priorisation des typologies de fréquence radio
+# SERVICE / CODE_TYPE - Documentation
+# 1/ List of No-Radio services
+#   ACS [Area Control Service.]
+#   ADS [Automatic Dependent Surveillance service.]
+#   ADVS [Advisory service.]
+#   AFS [Aeronautical Fixed Service.]
+#   ALRS [Alerting Service.]
+#   AMS [Aeronautical Mobile Service.]
+#   AMSS [Aeronautical Mobile Satellite Service.]
+#   ARTCC [Air Route Traffic Control Centre Service.]
+#   ATC [Air Traffic Control service.]
+#   ATFM [Air Traffic Flow Management service.]
+#   ATM [Air Traffic Management service.]
+#   ATS [Air Traffic Service.]
+#   BOF [Briefing service.]
+#   BS [commercial Broadcasting Service.]
+#   COM [Communications service.]
+#   CTAF [Common Traffic Advisory Frequency Service.]
+#   DVDF [Doppler VDF Service.]
+#   EFAS [En-route Flight Advisory Service.]
+#   FCST [Forecasting service.]
+#   FISA [Automated FIS.]
+#   FSS [Flight Service Station Service.]
+#   GCA [Ground Controlled Approach service.]
+#   OAC [Oceanic Area Control service.]
+#   NOF [International NOTAM service.]
+#   MET [Meteorological service.]
+#   PAR [Precision Approach Radar service.]
+#   RAC [Rules of the Air and Air Traffic Services.]
+#   RAF [Regional Area Forecasting service.]
+#   RCC [Rescue Co-ordination service.]
+#   SAR [Search And Rescue service.]
+#   SIGMET [SIGMET service.]
+#   SMC [Surface Movement Control service.]
+#   SMR [Surface Movement Radar service.]
+#   SRA [Surveillance Radar Approach service.]
+#   SSR [Secondary Surveillance Radar service.]
+#   TAR [Terminal Area Radar service.]
+#   TWEB [Transcribed Weather Broadcast Service.]
+#   UAC [Upper Area Control service.]
+#   UDF [UHF Direction-Finding service.]
+#   VDF [VHF Direction-Finding service.]
+#   VOLMET [VOLMET service.]
+#   VOT [VOR Test Facility.]
+#   OVERFLT [Overflight Clearance Service.]
+#   ENTRY [Entry Clearance Service.]
+#   EXIT [Exit Clearance Service.]
+# 2/ List of Radio services
+#   MHZ = BPascal-POAFF specifique notation for default radio type
+#   APP [Approach Control Service for both Arrival AND Departure.]
+#   APP-ARR [Approach Control Service for Arrivals only.]
+#   APP-DEP [Approach Control Service for Departures only.]
+#   TWR [Aerodrome Control Tower Service.]
+#   SIV = Service d'Information de Vol - Le SIV peut fournir des informations sur l’état d’un aérodrome, les conditions météo, les fréquences radio et potentiellement du trafic. Le SIV donne tout un tas d’informations qui peuvent être utiles lors d’un vol. Il ne donne pas d’instruction et peut donner une information trafic lorsqu’il la connaît.
+#   AFIS = [Aerodrome Flight Information Service.]
+#   A/A  = AFIS --> https://fr.wikipedia.org/wiki/Contr%C3%B4le_de_la_circulation_a%C3%A9rienne
+#   INFO [Information Provision Service.]
+#   ATIS [Automated Terminal Information Service.]
+#   ATIS-ARR [Automated Terminal Information Service for Arriving Traffic.]
+#   ATIS-DEP [Automated Terminal Information Service for Departing Traffic.]
+#   ACC = Area Control Center
+#   FIS = [Flight Information Service.]
+#   AIS [Aeronautical Information Service.]
+#   RADAR [Radar service.]
+
+cstFreqTypePriority:list = ["APP","APP-ARR","APP-DEP","TWR","SIV","AFIS","A/A","INFO","ATIS","ATIS-ARR","ATIS-DEP","ACC","FIS","AIS","RADAR","MHZ"] #Priorisation des typologies de fréquence radio reconnues
 cstMhz:str      = "Mhz"
 cstNameV:str    = "nameV"
 cstDesc:str     = "desc"
@@ -309,11 +374,13 @@ class XmlSIA:
 
             #Au moins 1 fréquence embarquée via le fichier XML du SIA
             if cstMhz in oProps:
-                continue            #Ne pas analyser plus loin les contenus textuels
+                #continue                           #(Old) Ne pas analyser plus loin les contenus textuels
+                oFreqList:dict = oProps[cstMhz]     #(New) Accumuler les fréquences complémentaire trouvées dans les descriptions
+            else:
+                oFreqList:dict = {}     #Content sample -> {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
 
             #Règle de base : Ne rechercher que les Fréquences >=118 and <=137
             reFind = re.compile("1[1-3][0-9]\.[0-9][0-9]?[0-9]?")       #Pattern pour limiter l'intervale de 110.0[00] à 139.0[00]
-            oFreqList:dict = {}     #Content sample -> {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
 
             #Recherche d'éventuelle fréquence dans le nommage de la zone
             oFreqs:list = reFind.findall(oProps[cstNameV])
@@ -340,13 +407,23 @@ class XmlSIA:
     def addFrequecies(self, sTxt:str, oFreqs:list, oFreqList:dict) -> None:
         if len(oFreqs)>0:
             for sFreq in oFreqs:
-                #sFreqKey:str = "Mhz"
-                #if len(oFreqList)>0:
-                #    sFreqKey += str(len(oFreqList))
-                sFreqKey:str = self.findFrequecyType(sTxt, sFreq)
-                sFreqKey = self.makeNewKey(sFreqKey, oFreqList)
-                oFreqList.update({sFreqKey:[sFreq]})
+                #if sFreq == "111.069":
+                #    tmp = ("aa" == "bb")
+                if self.ctrlNewFrequecy(sFreq, oFreqList):
+                    sFreqKey:str = self.findFrequecyType(sTxt, sFreq)
+                    sFreqKey = self.makeNewKey(sFreqKey, oFreqList)
+                    oFreqList.update({sFreqKey:[sFreq]})
         return
+
+    def ctrlNewFrequecy(self, sFindFreq:str, oFreqList:dict) -> bool:
+        if len(oFreqList)>0:
+            for sKey, aExistFreq in oFreqList.items():
+                sExistFreq:str = aExistFreq[0]
+                if sExistFreq[-1:] == "*":
+                    sExistFreq = sExistFreq[:-1]    #Suppression de '*" pour radio type non activable H24 comme {"APP": ["129.925*" ...
+                if sFindFreq == sExistFreq:
+                    return False
+        return True
 
     #Identification du typage de la fréquence dans la description
     #Sample of sTxt content
@@ -354,16 +431,18 @@ class XmlSIA:
     #   <txtRmk>Dropping after radio contact on 123.425 MHz. #Activation known on:# PARIS INFO: 126.1 MHz# SEINE INFO : 120.325 MHz#SAINT DIZIER APP : 134.775#PARIS ACC : 120.950 MHz.</txtRmk>
     #   <txtRmkWorkHr>H24.  DEAUVILLE APP : 120.350 MHz DEAUVILLE FIS : 121.425 MHz ..etc.. and AFIS 120.2MHz absence</txtRmkWorkHr>
     def findFrequecyType(self, sTxt:str, sFreq:str) -> str:
-        sRet:str = "MHZ"                    #Default return
-        sFind:str = sTxt.replace("INFO", "AFIS").lower()
-        lFreq:int = sFind.find(sFreq)       #Frequecy position
+        sRet:str = "MHZ"                                        #Default return
+        sFind:str = sTxt.replace("A/A", "AFIS").lower()
+        lFreq:int = sFind.find(sFreq)                           #Frequecy position
         if lFreq != -1:
-            lStart:int = lFreq-10           #Left shift with 10 chars max
+            lStart:int = lFreq-15                               #Left shift with 15 chars max
             if lStart < 0:
                 lStart = 0
             sTmp:str = sFind[lStart:lFreq]
             for sFreqType in cstFreqTypePriority:
-                if sFreqType.lower() in sTmp:
+                if (sFreqType.lower()+"(") in sTmp:             #for find in title name 'App(' ; 'Fis(' or 'Afis(' etc
+                    return sFreqType
+                if (" "+sFreqType.lower()) in sTmp:             #for find in description ' APP' ; ' FIS' or ' AFIS' etc
                     return sFreqType
         return sRet
 
