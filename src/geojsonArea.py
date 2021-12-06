@@ -59,11 +59,12 @@ class GeojsonArea:
             bIsInclude:bool = False
             if   sContext == "ifr":
                 bIsInclude = (not oGlobalCat["vfrZone"]) and (not oGlobalCat["groupZone"])
+                bIsInclude = bIsInclude and not (oGlobalCat.get("vfrZoneExt", False))	     #Ne pas réimporter les extensions de vol déjà embarqué dans la couche VFR-Ext
                 sContent = "ifrZone"
                 sFile = sFile.replace("-all", "-ifr")
             elif sContext == "vfr":
                 bIsInclude = oGlobalCat["vfrZone"]
-                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)	     #Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m
+                bIsInclude = bIsInclude or oGlobalCat.get("vfrZoneExt", False)	             #Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m
                 sContent = "vfrZone"
                 sFile = sFile.replace("-all", "-vfr")
             elif sContext in ["ff","wrn"]:

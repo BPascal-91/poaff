@@ -183,7 +183,7 @@ def makeKml(oGeo, sContext:str) -> None:
 
     oKml = Geojson2Kml(oLog=oLog)
     oKml.readGeojsonFile(sSrcFile)
-    sTilte:str = "Paragliding Openair Frensh Files"
+    sTilte:str = "Paragliding Openair Frensh Files " + sContext + " map"
     sDesc:str  = "Created at: " + bpaTools.getNowISO() + "<br/>http://pascal.bazile.free.fr/paraglidingFolder/divers/GPS/OpenAir-Format/"
     oKml.createKmlDocument(sTilte, sDesc)
     er:float = poaffCst.cstKmlEpsilonReduce     #Param d'optimisation standard de KML

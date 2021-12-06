@@ -16,14 +16,11 @@ import aixmReader
 #   AMS [Aeronautical Mobile Service.]
 #   AMSS [Aeronautical Mobile Satellite Service.]
 #   ARTCC [Air Route Traffic Control Centre Service.]
-#   ATC [Air Traffic Control service.]
 #   ATFM [Air Traffic Flow Management service.]
 #   ATM [Air Traffic Management service.]
-#   ATS [Air Traffic Service.]
 #   BOF [Briefing service.]
 #   BS [commercial Broadcasting Service.]
 #   COM [Communications service.]
-#   CTAF [Common Traffic Advisory Frequency Service.]
 #   DVDF [Doppler VDF Service.]
 #   EFAS [En-route Flight Advisory Service.]
 #   FCST [Forecasting service.]
@@ -53,15 +50,35 @@ import aixmReader
 #   OVERFLT [Overflight Clearance Service.]
 #   ENTRY [Entry Clearance Service.]
 #   EXIT [Exit Clearance Service.]
-# 2/ List of Radio services
-#   MHZ = BPascal-POAFF specifique notation for default radio type
+
+# 2/ Autres
+#   ACFT = Aircraft
+#   RPAS = Remotely Piloted Aircraft System
+#   BHACC = zone of responsibility of the BiH Area Control Centre (BHACC) --> (transcodé en "ACC")
+#   FIC = Flight Information Centre --> (transcodé en "TWR")
+#   CTL = Control --> (transcodé en "TWR")
+#   CTR = Control Zone --> (transcodé en "TWR")
+#   TOWER --> (transcodé en "TWR")
+#   CONTROL --> (transcodé en "TWR")
+#   CONTROLE --> (transcodé en "TWR")
+#   TERMINAL --> (transcodé en "TWR")
+#   TRANSIT --> (transcodé en "APP")
+#   TFC = Transit Flying Chart --> (transcodé en "APP")
+#   RAI  = Runway alignment indicator --> (transcodé en "ATIS")
+#   RAIZ = Runway alignment indicator --> (transcodé en "ATIS")
+#   Auto-Info --> (transcodé en "ATIS")
+#   CTAF [Common Traffic Advisory Frequency Service.] --> (transcodé en "INFO")
+#   INFORMATION --> (transcodé en "INFO")
+#   Glider-info --> (transcodé en "INFO")
+
+# 3/ List of Radio services
 #   APP [Approach Control Service for both Arrival AND Departure.]
 #   APP-ARR [Approach Control Service for Arrivals only.]
 #   APP-DEP [Approach Control Service for Departures only.]
 #   TWR [Aerodrome Control Tower Service.]
 #   SIV = Service d'Information de Vol - Le SIV peut fournir des informations sur l’état d’un aérodrome, les conditions météo, les fréquences radio et potentiellement du trafic. Le SIV donne tout un tas d’informations qui peuvent être utiles lors d’un vol. Il ne donne pas d’instruction et peut donner une information trafic lorsqu’il la connaît.
 #   AFIS = [Aerodrome Flight Information Service.]
-#   A/A  = AFIS --> https://fr.wikipedia.org/wiki/Contr%C3%B4le_de_la_circulation_a%C3%A9rienne
+#   A/A --> (transcodé en "AFIS") --> https://fr.wikipedia.org/wiki/Contr%C3%B4le_de_la_circulation_a%C3%A9rienne
 #   INFO [Information Provision Service.]
 #   ATIS [Automated Terminal Information Service.]
 #   ATIS-ARR [Automated Terminal Information Service for Arriving Traffic.]
@@ -69,9 +86,15 @@ import aixmReader
 #   ACC = Area Control Center
 #   FIS = [Flight Information Service.]
 #   AIS [Aeronautical Information Service.]
+#   ATS [Air Traffic Service.]
+#   ATC [Air Traffic Control service.]
+#   AIT ??? - (sample "../.. announced by: AIT 134.680")
+#   CDC = Centre de détection et de contrôle militaire
+#   CCMAR = Centre de Coordination et de contrôle de la MARine
 #   RADAR [Radar service.]
+#   MHZ = BPascal-POAFF specifique notation for default radio type
 
-cstFreqTypePriority:list = ["APP","APP-ARR","APP-DEP","TWR","SIV","AFIS","A/A","INFO","ATIS","ATIS-ARR","ATIS-DEP","ACC","FIS","AIS","RADAR","MHZ"] #Priorisation des typologies de fréquence radio reconnues
+cstFreqTypePriority:list = ["APP","APP-ARR","APP-DEP","TWR","SIV","AFIS","A/A","INFO","ATIS","ATIS-ARR","ATIS-DEP","ACC","FIS","AIS","ATS","ATC","AIT","CDC","CCMAR","RADAR","MHZ"]     #Priorisation des typologies de fréquence radio reconnues
 cstMhz:str      = "Mhz"
 cstNameV:str    = "nameV"
 cstDesc:str     = "desc"
@@ -281,7 +304,7 @@ class XmlSIA:
                         sAsKey:str = aLocKey[0] + aLocKey[1]        #AirspaceKey  = 'LFRK'
                         aFreqKey:list = aLocKey[2].split(" ")
                         sFreqKey:str = aFreqKey[0]                  #FrequenceKey = 'TWR','APP' etc...
-                        bExclude:bool = bool(sFreqKey in ["VDF","UAC","UTA","SRE","CEV","PAR","A/A"])   #Exclure certains typage de fréquences
+                        bExclude:bool = bool(sFreqKey in ["VDF","UAC","UTA","SRE","CEV","PAR"])     #Exclure certains typage de fréquences
                         if not bExclude and o.Remarque:     #Exclure certaines fréquences non utiles
                             sRem:str = o.Remarque.string
                             bExclude = bExclude or ("ur instruction" in sRem.lower())   #'Sur instruction ../..' ou 'FREQ sur instruction' etc...
@@ -374,13 +397,21 @@ class XmlSIA:
 
             #Au moins 1 fréquence embarquée via le fichier XML du SIA
             if cstMhz in oProps:
-                #continue                           #(Old) Ne pas analyser plus loin les contenus textuels
+                #oFreqList - Content sample -> {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
                 oFreqList:dict = oProps[cstMhz]     #(New) Accumuler les fréquences complémentaire trouvées dans les descriptions
+                if isinstance(oFreqList, dict):
+                    None
+                elif isinstance(oFreqList, str):
+                    sDict:str = bpaTools.getContentOf(oFreqList, "{", "}", bRetSep=True)
+                    oFreqList:dict = json.loads(sDict)
+                else:
+                    oFreqList:dict = {}
             else:
-                oFreqList:dict = {}     #Content sample -> {"APP":["122.100*", "TEL ATIS: 04 67 13 11 70", "0467131170"], "APP1":["119.700"], "APP2":["122.300"]}
+                oFreqList:dict = {}
 
-            #Règle de base : Ne rechercher que les Fréquences >=118 and <=137
-            reFind = re.compile("1[1-3][0-9]\.[0-9][0-9]?[0-9]?")       #Pattern pour limiter l'intervale de 110.0[00] à 139.0[00]
+            #Voir 'Sous-bande VHF' - https://fr.wikipedia.org/wiki/Radiocommunication_a%C3%A9ronautique
+            #Règle de base : Ne rechercher que les Fréquences >=118 and <=150       (FFVL = 143.9875)
+            reFind = re.compile("1[1-5][0-9][\.,][0-9][0-9]?[0-9]?[0-9]?")          #Intervale de 110.0[000] à 159.0[000] || 110,0[000] à 159,0[000]
 
             #Recherche d'éventuelle fréquence dans le nommage de la zone
             oFreqs:list = reFind.findall(oProps[cstNameV])
@@ -407,8 +438,11 @@ class XmlSIA:
     def addFrequecies(self, sTxt:str, oFreqs:list, oFreqList:dict) -> None:
         if len(oFreqs)>0:
             for sFreq in oFreqs:
-                #if sFreq == "111.069":
-                #    tmp = ("aa" == "bb")
+                lVirgule:int = sFreq.find(",")      #Normalisation du séparateur de fréquence radio --> plusieurs erreur constatés dans les données officielles avec ',' comme séparateurs...
+                if lVirgule >= 0:
+                    sFreqOld:str = sFreq
+                    sFreq = sFreq.replace(",", ".")
+                    sTxt = sTxt.replace(sFreqOld, sFreq)
                 if self.ctrlNewFrequecy(sFreq, oFreqList):
                     sFreqKey:str = self.findFrequecyType(sTxt, sFreq)
                     sFreqKey = self.makeNewKey(sFreqKey, oFreqList)
@@ -431,18 +465,47 @@ class XmlSIA:
     #   <txtRmk>Dropping after radio contact on 123.425 MHz. #Activation known on:# PARIS INFO: 126.1 MHz# SEINE INFO : 120.325 MHz#SAINT DIZIER APP : 134.775#PARIS ACC : 120.950 MHz.</txtRmk>
     #   <txtRmkWorkHr>H24.  DEAUVILLE APP : 120.350 MHz DEAUVILLE FIS : 121.425 MHz ..etc.. and AFIS 120.2MHz absence</txtRmkWorkHr>
     def findFrequecyType(self, sTxt:str, sFreq:str) -> str:
-        sRet:str = "MHZ"                                        #Default return
-        sFind:str = sTxt.replace("A/A", "AFIS").lower()
+        sFind:str = sTxt.lower()
+        sFind = sFind.replace("bhacc"       , "acc")
+        sFind = sFind.replace("fic"         , "twr")
+        sFind = sFind.replace("ctl"         , "twr")
+        sFind = sFind.replace("ctr"         , "twr")
+        sFind = sFind.replace("tower"       , "twr")
+        sFind = sFind.replace("controle"    , "twr")
+        sFind = sFind.replace("control"     , "twr")
+        sFind = sFind.replace("terminal"    , "twr")
+        sFind = sFind.replace("transit"     , "app")
+        sFind = sFind.replace("tfc"         , "app")
+        sFind = sFind.replace("app/radar"   , "app")            #Special clean for 'app'
+        sFind = sFind.replace("a/a"         , "afis")
+        sFind = sFind.replace("rai"         , "atis")
+        sFind = sFind.replace("raiz"        , "atis")
+        sFind = sFind.replace("auto-info"   , "atis")
+        sFind = sFind.replace("ctaf"        , "info")
+        sFind = sFind.replace("information" , "info")
+        sFind = sFind.replace("glider-info" , "info")
+        sFind = sFind.replace("watch"       , "")               #Special clean for not 'atc'
         lFreq:int = sFind.find(sFreq)                           #Frequecy position
         if lFreq != -1:
-            lStart:int = lFreq-15                               #Left shift with 15 chars max
-            if lStart < 0:
-                lStart = 0
-            sTmp:str = sFind[lStart:lFreq]
-            for sFreqType in cstFreqTypePriority:
-                if (sFreqType.lower()+"(") in sTmp:             #for find in title name 'App(' ; 'Fis(' or 'Afis(' etc
-                    return sFreqType
-                if (" "+sFreqType.lower()) in sTmp:             #for find in description ' APP' ; ' FIS' or ' AFIS' etc
-                    return sFreqType
-        return sRet
+            for iIdx in range(4):                               #Boucle de 0 à 3 (4 itérations)
+                if iIdx == 0:
+                    lStart:int = lFreq-15                       #Left shift with -15 chars max
+                    if lStart < 0:  lStart = 0
+                    sTmp:str = sFind[lStart:lFreq]
+                elif iIdx == 1:
+                    lStart:int = lFreq-30                       #Left shift with -30 chars max
+                    if lStart < 0:  lStart = 0
+                    sTmp:str = sFind[lStart:lFreq-10]           #Recouvrement +5 chars
+                elif iIdx == 2:
+                    lStart:int = lFreq+len(sFreq)               #Right shift after frequency
+                    sTmp:str = sFind[lStart:lStart+15]          #Right shift with +15 chars
+                elif iIdx == 3:
+                    lStart:int = lFreq+len(sFreq)+10            #Right shift with +10 chars after frequency - Recouvrement +5 chars
+                    sTmp:str = sFind[lStart:lStart+15]          #Right shift with +25 chars
+                for sFreqType in cstFreqTypePriority:
+                    if (sFreqType.lower()+"(") in sTmp:         #for find in title name 'App(' ; 'Fis(' or 'Afis(' etc
+                        return sFreqType
+                    if (sFreqType.lower()) in sTmp:             #for find in description 'APP' ; 'FIS' or 'AFIS' etc
+                        return sFreqType
+        return "MHZ" #Default return
 
