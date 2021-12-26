@@ -269,7 +269,7 @@ if __name__ == '__main__':
     setConfEpsilonReduce(epsilonReduce)         #### Paramétrage de l'optimisation des tracés ####
 
 
-    parcsConsolidation()
+    ## parcsConsolidation()
 
 
     """
@@ -321,15 +321,15 @@ if __name__ == '__main__':
     """
 
 
-    """
+
     ###--- PWC-FrenchAlps --
     sPwcPathName: str = "FFVL/PWC-FrenchAlps/"
     sInPath: str = cstPoaffInPath  + sPwcPathName
     sPOutPath: str = cstPoaffOutPath + sPwcPathName
-    sSrcOpenairFile: str = "20210120_PWC-FrenchAlps_Airspace-mondiaux_BPa-20210120.txt"
+    sSrcOpenairFile: str = "20210311_PWC-FrenchAlps_Airspace-mondiaux_BPa-20210311.txt"
     #sFilterClass=["ZSM", "GP"]
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, "../" + cstPoaffInPath)
-    """
+
 
 
     #Clotures

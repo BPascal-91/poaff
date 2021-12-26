@@ -10,7 +10,7 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
-
+cstOpenair:str              = "Openair"
 openairAixmHeader:str       = "***(aixmParser) "
 errLocalisationPoint:list   = ["DP 45:00:00 N 005:00:00 W"]
 
@@ -132,7 +132,7 @@ class OpenairArea:
         oNewHeader:dict = deepcopy(self.oAsCat.oGlobalCatalogHeader)
 
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]         #Récupération de la liste des zones consolidés
-        sTitle = "Openair save airspaces file - {0} / {1} / {2} / {3}".format(sContext, gpsType, exceptDay, sAreaKey)
+        sTitle = cstOpenair + " save airspaces file - {0} / {1} / {2} / {3}".format(sContext, gpsType, exceptDay, sAreaKey)
         barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
         idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
@@ -263,10 +263,10 @@ class OpenairArea:
 
         sMsg:str = " file {0} - {1} areas in map".format(sFile, len(oOutOpenair))
         if len(oOutOpenair) == 0:
-            self.oLog.info("Openair unwritten" + sMsg, outConsole=False)
+            self.oLog.info(cstOpenair + " unwritten" + sMsg, outConsole=False)
             bpaTools.deleteFile(sFile)
         else:
-            self.oLog.info("Openair write" + sMsg, outConsole=False)
+            self.oLog.info(cstOpenair + " write" + sMsg, outConsole=False)
 
             #Entête des fichiers
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
@@ -395,7 +395,7 @@ class OpenairArea:
         self.oOpenair:dict = {}     #Clean temporary dict
         fileOpenair = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllOpenairFileName                  #Fichier comportant toutes les bordures de zones
 
-        sTitle = "Openair airspaces consolidation - {0}".format(sKeyFile)
+        sTitle = cstOpenair + " airspaces consolidation - {0}".format(sKeyFile)
         self.oLog.info(sTitle + ": {1} --> {2}".format(sKeyFile, fileOpenair, oFile[poaffCst.cstSpProcessType]), outConsole=False)
         self.parseFile(fileOpenair, sKeyFile)
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]          #Récupération de la liste des zones consolidés
@@ -421,13 +421,13 @@ class OpenairArea:
                     oAs.oCat = oGlobalCat    #Référencement du Catalog de propriétés de cette zone
                     self.oGlobalOpenair.update({sGlobalKey:oAs})
                 else:
-                    self.oLog.error("Openair airspace not found in file - {0}".format(sUId), outConsole=False)
+                    self.oLog.error(cstOpenair + " airspace not found in file - {0}".format(sUId), outConsole=False)
             barre.update(idx)
         barre.reset()
         return
 
     def parseFile(self, sSrcFile:str, sKeyFile:str) -> None:
-        sTitle = "Openair airspaces parsing file - {0}".format(sKeyFile)
+        sTitle = cstOpenair + " airspaces parsing file - {0}".format(sKeyFile)
         self.oLog.info(sTitle, outConsole=False)
         fopen = open(sSrcFile, "rt", encoding="cp1252", errors="ignore")    #or encoding="utf-8"
         lines = fopen.readlines()

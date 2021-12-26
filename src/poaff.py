@@ -18,7 +18,7 @@ import poaffCst
 import geoRefArea
 from airspacesCatalog import AsCatalog
 from geojsonArea import GeojsonArea
-from geojsonTruncature import GeojsonTrunc
+from googleMapsArea import GoogleMapsArea
 from geojson2kml import Geojson2Kml
 from openairArea import OpenairArea
 from xmlSIA import XmlSIA
@@ -46,13 +46,14 @@ globalAsOpenair         = poaffOutPath + poaffCst.cstGlobalHeader + poaffCst.cst
 ###################################
 debugLevel:bool         = 0         #Normaly = 0 for silent; 1 for generate % of RDP-optimization in openair files; 2 in openair and log files
 epsilonReduce:bool      = True      #Normaly = True  or False for generate without optimization
-aixmPaserConstruct:bool = True      #Normaly = True
-geojsonConstruct:bool   = True      #Normaly = True
-openairConstruct:bool   = True      #Normaly = True
-kmlConstruct:bool       = True      #Normaly = True
+aixmPaserConstruct:bool   = False      #Normaly = True
+geojsonConstruct:bool     = False      #Normaly = True
+googleMapsConstruct     = True      #Normaly = True
+openairConstruct:bool     = False      #Normaly = True
+kmlConstruct:bool         = False      #Normaly = True
 catalogConstruct:bool   = False     #Normaly = False or True for only catalog construct files
 partialConstruct:bool   = False     #Normaly = False or True for limited construct files (geoFrenchNorth + geoFrenchSouth)
-testMode:bool           = False     #Normaly = False or True for generate with tests files
+testMode:bool             = True      #Normaly = False or True for generate with tests files
 
 ####  Liste des fichiers a traiter  ####
 scriptProcessing = {
@@ -125,13 +126,14 @@ def poaffMergeFiles() -> None:
     if catalogConstruct:                                                    #Abandon des traitements
         return
 
-    if geojsonConstruct:
-        #B1/ Consolidation des espaces-aériens GeoJSON
+    #B1/ Consolidation des espaces-aériens GeoJSON
+    if geojsonConstruct or googleMapsConstruct:
         oJsArea = GeojsonArea(oLog, oAsCat, partialConstruct)                   #Gestion des zones
         for sKey, oFile in scriptProcessing.items():                            #Traitement des fichiers
             oJsArea.mergeGeoJsonAirspacesFile(sKey, oFile)                      #Consolidation des fichiers GeoJSON
 
-        #B2/ Construction des sorties GeoJSON
+    #B2/ Construction des sorties GeoJSON
+    if geojsonConstruct:
         if not partialConstruct:
             #oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "all", epsilonReduce=poaffCst.cstGeojsonEpsilonReduce)     #Sortie complète des zones
             oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ifr", epsilonReduce=poaffCst.cstGeojsonEpsilonReduce)      #Sortie des zones IFR
@@ -140,6 +142,11 @@ def poaffMergeFiles() -> None:
             oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "ff" , epsilonReduce=poaffCst.cstGeojsonEpsilonReduce)      #Sortie globale vol-libre sans zonage géographique
             oJsArea.saveGeoJsonAirspacesFile(globalAsGeojson, "wrn", epsilonReduce=poaffCst.cstGeojsonEpsilonReduce)      #Sortie globale warning sans zonage géographique
         oJsArea.saveGeoJsonAirspacesFile4Area(globalAsGeojson, epsilonReduce=poaffCst.cstGeojsonEpsilonReduce)            #Sorties par zonage géographique
+
+    #B3/ Construction des sorties Google-Maps (basées sur formalisme GeoJSON)
+    if googleMapsConstruct:
+        oGmArea = GoogleMapsArea(oLog, oAsCat, oJsArea.oGlobalGeoJSON, partialConstruct)                   #Gestion des zones
+        oGmArea.saveGoogleMapsFile4Area(globalAsGeojson, epsilonReduce=poaffCst.cstGeojsonEpsilonReduce)            #Sorties par zonage géographique
 
     if openairConstruct:
         #C1/ Consolidation des espaces-aériens Openair

@@ -10,7 +10,7 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 
-
+cstGeoJSON:str              = "GeoJSON"
 cstFreeFlightZoneExt:str    = "zoneExt"
 cstDeltaExtended:str        = "deltaExtended"
 cstWithoutLocation:str      = "withoutGeoLocation"
@@ -46,7 +46,7 @@ class GeojsonArea:
 
         #bpaTools.writeJsonFile(sFile + "-tmp.json", self.oGlobalGeoJSON)                       #Sérialisation pour mise au point
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]         #Récupération de la liste des zones consolidés
-        sTitle = "GeoJSON save airspaces file - {0} / {1}".format(sContext, sAreaKey)
+        sTitle = cstGeoJSON + " save airspaces file - {0} / {1}".format(sContext, sAreaKey)
         barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
         idx = 0
         for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
@@ -201,7 +201,7 @@ class GeojsonArea:
                     percent:float = round((1-(iNewSize/iOrgSize))*100,1)
                     percent = int(percent) if percent>=1.0 else percent
                     sOpti:str = "Segments optimisés à {0}% ({1}->{2}) [rdp={3}] ***".format(percent, iOrgSize, iNewSize, epsilonReduce)
-                    self.oLog.debug("GeoJSON RDP Optimisation: {0} - {1}".format(oSingleCat["nameV"], sOpti), level=2, outConsole=False)
+                    self.oLog.debug(cstGeoJSON + " RDP Optimisation: {0} - {1}".format(oSingleCat["nameV"], sOpti), level=2, outConsole=False)
                     #self.oCtrl.oLog.debug("RDP Src: {0}".format(oCoords), level=8)
                     #self.oCtrl.oLog.debug("RDP Dst: {0}".format(oCoordsDst), level=8)
                     if oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPoint).lower():
@@ -228,10 +228,10 @@ class GeojsonArea:
 
         sMsg:str = " file {0} - {1} areas in map"
         if len(oGeoFeatures) == 0:
-            self.oLog.info("GeoJSON unwritten" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
+            self.oLog.info(cstGeoJSON + " unwritten" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
             bpaTools.deleteFile(sFile)
         else:
-            self.oLog.info("GeoJSON write" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
+            self.oLog.info(cstGeoJSON + " write" + sMsg.format(sFile, len(oGeoFeatures)), outConsole=False)
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             if sAreaKey in self.oGeoRefArea.AreasRef:
@@ -252,7 +252,7 @@ class GeojsonArea:
             return
 
         fileGeoJSON = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllGeojsonFileName                  #Fichier comportant toutes les bordures de zones
-        sTitle = "GeoJSON airspaces consolidation - {0}".format(sKeyFile)
+        sTitle = cstGeoJSON + " airspaces consolidation - {0}".format(sKeyFile)
         self.oLog.info(sTitle + ": {0} --> {1}".format(fileGeoJSON, oFile[poaffCst.cstSpProcessType]), outConsole=False)
         self.makeGeojsonIndex(fileGeoJSON, sKeyFile)
         oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]          #Récupération de la liste des zones consolidés
@@ -270,14 +270,14 @@ class GeojsonArea:
                     oGlobalCat.update(oRet)
                     self.oGlobalGeoJSON.update({sGlobalKey:oAs})
                 else:
-                    self.oLog.error("GeoJSON airspace not found in file - {0}".format(sUId), outConsole=False)
+                    self.oLog.error(cstGeoJSON + " airspace not found in file - {0}".format(sUId), outConsole=False)
             barre.update(idx)
         barre.reset()
         self.oAsCat.saveCatalogFiles()
         return
 
     def makeGeojsonIndex(self, fileGeoJSON:str, sKeyFile:str) -> None:
-        sTitle = "GeoJSON airspaces make index - {0}".format(sKeyFile)
+        sTitle = cstGeoJSON + " airspaces make index - {0}".format(sKeyFile)
         self.oIdxGeoJSON = {}                                                                   #Clean previous data
         ofileGeoJSON:dict = bpaTools.readJsonFile(fileGeoJSON)                                  #Chargement des zones
         if poaffCst.cstGeoFeatures in ofileGeoJSON:
