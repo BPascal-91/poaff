@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from shapely.geometry import shape, GeometryCollection
 import copy
+from enum import Enum
 
 try:
     import bpaTools
@@ -14,6 +15,16 @@ except ImportError:
     import bpaTools
 
 import poaffCst
+
+class enuAreasRef(Enum):
+    geoJSON     = 0     #Dictionnaire geoJSON contenant le tracé de périmètre
+    baseName    = 1     #Nommage de base relatif au périmètre
+    desc        = 2     #Descirption du périmètre
+    descComp    = 3     #Complément à la description du périmètre
+    Iso3        = 4     #ISO_3166-1 - 3 chars
+    Iso2        = 5     #ISO_3166-1 - 2 chars
+    IsoComp     = 6     #ISO_Perimeter: Countries; All-Territories; Country; Partial; Additional-Territory
+    defLocation = 7    #"{Lat:47,Lng:2,Zoom:6.7}" Dictionnaire de représentation de la localisation par défaut utilisée pour centrage automatisé via GoogleMaps (Google.Maps.API)
 
 class GeoRefArea:
 
@@ -66,59 +77,59 @@ class GeoRefArea:
         if partialConstruct:
             #Pour acceleration des tests en mises au points
             self.AreasRef = {
-                    #"geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories"],
-                    "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country"],
-                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial"],
-                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial"],
-                    #"geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial"],
-                    #"geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial"],
-                    #"geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","---","--","Partial"],
-                    #"geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances","","FRA","FR","Partial"],
+                    #"geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories",,"{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","---","--","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
                     }
         else:
             #Lotissement nominal des bordures à traiter
             self.AreasRef = {
-                    #"geoTestPolygon":          [self.aTestPolygon          , None          , "Test avec plusieurs zones ajourée/combinée","","FRA","FR","Test"],
-                    #"geoTestMultiPolygon":     [self.aTestMultiPolygon     , None          , "Test une seule multi-zone ajourée/combinée","","FRA","FR","Test"],
-                    #"geoFrenchExt":            [self.aFrenchExt            , None          , "France métropolitaine légèrement étandue aux frontières","","---","--","Countries"],
-                    "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories"],
-                    "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country"],
-                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial"],
-                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial"],
-                    "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)","","FRA","FR","Partial"],
-                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial"],
-                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial"],
-                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","FRA","FR","Partial"],
-                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes", "Périmètre de performance spécifique pour l'organisation des (PWC) Coupes-du-Monde de Parapente France-Alpes \n\n https://federation.ffvl.fr/ \n https://www.facebook.com/wpc.coeurdesavoie/","FRA","FR","Partial"],
-                    "geoCorse":                 [self.Corse                 , None          , "Corse","","FRA","FR","Additional-Territory"],
-                    "geoLaReunion":             [self.LaReunion             , None          , "La Réunion","","REU","RE","Country"],
-                    "geoGuyaneFr":              [self.GuyaneFr              , None          , "Guyane Française","","GUF","GU","Country"],
-                    "geoStPierreEtMiquelon":    [self.StPierreEtMiquelon    , None          , "Saint Pierre et Miquelon","","SPM","PM","Country"],
-                    "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises", "Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade","GLP;MTQ;SMR;BLM;","GP;MQ;SM;BL","Countries"],
-                    "geoMayotte":               [self.Mayotte               , None          , "Mayotte","","MYT","YT","Country"],
-                    "geoPolynesieFr":           [self.PolynesieFr           , None          , "Polynesie Française (Tahiti)","","PYF","PF","Country"],
-                    "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "Nouvelle Calédonie","","NCL","NC","Country"],
-                    "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes", "France, Italie, Suisse et Autriche","---","--","Countries"],
-                    "geoNetherlands":           [self.Netherlands           , None          , "Netherlands / Pays-Bas","","NLD","NL","Country"],
-                    "geoBelgium":               [self.Belgium               , None          , "Belgium / Belgique","","BEL","BE","Country"],
-                    "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg","","LUX","LU","Country"],
-                    "geoGermany":               [self.Germany               , None          , "Germany / Allemagne","","DEU","DE","Country"],
-                    "geoPoland":                [self.Poland                , None          , "Poland / Pologne","","POL","PL","Country"],
-                    "geoCzechia":               [self.Czechia               , None          , "Czechia / Tchéquie","","CZE","CZ","Country"],
-                    "geoSlovakia":              [self.Slovakia              , None          , "Slovakia / Slovaquie","","SVK","SK","Country"],
-                    "geoHungary":               [self.Hungary               , None          , "Hungary / Hongrie","","HUN","HU","Country"],
-                    "geoAustria":               [self.Austria               , None          , "Austria / Autriche","","AUT","AT","Country"],
-                    "geoSlovenia":              [self.Slovenia              , None          , "Slovenia / Slovénie","","SVN","SI","Country"],
-                    "geoSwitzerland":           [self.Switzerland           , None          , "Switzerland / Suisse","","CHE","CH","Country"],
-                    "geoLiechtenstein":         [self.Liechtenstein         , None          , "Liechtenstein","","LIE","LI","Country"],
-                    "geoDenmark":               [self.Denmark               , None          , "Denmark / Danemark","","DNK","DK","Country"],
-                    "geoAndorra":               [self.Andorra               , None          , "Andorra / Andorre","","AND","AD","Country"],
-                    "geoSpain":                 [self.Spain                 , None          , "Spain / Espagne","","ESP","ES","Country"],
-                    "geoPortugal":              [self.Portugal              , None          , "Portugal","","PRT","PT","Country"],
-                    "geoItaly":                 [self.Italy                 , None          , "Italy / Italie","","ITA","IT","Country"],
-                    "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom / Royaume-Uni","","GBR","GB","Country"],
-                    "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Iles Anglo-Normandes de Jersey et Guernesey","","JEY;GGY","JE;GG","Countries"],
-                    "geoIreland":               [self.Ireland               , None          , "Ireland / Irlande","","IRL","IE","Country"],
+                    #"geoTestPolygon":          [self.aTestPolygon          , None          , "Test avec plusieurs zones ajourée/combinée","","FRA","FR","Test","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoTestMultiPolygon":     [self.aTestMultiPolygon     , None          , "Test une seule multi-zone ajourée/combinée","","FRA","FR","Test","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoFrenchExt":            [self.aFrenchExt            , None          , "France métropolitaine légèrement étandue aux frontières","","---","--","Countries","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes", "Périmètre de performance spécifique pour l'organisation des (PWC) Coupes-du-Monde de Parapente France-Alpes \n\n https://federation.ffvl.fr/ \n https://www.facebook.com/wpc.coeurdesavoie/","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoCorse":                 [self.Corse                 , None          , "Corse","","FRA","FR","Additional-Territory","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoLaReunion":             [self.LaReunion             , None          , "La Réunion","","REU","RE","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoGuyaneFr":              [self.GuyaneFr              , None          , "Guyane Française","","GUF","GU","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoStPierreEtMiquelon":    [self.StPierreEtMiquelon    , None          , "Saint Pierre et Miquelon","","SPM","PM","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises", "Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade","GLP;MTQ;SMR;BLM;","GP;MQ;SM;BL","Countries","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoMayotte":               [self.Mayotte               , None          , "Mayotte","","MYT","YT","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoPolynesieFr":           [self.PolynesieFr           , None          , "Polynesie Française (Tahiti)","","PYF","PF","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "Nouvelle Calédonie","","NCL","NC","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes", "France, Italie, Suisse et Autriche","---","--","Countries","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoNetherlands":           [self.Netherlands           , None          , "Netherlands / Pays-Bas","","NLD","NL","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoBelgium":               [self.Belgium               , None          , "Belgium / Belgique","","BEL","BE","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg","","LUX","LU","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoGermany":               [self.Germany               , None          , "Germany / Allemagne","","DEU","DE","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoPoland":                [self.Poland                , None          , "Poland / Pologne","","POL","PL","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoCzechia":               [self.Czechia               , None          , "Czechia / Tchéquie","","CZE","CZ","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoSlovakia":              [self.Slovakia              , None          , "Slovakia / Slovaquie","","SVK","SK","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoHungary":               [self.Hungary               , None          , "Hungary / Hongrie","","HUN","HU","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoAustria":               [self.Austria               , None          , "Austria / Autriche","","AUT","AT","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoSlovenia":              [self.Slovenia              , None          , "Slovenia / Slovénie","","SVN","SI","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoSwitzerland":           [self.Switzerland           , None          , "Switzerland / Suisse","","CHE","CH","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoLiechtenstein":         [self.Liechtenstein         , None          , "Liechtenstein","","LIE","LI","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoDenmark":               [self.Denmark               , None          , "Denmark / Danemark","","DNK","DK","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoAndorra":               [self.Andorra               , None          , "Andorra / Andorre","","AND","AD","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoSpain":                 [self.Spain                 , None          , "Spain / Espagne","","ESP","ES","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoPortugal":              [self.Portugal              , None          , "Portugal","","PRT","PT","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoItaly":                 [self.Italy                 , None          , "Italy / Italie","","ITA","IT","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom / Royaume-Uni","","GBR","GB","Country","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Iles Anglo-Normandes de Jersey et Guernesey","","JEY;GGY","JE;GG","Countries","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoIreland":               [self.Ireland               , None          , "Ireland / Irlande","","IRL","IE","Country","{Lat:47,Lng:2,Zoom:6.7}"],
                     }
 
         self.oShapeZoneRef = None
@@ -170,7 +181,7 @@ class GeoRefArea:
     def ctrlAreasRef(self) -> None:
         try:
             for sRef, oRef in self.AreasRef.items():
-               self.ctrlZone(oRef[0])
+               self.ctrlZone(oRef[enuAreasRef.geoJSON.value])
             return
         except Exception as e:
             sHeader = "[" + bpaTools.getFileName(__file__) + "." + self.ctrlAreasRef.__name__ + "()] "
@@ -239,8 +250,8 @@ class GeoRefArea:
             if self.oShapeZone == None:
                 return ret
             for sRef, oRef in self.AreasRef.items():
-                oRefZone        = oRef[0]
-                sRefBaseInclude = oRef[1]
+                oRefZone        = oRef[enuAreasRef.geoJSON.value]
+                sRefBaseInclude = oRef[enuAreasRef.baseName.value]
                 if oRefZone==None:
                     bRet = True
                 else:

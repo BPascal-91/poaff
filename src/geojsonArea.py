@@ -8,6 +8,7 @@ import aixmReader
 import aixm2json
 import airspacesCatalog
 from airspacesCatalog import AsCatalog
+from geoRefArea import enuAreasRef
 import geoRefArea
 
 cstGeoJSON:str              = "GeoJSON"
@@ -235,7 +236,7 @@ class GeojsonArea:
             oSrcFiles = oNewHeader.pop(airspacesCatalog.cstKeyCatalogSrcFiles)
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             if sAreaKey in self.oGeoRefArea.AreasRef:
-                sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
+                sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][enuAreasRef.desc.value]
                 oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
             oNewHeader.update({airspacesCatalog.cstKeyCatalogNbAreas:len(oGeoFeatures)})

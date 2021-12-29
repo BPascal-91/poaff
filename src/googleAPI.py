@@ -137,7 +137,8 @@ class geocoding:
 
         encoded_points_str = ''.join(encoded_points)
         #encoded_levels_str = ''.join([str(l) for l in encoded_levels])
-        return encoded_points_str #, encoded_levels_str
+        #return encoded_points_str #, encoded_levels_str
+        return encoded_points_str.replace("\\", "\\"*2)
 
     # Enter points array in format (lat, lon)
     def encode_pairs(self, points, threshold=0.00001):
@@ -175,7 +176,7 @@ class geocoding:
 
         encoded_points_str = ''.join(encoded_points)
         encoded_levels_str = ''.join([str(l) for l in encoded_levels])
-        return encoded_points_str, encoded_levels_str
+        return encoded_points_str.replace("\\", "\\"*2), encoded_levels_str
 
     def encode_lat_or_long(self, x, prev_int):
         """Encode a single latitude or longitude.
@@ -327,6 +328,20 @@ if __name__ == '__main__':
     #test2RequestsAPIwithURL()
 
     geoCod:geocoding = geocoding()
+
+    #Bug - GUId="LFR164A2" ; pol.nameV="R 164 A2 Info(130.275)";
+    coordsBug0 = [[6.605278, 48.613611], [6.61663, 48.614872], [6.628118, 48.615383], [6.63963, 48.615199], [6.651068, 48.614322], [6.662336, 48.612757], [6.673342, 48.61052], [6.683992, 48.607628], [6.694198, 48.604105], [6.703874, 48.599981], [6.71294, 48.59529], [6.72132, 48.590072], [6.728945, 48.584371], [6.735752, 48.578232], [6.741683, 48.571709], [6.746689, 48.564855], [6.75073, 48.557728], [6.753771, 48.550386], [6.755789, 48.542892], [6.756766, 48.535307], [6.756696, 48.527695], [6.755578, 48.520118], [6.753424, 48.512641], [6.75025, 48.505324], [6.746085, 48.498229], [6.740963, 48.491416], [6.734926, 48.484939], [6.728026, 48.478854], [6.72032, 48.47321], [6.711872, 48.468055], [6.702752, 48.46343], [6.693036, 48.459376], [6.682805, 48.455924], [6.672143, 48.453104], [6.66114, 48.450938], [6.649885, 48.449446], [6.638473, 48.448639], [6.626997, 48.448524], [6.615553, 48.449102], [6.604236, 48.450368], [6.593139, 48.452312], [6.582354, 48.454917], [6.57197, 48.458162], [6.562075, 48.462021], [6.552748, 48.46646], [6.544069, 48.471444], [6.53611, 48.47693], [6.528935, 48.482875], [6.522607, 48.489227], [6.517176, 48.495935], [6.512689, 48.502943], [6.509183, 48.510193], [6.506688, 48.517624], [6.505225, 48.525174], [6.504807, 48.532782], [6.505437, 48.540383], [6.507111, 48.547914], [6.509815, 48.555314], [6.517932, 48.552763], [6.52629, 48.550952], [6.530583, 48.550317], [6.539311, 48.549601], [6.548105, 48.549633], [6.556821, 48.550412], [6.565313, 48.551926], [6.569431, 48.552951], [6.573442, 48.554149], [6.577327, 48.555516], [6.581072, 48.557045], [6.58466, 48.558731], [6.588077, 48.560566], [6.591309, 48.562542], [6.594342, 48.564652], [6.597164, 48.566887], [6.599762, 48.569238], [6.602127, 48.571694], [6.604247, 48.574246], [6.606116, 48.576883], [6.607723, 48.579594], [6.609064, 48.582368], [6.610132, 48.585194], [6.610923, 48.588059], [6.611434, 48.590952], [6.611661, 48.59386], [6.611605, 48.596772], [6.611266, 48.599676], [6.610644, 48.602559], [6.609743, 48.60541], [6.608566, 48.608216], [6.607118, 48.610967], [6.605405, 48.61365], [6.605278, 48.613611]]
+    bug0 = geoCod.encode(coordsBug0)
+    print ("\nBug0:" + bug0)
+    #>> Bug0:azugH}aig@{F_fAeBwfAd@_gAlDmfAxHmeA|LycAbQqaA~Tw~@vXo{@h\uw@r_@ks@rb@sn@je@qi@xg@ad@xi@g^pk@iXzl@_Rxm@qKln@cEpn@Ljn@~Etm@lLvl@xRjk@`Ypi@~^ng@vd@~d@bj@fb@bo@f_@xs@z[~w@jXv{@pT|~@rPraApLvcAhHjeA`DhfATvfAsBnfA{FveAeKjdAgOjbAiSz_AcWz|@wZhy@c^fu@ia@tp@cd@zk@uf@pf@}h@|`@yj@`[il@zTmm@rNen@bHqn@rAon@}Ban@oIgm@{O|Nwq@hJgs@~ByYlCqu@E}u@{Cou@mHat@mEwXmFaXqGgWqHmVqImUmJiTkKeSeL_R}LsPuMgOkNwM}NgLoOuJ}OaIiPkGuPuE{P}CcQeBeQm@eQJcQbA_QzB{PrDoPjFeP`HyOtIFX
+    coordsBug1 = []
+    for pt in coordsBug0:
+        coordsBug1 += [[pt[1], pt[0]]]
+    #print (coordsBug1)
+    bug1, lev1 = geoCod.encode_pairs(coordsBug1)
+    #print ("\nBug1:" + bug1)
+    assert bug0 == bug1
+
 
     # Enter points array in format (lat, lon)
     coords1 = ((49.516944, -0.000833),(49.625, 0.138333),(49.585556, 0.213056),(49.476667, 0.073333),(49.516944, -0.000833))

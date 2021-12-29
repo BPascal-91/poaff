@@ -12,6 +12,7 @@ except ImportError:
     import bpaTools
 
 import poaffCst
+from geoRefArea import enuAreasRef
 import geoRefArea
 
 
@@ -81,9 +82,9 @@ class PoaffWebPage:
     def addFile2Catalog(self, bPartial:bool, sFileName:str, sCreaDate:str, sDesc:str, sLocation:str="", oAreaRef:list=None) -> None:
         aFile = [bPartial, sFileName, sCreaDate, sLocation, sDesc]
         if oAreaRef:
-            aFile.append(oAreaRef[4])   #ISO_3166-1 - 3 chars
-            aFile.append(oAreaRef[5])   #ISO_3166-1 - 2 chars
-            aFile.append(oAreaRef[6])   #ISO_Perimeter: Countries; All-Territories; Country; Partial; Additional-Territory
+            aFile.append(oAreaRef[enuAreasRef.Iso3.value])
+            aFile.append(oAreaRef[enuAreasRef.Iso2.value])
+            aFile.append(oAreaRef[enuAreasRef.IsoComp.value])
         else:
             sFileExt:str = bpaTools.getFileExt(sFileName)
             if sFileExt in [".txt",".geojson",".kml"]:
@@ -322,7 +323,7 @@ class PoaffWebPage:
             sPath:str = 'files/geoRef/'
             sFile:str =  sAreaKey + '_border.geojson'
             if os.path.exists(self.publishPath + sPath + sFile):
-                sTitle:str = "Geographic border - Frontière géographique / " + oAreaRef[2] + sFormat
+                sTitle:str = "Geographic border - Frontière géographique / " + oAreaRef[enuAreasRef.desc.value] + sFormat
                 self.addFile2Catalog(False, sFile, bpaTools.getDate(bpaTools.getFileModificationDate(self.publishPath + sPath + sFile)), sTitle, sAreaKey, oAreaRef)
 
 
@@ -370,7 +371,7 @@ class PoaffWebPage:
                     dstFileName2 = str(dstFileName).replace(aTypeFile[1][1:] + ".", aTypeFile[1][1:] + "-" + sAreaKey + ".")
                     dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[enuAreasRef.desc.value] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrench-wrn.geojson)
@@ -456,7 +457,7 @@ class PoaffWebPage:
                     dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
                     dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[enuAreasRef.desc.value] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrench-withT-wrn.txt)
@@ -484,7 +485,7 @@ class PoaffWebPage:
                                 self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[enuAreasRef.desc.value], oAreaRef)
                         if sAreaKey=="geoFrenchAll":
                             self.sWebPageBuffer = self.sWebPageBuffer.replace(sFind, sLinks)
                         else:
@@ -517,7 +518,7 @@ class PoaffWebPage:
                     #dstFileName2 = str(dstFileName2).replace(poaffCst.cstWithTopo, "")
                     #dstFileName2 = str(dstFileName2).replace(".txt", "-withT.txt")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[enuAreasRef.desc.value] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrenchNorth-withT-wrn.txt)
@@ -533,7 +534,7 @@ class PoaffWebPage:
                         sNewTableRows += self.makeTableRow("Openair", sToken2, sAreaKey, oAreaRef, dstFileName2, sTitle)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithTopo[1:], sAreaKey, oAreaRef[enuAreasRef.desc.value], oAreaRef)
                         sNewTableRows= sNewTableRows.replace(sFind, sLinks)
 
                 if sNewTableRows:
@@ -587,7 +588,7 @@ class PoaffWebPage:
                     dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
                     dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[enuAreasRef.desc.value] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrench-outT-wrn.txt)
@@ -615,7 +616,7 @@ class PoaffWebPage:
                                 self.addFile2Catalog(True, dstFileName2b, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[enuAreasRef.desc.value], oAreaRef)
                         if sAreaKey=="geoFrenchAll":
                             self.sWebPageBuffer = self.sWebPageBuffer.replace(sFind, sLinks)
                         else:
@@ -646,7 +647,7 @@ class PoaffWebPage:
                     dstFileName2 = str(dstFileName).replace("_ff", "_ff-" + sAreaKey)
                     dstFileName2 = str(dstFileName2).replace("-geo", "-")
                     if self.copyFile(self.sourcesPath, srcFileName2, self.publishPathFiles, dstFileName2):
-                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[2] + sFormat
+                        sTitle:str = aTypeFile[2] + " / " + oAreaRef[enuAreasRef.desc.value] + sFormat
                         self.addFile2Catalog(False, dstFileName2, self.sHeadFileDate[:-1], sTitle, sAreaKey, oAreaRef)
 
                         #Fichier warning régionalisé (ex: 20210131_airspaces-ff-geoFrenchNorth-outT-wrn.txt)
@@ -662,7 +663,7 @@ class PoaffWebPage:
                         sNewTableRows += self.makeTableRow("Openair", sToken2, sAreaKey, oAreaRef, dstFileName2, sTitle)
 
                         #Traitement de tous les fichiers complémentaires épurés par jour d'activité
-                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[2], oAreaRef)
+                        sLinks, sFind = self.publishFilesExeptDays(sToken2, srcFileName2, dstFileName2, aTypeFile[2], poaffCst.cstWithoutTopo[1:], sAreaKey, oAreaRef[enuAreasRef.desc.value], oAreaRef)
                         sNewTableRows= sNewTableRows.replace(sFind, sLinks)
 
                 if sNewTableRows:
@@ -771,7 +772,7 @@ class PoaffWebPage:
             sTitleWarn3D:str   = sTitle3D.replace(" 3D ", " 3D des zones dangereuses ")
 
         #--Colonne 1--
-        sCellContent:str = cstTextBold.format(oAreaRef[2])
+        sCellContent:str = cstTextBold.format(oAreaRef[enuAreasRef.desc.value])
         if (sAreaKey[:9]=="geoFrench") or (sAreaKey in ["geoPWCFrenchAlps"]):
             sCellContent += '<br/>avec ZSM (Zone de Sensibilité Majeure)'
         aTableCols.append(cstCellStd.format(sCellContent))
@@ -810,9 +811,9 @@ class PoaffWebPage:
                 sContent += '<br/><a title="' + sQualityMsg + '"><img height="30" src="img/travaux.png" /></a>'
             sCellContent += cstSpanRight.format(sContent)
         #--Colonne 2-- - bloc contenu
-        sCellContent += cstTextBold.format(oAreaRef[2])
-        if oAreaRef[3]:
-            sCellContent += '<br/>' + str(oAreaRef[3]).replace("\n", "<br/>")
+        sCellContent += cstTextBold.format(oAreaRef[enuAreasRef.desc.value])
+        if oAreaRef[enuAreasRef.descComp.value]:
+            sCellContent += '<br/>' + str(oAreaRef[enuAreasRef.descComp.value]).replace("\n", "<br/>")
         sCellContent += '<br/>'
         if bQualityLight:
             sCellContent += '<br/>' + cstTextItalic.format(sQualityMsg)
@@ -827,7 +828,7 @@ class PoaffWebPage:
         sContent:str = sFileType
         if bFAF:
             sContent += ' et FAF'
-        sContent += ' - ' + oAreaRef[2] + ' - Vol-libre'
+        sContent += ' - ' + oAreaRef[enuAreasRef.desc.value] + ' - Vol-libre'
         sCellContent:str = cstTextBold.format(cstTextUnderlined.format(sContent))
         sCellContent += '<ul>'
         sCellContent += '<li>' + self.makeLink4File("files", dstFileName, sTitle) + '</li>'

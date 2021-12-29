@@ -8,6 +8,7 @@ import aixm2openair
 import poaffCst
 import airspacesCatalog
 from airspacesCatalog import AsCatalog
+from geoRefArea import enuAreasRef
 import geoRefArea
 
 cstOpenair:str              = "Openair"
@@ -273,7 +274,7 @@ class OpenairArea:
             oNewHeader.update({airspacesCatalog.cstKeyCatalogContent:sContent})
             sAreaDesc:str = ""
             if sAreaKey in self.oGeoRefArea.AreasRef:
-                sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][2]
+                sAreaDesc:str = self.oGeoRefArea.AreasRef[sAreaKey][enuAreasRef.desc.value]
                 oNewHeader.update({airspacesCatalog.cstKeyCatalogKeyAreaDesc:sAreaDesc})
 
             del oNewHeader[airspacesCatalog.cstKeyCatalogNbAreas]
