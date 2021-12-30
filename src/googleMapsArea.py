@@ -122,7 +122,7 @@ class GoogleMapsArea:
                 sKey4Find:str = sAreaKey.replace("geo","IncOf")         #test d'inclusion volontaire de la zone ?
                 bIsArea = oGlobalCat.get(sKey4Find, False)
 
-            if sAreaKey.find("geoFrench")>=0:
+            if bIsArea and sAreaKey.find("geoFrench")>=0:
                 bIsArea = sAreaKey in ["geoFrench","geoFrenchAll"]
 
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalGeoJSON):
@@ -200,10 +200,10 @@ class GoogleMapsArea:
 
             #2/ Add defaultLocation() function - Sample of content: function geoTest1_defaultLocation() {return {Lat:48,Lng:1.7,Zoom:7.4};}
             sDefLocation:str = self.oGeoRefArea.AreasRef[sAreaKey][geoRefArea.enuAreasRef.defLocation.value]
-            sGoogleMaps += "function "+ sAreaKey + "_defaultLocation() {return" + sDefLocation + ";}" + cstCRLF
+            sGoogleMaps += "function "+ sAreaKey + "_defaultLocation(){return" + sDefLocation + ";}" + cstCRLF
 
             #3/ Add addPolygons() function - Header sample - function geoTest1_addPolygons()
-            sGoogleMaps += "function "+ sAreaKey + "_addPolygons() {" + cstCRLF
+            sGoogleMaps += "function "+ sAreaKey + "_addPolygons(){" + cstCRLF
             #Sérialisation de toutes les zones
             for oGmap in oGoogleMaps:
                 sGoogleMaps += oGmap
@@ -361,7 +361,7 @@ class GoogleMapsArea:
                             return oZone["upperValue"]
                         elif oZone["upperType"]=="STD":
                             return oZone["upperValue"] + "00"
-                        elif oZone["upperType"]=="HEI":
+                        elif oZone["upperType"] in ["HEI","QFE","QNH","W84"]:
                             altM = oZone["upperM"]
                             altFT = int(float(altM+100) / aixmReader.CONST.ft)      #Surélévation du plafond de 100 mètres pour marge d'altitude
                             return "{0}".format(altFT)
@@ -396,7 +396,7 @@ class GoogleMapsArea:
                             return oZone["lowerValue"]
                         elif oZone["lowerType"]=="STD":
                             return oZone["lowerValue"] + "00"
-                        elif oZone["lowerType"]=="HEI":
+                        elif oZone["lowerType"] in ["HEI","QFE","QNH","W84"]:
                             if oZone["lowerValue"]=="0":
                                 return "0"
                             else:

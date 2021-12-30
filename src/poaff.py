@@ -53,7 +53,7 @@ openairConstruct:bool     = False      #Normaly = True
 kmlConstruct:bool         = False      #Normaly = True
 catalogConstruct:bool   = False     #Normaly = False or True for only catalog construct files
 partialConstruct:bool   = False     #Normaly = False or True for limited construct files (geoFrenchNorth + geoFrenchSouth)
-testMode:bool             = True      #Normaly = False or True for generate with tests files
+testMode:bool             = False      #Normaly = False or True for generate with tests files
 
 ####  Liste des fichiers a traiter  ####
 scriptProcessing = {
