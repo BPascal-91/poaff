@@ -181,6 +181,7 @@ class GeojsonArea:
                     aixm2json.addColorProperties(oGlobalCat, oSingleCat, self.oLog)      #Ajout des propriétés pour colorisation de la zone
 
                 #Extraction des coordonnées
+                bMulti:bool = False
                 oAsGeo = self.oGlobalGeoJSON[sGlobalKey]
                 if oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPoint).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]                        #get coordinates of geometry
@@ -188,17 +189,22 @@ class GeojsonArea:
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]                        #get coordinates of geometry
                 elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates][0]                     #get coordinates of geometry
+                elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoMultiPolygon).lower():
+                    bMulti = True
+                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]               #get coordinates of geometry
+                else:
+                    self.oLog.error("saveGeoJsonAirspacesFile() {0}={1} found in {2}/{3}".format(poaffCst.cstGeoType, oAsGeo[poaffCst.cstGeoType], sContext, sAreaKey), outConsole=False)
 
                 #Optimisation du tracé GeoJSON
                 oCoordsDst:list = []
                 #if epsilonReduce<0: --> do not change !
-                if epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40):   #Ne pas optimiser le tracé des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
+                if not bMulti and (epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40)):   #Ne pas optimiser les polygons multiples; les tracés des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
                     oCoordsDst = rdp(oCoords, epsilon=epsilonReduce)            #Optimisation du tracé des coordonnées
 
                 #Remplacement du tracé s'il a été optimisé
                 iOrgSize:int = len(oCoords)
                 iNewSize:int = len(oCoordsDst)
-                if iNewSize>0 and iNewSize!=iOrgSize:
+                if not bMulti and iNewSize>0 and iNewSize!=iOrgSize:
                     percent:float = round((1-(iNewSize/iOrgSize))*100,1)
                     percent = int(percent) if percent>=1.0 else percent
                     sOpti:str = "Segments optimisés à {0}% ({1}->{2}) [rdp={3}] ***".format(percent, iOrgSize, iNewSize, epsilonReduce)
@@ -277,6 +283,26 @@ class GeojsonArea:
         self.oAsCat.saveCatalogFiles()
         return
 
+    def addRefAreasInGlobalGeoJSON(self) -> None:
+        oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]          #Récupération de la liste des zones consolidés
+        oAreasRef:dict = self.oGeoRefArea.AreasRef
+        barre = bpaTools.ProgressBar(len(oAreasRef), 20, title="Add RefAreas in global GeoJSON maps")
+        idx = 0
+        for sAreaKey, oAreaRef in oAreasRef.items():
+            idx+=1
+            sKey:str = "#poaff-" + sAreaKey
+            oArea:dict = oAreaRef[enuAreasRef.geoJSON.value]
+            oArea = oArea["features"]
+            for oArea2 in oArea:
+                sKey2:str = "{0}({1})".format(sKey, oArea2["properties"]["name"])
+                self.oGlobalGeoJSON.update({sKey2:oArea2["geometry"]})
+                for sAreaKey2 in self.oGeoRefArea.AreasRef.keys():
+                    oGlobalCats[sKey2].update({sAreaKey2:(sAreaKey2==sAreaKey)})
+            barre.update(idx)
+        barre.reset()
+        self.oAsCat.saveCatalogFiles()
+        return
+
     def makeGeojsonIndex(self, fileGeoJSON:str, sKeyFile:str) -> None:
         sTitle = cstGeoJSON + " airspaces make index - {0}".format(sKeyFile)
         self.oIdxGeoJSON = {}                                                                   #Clean previous data
@@ -298,4 +324,3 @@ class GeojsonArea:
                 barre.update(idx)
             barre.reset()
         return
-

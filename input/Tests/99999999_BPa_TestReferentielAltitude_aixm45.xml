@@ -2,6 +2,73 @@
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
 <AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2020-07-19T19:53:01.597452" effective="2020-07-19T19:53:01.597452">
 	<Ase>
+		<AseUid mid="4484815">
+			<codeType>R</codeType>
+			<codeId>EGR095</codeId>
+		</AseUid>
+		<txtName>SARK</txtName>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2374</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="400002237139872">
+			<codeType>RAS</codeType>
+			<codeId>EYSPP</codeId>
+		</AseUid>
+		<txtLocalType>EYPP TRAFFIC INFORMATION ZONE</txtLocalType>
+		<txtName>PAJUOSTIS TIZ</txtName>
+		<codeClass>G</codeClass>
+		<codeLocInd>EYPP</codeLocInd>
+		<codeActivity>MILOPS</codeActivity>
+		<codeMil>MIL</codeMil>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>4500</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>H24</codeWorkHr>
+		</Att>
+		<txtRmk>1. LTU MILTel.: +370 5 2748194,e-mail: pajuostis.ops@mil.lt2. Call sign - PAJUOSTIS RADIO. Frequency 122.550 MHz3.TIZ is radio mandatory zone (RMZ). In RMZ pilots shall maintain continuous air-ground voice communication watch and establish two-way communication, as necessary, on the appropriate communication channel. Before entering RMZ, a pilot shall establish radio comunication, and transmit call sign, type of aircraft, position, level, and intentions of the flight - MON-FRI: 0500-2100 SAT: 0600-1800: - 1HR HOL: voir/see NOTAM</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="1561497">
+			<codeType>CTR</codeType>
+			<codeId>LFRG</codeId>
+		</AseUid>
+		<txtName>Activation tests</txtName>
+		<codeClass>D</codeClass>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>2500</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-12</dateValidTil>
+				<codeDay>ANY</codeDay>
+				<timeWef>08:00</timeWef>
+				<timeTil>19:00</timeTil>
+			</Timsh>
+			<txtRmkWorkHr>
+				MON-FRI except public HOL: Possible activation H24. SAT, SUN and public HOL: activation by NOTAM with PN 48 HR.
+			</txtRmkWorkHr>
+		</Att>
+		<txtRmk>LF-P 28 LE HAVRE : entry prohibited, exception see AIP ENR 5.1</txtRmk>
+	</Ase>
+	<Ase>
 		<AseUid mid="group-0">
 			<codeType>P</codeType>
 			<codeId>TestGroup</codeId>
@@ -24,11 +91,13 @@
 		<uomDistVerUpper>FT</uomDistVerUpper>
 		<Att>
 			<codeWorkHr>H24</codeWorkHr>
-			<txtRmkWorkHr>Tests d'accentuations (txtRmkWorkHr): "à-â-é-è-î-ï-ô-ù"</txtRmkWorkHr>
+			<txtRmkWorkHr>Tests d'accentuations (txtRmkWorkHr): "à-â-é-è-î-ï-ô-ù". Freq-Radio complémentaires RADAR: 121.425</txtRmkWorkHr>
 		</Att>
 		<txtRmk>Test-Zone1 (sans plancher) -  Tests d'accentuations (txtRmk): "à-â-é-è-î-ï-ô-ù"#
+Freq-Radio complémentaires APP: 129.925 ; TWR: 120.950 ; INFO: 120.325 ;
 SUM : - 1HR#
-Excluding the French part of SARREBRUCK CTR.</txtRmk>
+Excluding the French part of SARREBRUCK CTR.
+#MON-FRI: 0500-1800, 1900-2030</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="zone-2">
@@ -72,7 +141,7 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 			<codeId>Test2</codeId>
 		</AseUid>
 		<txtLocalType>RMZ</txtLocalType>
-		<txtName>Test2</txtName>
+		<txtName>Test2 App(111.069)</txtName>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
 		<uomDistVerUpper>FT</uomDistVerUpper>
@@ -81,9 +150,9 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 		<uomDistVerLower>FT</uomDistVerLower>
 		<Att>
 			<codeWorkHr>H24</codeWorkHr>
-			<txtRmkWorkHr>H24</txtRmkWorkHr>
+			<txtRmkWorkHr>H24.  Std APP 111.069 ; DEAUVILLE APP : 120.350 MHz DEAUVILLE FIS : 121.425 MHz ..etc.. and AFIS 120.2MHz absence</txtRmkWorkHr>
 		</Att>
-		<txtRmk>Avoidance mandatory during activity except for ACFT to and from Brienne le Château AD, helicopter to and from Blignicourt heliport and aircraft for air dropping after radio contact on 123.425 MHz.#Activation known on:# PARIS INFO: 126.1 MHz# SEINE INFO: 120.325 MHz#SAINT DIZIER APP: 134.775#PARIS ACC: 120.950 MHz.</txtRmk>
+		<txtRmk>Avoidance mandatory during activity except for ACFT to and from Brienne le Château AD, helicopter to and from Blignicourt heliport and aircraft for air dropping after radio contact on 123.425 MHz.#Activation known on:# PARIS INFO: 126.1 MHz# SEINE INFO : 120.325 MHz# et aussi APP 111.069 ; SAINT DIZIER A/A : 134.775#PARIS ACC : 120.950 MHz.</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test3">
@@ -213,6 +282,95 @@ Excluding the French part of SARREBRUCK CTR.</txtRmk>
 		<uomDistVerMnm>FT</uomDistVerMnm>
 		<txtRmk>un test</txtRmk>
 	</Ase>
+	<Abd>
+		<AbdUid mid="4484815">
+			<AseUid mid="4484815">
+				<codeType>R</codeType>
+				<codeId>EGR095</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>492546.00N</geoLatCen>
+			<geoLongCen>0022145.00W</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>3</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>FD3CBDC4</valCrc>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="400002237139872">
+			<AseUid mid="400002237139872">
+				<codeType>RAS</codeType>
+				<codeId>EYSPP</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>480000.00N</geoLatCen>
+			<geoLongCen>0020000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>15</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1561497">
+			<AseUid mid="1561497">
+				<codeType>CTR</codeType>
+				<codeId>LFRG</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>480000.00N</geoLatCen>
+			<geoLongCen>0020000.00E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>15</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1570056">
+			<AseUid mid="1563465">
+				<codeType>R</codeType>
+				<codeId>LFR66A1</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>421600.00N</geoLat>
+			<geoLong>0093800.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>E9299B1B</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>420550.00N</geoLat>
+			<geoLong>0093800.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>C9876B86</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>420550.00N</geoLat>
+			<geoLong>0092800.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>EAAEF064</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>421100.00N</geoLat>
+			<geoLong>0092800.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>82246B2D</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>421600.00N</geoLat>
+			<geoLong>0093100.00E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>0982EF2D</valCrc>
+		</Avx>
+	</Abd>
 	<Abd>
 		<AbdUid mid="group-0">
 			<AseUid mid="group-0">

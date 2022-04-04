@@ -47,7 +47,7 @@ class GoogleMapsArea:
             sFileCible = sFileCible.replace(".geojson", "-" + sAreaKey + ".gmaps")
             if os.path.exists(sFileCible):
                 sContent += sAreaKey + ':["'
-                sContent += sAreaKey[3:] + '","'
+                sContent += self.oGeoRefArea.AreasRef[sAreaKey][geoRefArea.enuAreasRef.shortName.value] + '","'
                 sContent += self.oGeoRefArea.AreasRef[sAreaKey][geoRefArea.enuAreasRef.desc.value] + '","'
                 descComp:str = self.oGeoRefArea.AreasRef[sAreaKey][geoRefArea.enuAreasRef.descComp.value]
                 descComp = descComp.replace("\n"," ").replace("  "," ")
@@ -60,7 +60,7 @@ class GoogleMapsArea:
         sContent += '};' + cstCRLF
         sContent += 'const enuPoaffFiles={name:0,desc:1,descComp:2,file:3};' + cstCRLF
         sFileCatalog:str = bpaTools.getFilePath(sFile) + "poaff-data.gmaps"
-        bpaTools.writeTextFile(sFileCatalog, sContent)  #Sérialisation du fichier
+        bpaTools.writeTextFile(sFileCatalog, sContent, sencoding="utf-8")  #Sérialisation du fichier
         return
 
     def saveGoogleMapsFile(self, sFile:str, sContext:str="all", sAreaKey:str=None, epsilonReduce:float=None) -> None:
@@ -128,6 +128,7 @@ class GoogleMapsArea:
             if bIsArea and bIsInclude and (sGlobalKey in self.oGlobalGeoJSON):
 
                 #Extraction des coordonnées
+                bMulti:bool = False
                 oAsGeo = self.oGlobalGeoJSON[sGlobalKey]
                 if oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPoint).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]                        #get coordinates of geometry
@@ -135,17 +136,22 @@ class GoogleMapsArea:
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]                        #get coordinates of geometry
                 elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
                     oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates][0]                     #get coordinates of geometry
+                elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoMultiPolygon).lower():
+                    bMulti = True
+                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]               #get coordinates of geometry
+                else:
+                    self.oLog.error("saveGoogleMapsFile() {0}={1} found in {2}/{3}".format(poaffCst.cstGeoType, oAsGeo[poaffCst.cstGeoType], sContext, sAreaKey), outConsole=False)
 
                 #Optimisation du tracé GeoJSON
                 oCoordsDst:list = []
                 #if epsilonReduce<0: --> do not change !
-                if epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40):   #Ne pas optimiser le tracé des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
+                if not bMulti and (epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40)):   #Ne pas optimiser les polygons multiples; les tracés des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
                     oCoordsDst = rdp(oCoords, epsilon=epsilonReduce)            #Optimisation du tracé des coordonnées
 
                 #Remplacement du tracé s'il a été optimisé
                 iOrgSize:int = len(oCoords)
                 iNewSize:int = len(oCoordsDst)
-                if iNewSize>0 and iNewSize!=iOrgSize:
+                if not bMulti and iNewSize>0 and iNewSize!=iOrgSize:
                     percent:float = round((1-(iNewSize/iOrgSize))*100,1)
                     percent = int(percent) if percent>=1.0 else percent
                     sOpti:str = "Segments optimisés à {0}% ({1}->{2}) [rdp={3}] ***".format(percent, iOrgSize, iNewSize, epsilonReduce)
@@ -162,7 +168,7 @@ class GoogleMapsArea:
                 else:
                     oArea:dict = oAsGeo
 
-                sGooglaMapPolygon:str = self.makeGooglaMapPolygon(oGlobalCat, oArea)     #Sérialisation de la zone au format Google MAp API
+                sGooglaMapPolygon:str = self.makeGooglaMap(oGlobalCat, oArea)     #Sérialisation de la zone au format Google MAp API
                 if sGooglaMapPolygon:
                     oGoogleMaps.append(sGooglaMapPolygon)
             barre.update(idx)
@@ -209,73 +215,114 @@ class GoogleMapsArea:
                 sGoogleMaps += oGmap
             sGoogleMaps += "}" + cstCRLF
 
-            bpaTools.writeTextFile(sFile, sGoogleMaps)  #Sérialisation du fichier
+            bpaTools.writeTextFile(sFile, sGoogleMaps, sencoding="utf-8")  #Sérialisation du fichier
         return
 
-
-    def makeGooglaMapPolygon(self, oGlobalCat:dict, oArea:dict) -> str:
-        """
-        Sample of return
-            var pol = new google.maps.Polygon({map:map,
-            path:google.maps.geometry.encoding.decodePath("m`otGyy`f@xt@q|bA}`H{hP`wb@mwt@rNdDzm@kq@xZu@pUeK`s@aR~_@oc@jq@cl@|_@rN`Yf^rNaRpUuGpU|ErNaYhWeDva@rh@`RrNrNhWkIzm@?|f@|_@zShWjIzSro@`RbRzL~X|LzLt@xZlIzLhWcKrNtGbKrNbRlBzL`s@?bRw{@v{@wa@bs@~E`s@jj@ldAbKn\\aRzLpUxZkPhrAcKdKn\\rh@v@rNn\\tG}Enc@xSnwAv@ro@f^hWzLkPn\\aRp\\`tAvZdDlc@cKlIf^xSde@f^cRu@|hB|EfWzLjPeDhx@hPpUcKbl@oBv{@zSlI`Rv@xZth@~y@}f@zLoBrUuh@f^p\\bK|aBoBn\\`Ybl@`YbnBo\\zLsU}Eu@dfAoc@ro@cKn\\uGzLv@rNqUth@cRznAmIhWeD`s@wZ`s@uGpv@dfAf`Bf^jP|f@|`AmIjq@oBzm@ua@xuAta@l_CmB~`Af_Alc@f^dKbKzm@bKrNmB~XvZn\\tGbRw@|aB~_@|LjPhPn\\|Lf^g^rNoB`Ycl@pUmIpUua@xt@|EhWcs@?iq@f`BgDhW`YvZso@~_@yS`Rf^de@?`YiW|E{Lth@uGlIkPkP_z@tGee@oBsqBv@w{@eDg^zf@gzBjPeKrN?jq@wZ|f@}ErNxuAxSoB~_@{gAzm@gDbKua@n\\so@ndA}E`tAxt@dDrNxSzLva@ro@lBsNcKkq@|E_Y~_@sNw@rh@f^lIhWpU`YaRriAjItGaRrNmdAoBkq@nc@}f@pUuGlByS`Y{LcKa{Arh@v@de@wZrNaYzt@{iCfWaYrUsh@rNkrArh@qv@v@{m@oBsh@zSyt@}EmkA|Eua@jPkP_F}f@aRySySwa@wa@_Y{LoBcRwZbs@itCf^ix@`Rcl@?g_AxZgyAt@_`@lIqUpwAyZbKubAlIkP|EpU`s@|En\\f^n}@nc@bs@pv@~_@qv@rGiWpv@so@bRmIzLsNxS|LxZcRta@dDlI|L`YoBde@qUhWzLbl@uh@xSu@vbAcmApUatAtGix@lc@?va@kPzLcK|`AyZbs@}E|Eth@gDzgA{Lnc@}Eta@}f@rpAeDde@dDjj@|ErU|E|`AfDhW{SvZtGvbAva@pv@th@hq@oBro@va@n\\~y@eD~_@`s@n\\zLro@g^hq@}EvbAw{@|EwZta@dD?vZcK~_@rNpv@ro@mIf^~_@`Rro@xZ?rN`YtbAw@rNlIxt@_FlIzSjPdfAdDlc@de@cRxS?bRndAzLxSuGhW|Eta@dKrNw@dl@cKxS~XrNhWoBv@zS~y@vZbRdfAta@hWdl@aYde@fDta@}LjPv@lj@aYrh@}_@f^qv@|f@lBva@iq@hWcs@rNo}@hPySjq@kPlc@sNbRsNtbAaoCn\\{LxZ{t@rN|LsNbmAf^dDjIxt@_Yth@de@nwAoBp\\lIta@ldA{LpUsNn\\bRth@eKde@|E~`AmBpUoBvZrNjPde@~_@?xSirA?_`@xZuh@|Esh@bKkPn\\|ErUeDbKeKro@qU~Xgx@rU}L|E_Y`RiWlIoc@hWcKhWwa@hW~E`RrGpUv@pUtGrNiWv@qU}EaYbKySdl@dKbK{SkPso@|f@_{AxZw@pUkIvZtGpUoBth@mIde@fD~_@qUjP}EzLsNf^iWhWy{@eK}_@dKmIt]hdDxa@xbDte@`aDti@b_Drm@~|Clq@tzCdu@fxCzx@puCr|@vrCb`AvoCtcAplC`gAfiCljAveCtmAbbCzpAf~B|sAjzBleB_Yks`@fncBekd@n`nAqac@f|D_uIe{JpwAeiDmtfA_pR_zl@_kTkeIo}xAsbOxvB}xMzfG")});
-            //pol.bounds  = new google.maps.LatLngBounds(new google.maps.LatLng(44.064722, 5.702500), new google.maps.LatLng(45.503611, 7.137222));
-            pol.GUId="GUId-LTA-FRANCE3ALPES1";
-            pol.altLow  = 19500;
-            pol.altHigh = 22000;
-            pol.airspaceClass="D";
-            pol.VName="LTA FRANCE 3 ALPES 1";
-            attachPolygonInfoBox(pol, infoBox, 'LTA FRANCE 3 ALPES 1<br />Class D<br />Upper:&nbsp; FL220<br />Lower:&nbsp; FL195');
-            polygons.push(pol);
-            ../..
-        """
-
+    def makeGooglaMap(self, oGlobalCat:dict, oArea:dict) -> str:
         if oArea[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPoint).lower():
             return
-        if oArea[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoLine).lower():
+        elif oArea[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoLine).lower():
            return
-        #if oArea[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
+        elif oArea[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
+            #print(json.dumps(oArea))
+            #oCoords sample - [[3.758285, 47.636124], [3.756871, 47.654449], [3.75247, 47.672558], [3.745134, 47.690231], [3.734949, 47.707253], [3.722035, 47.723416], [3.706549, 47.738523], [3.688676, 47.75239], [3.668633, 47.764847], [3.646664, 47.775743], [3.623037, 47.784944], [3.598039, 47.792336], [3.571977, 47.797831], [3.545169, 47.80136], [3.517944, 47.80288], [3.490634, 47.802373], [3.463576, 47.799844], [3.4371, 47.795326], [3.411531, 47.788872], [3.387182, 47.780563], [3.364349, 47.770499], [3.343311, 47.758805], [3.324324, 47.745623], [3.307619, 47.731113], [3.293398, 47.715454], [3.281831, 47.698837], [3.273057, 47.681463], ../..]
+            oCoords:list = oArea[poaffCst.cstGeoCoordinates][0]                     #get coordinates of geometry
+            sPolygon = self.makeGooglaMapPolygon(oGlobalCat, oCoords)
+            return sPolygon
+        elif oArea[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoMultiPolygon).lower():
+            sPolygon:str = ""
+            lIdx:int = 0
+            oPolygons:list = oArea[poaffCst.cstGeoCoordinates]                     #get coordinates of geometry
+            for oPol in oPolygons:
+                lIdx += 1
+                sPolygon += self.makeGooglaMapPolygon(oGlobalCat, oPol[0], str(lIdx))
+            return sPolygon
+        else:
+            self.oLog.error("makeGooglaMap() {0}={1} found in GUId={2}".format(poaffCst.cstGeoType, oArea[poaffCst.cstGeoType], oGlobalCat.get("GUId", "?")), outConsole=False)
+        return
+
+    def makeGooglaMapPolygon(self, oGlobalCat:dict, oCoords:list, sIdx:str="") -> str:
+        """ Sample of return
+        var ePath="m`otGyy`f@xt@q|bA}`H{hP`wb@mwt@rNdDzm@kq@xZu@pUeK`s@aR~_@oc@jq@cl@|_@rN`Yf^rNaRpUuGpU|ErNaYhWeDva@rh@`RrNrNhWkIzm@?|f@|_@zShWjIzSro@`RbRzL~X|LzLt@xZlIzLhWcKrNtGbKrNbRlBzL`s@?bRw{@v{@wa@bs@~E`s@jj@ldAbKn\\aRzLpUxZkPhrAcKdKn\\rh@v@rNn\\tG}Enc@xSnwAv@ro@f^hWzLkPn\\aRp\\`tAvZdDlc@cKlIf^xSde@f^cRu@|hB|EfWzLjPeDhx@hPpUcKbl@oBv{@zSlI`Rv@xZth@~y@}f@zLoBrUuh@f^p\\bK|aBoBn\\`Ybl@`YbnBo\\zLsU}Eu@dfAoc@ro@cKn\\uGzLv@rNqUth@cRznAmIhWeD`s@wZ`s@uGpv@dfAf`Bf^jP|f@|`AmIjq@oBzm@ua@xuAta@l_CmB~`Af_Alc@f^dKbKzm@bKrNmB~XvZn\\tGbRw@|aB~_@|LjPhPn\\|Lf^g^rNoB`Ycl@pUmIpUua@xt@|EhWcs@?iq@f`BgDhW`YvZso@~_@yS`Rf^de@?`YiW|E{Lth@uGlIkPkP_z@tGee@oBsqBv@w{@eDg^zf@gzBjPeKrN?jq@wZ|f@}ErNxuAxSoB~_@{gAzm@gDbKua@n\\so@ndA}E`tAxt@dDrNxSzLva@ro@lBsNcKkq@|E_Y~_@sNw@rh@f^lIhWpU`YaRriAjItGaRrNmdAoBkq@nc@}f@pUuGlByS`Y{LcKa{Arh@v@de@wZrNaYzt@{iCfWaYrUsh@rNkrArh@qv@v@{m@oBsh@zSyt@}EmkA|Eua@jPkP_F}f@aRySySwa@wa@_Y{LoBcRwZbs@itCf^ix@`Rcl@?g_AxZgyAt@_`@lIqUpwAyZbKubAlIkP|EpU`s@|En\\f^n}@nc@bs@pv@~_@qv@rGiWpv@so@bRmIzLsNxS|LxZcRta@dDlI|L`YoBde@qUhWzLbl@uh@xSu@vbAcmApUatAtGix@lc@?va@kPzLcK|`AyZbs@}E|Eth@gDzgA{Lnc@}Eta@}f@rpAeDde@dDjj@|ErU|E|`AfDhW{SvZtGvbAva@pv@th@hq@oBro@va@n\\~y@eD~_@`s@n\\zLro@g^hq@}EvbAw{@|EwZta@dD?vZcK~_@rNpv@ro@mIf^~_@`Rro@xZ?rN`YtbAw@rNlIxt@_FlIzSjPdfAdDlc@de@cRxS?bRndAzLxSuGhW|Eta@dKrNw@dl@cKxS~XrNhWoBv@zS~y@vZbRdfAta@hWdl@aYde@fDta@}LjPv@lj@aYrh@}_@f^qv@|f@lBva@iq@hWcs@rNo}@hPySjq@kPlc@sNbRsNtbAaoCn\\{LxZ{t@rN|LsNbmAf^dDjIxt@_Yth@de@nwAoBp\\lIta@ldA{LpUsNn\\bRth@eKde@|E~`AmBpUoBvZrNjPde@~_@?xSirA?_`@xZuh@|Esh@bKkPn\\|ErUeDbKeKro@qU~Xgx@rU}L|E_Y`RiWlIoc@hWcKhWwa@hW~E`RrGpUv@pUtGrNiWv@qU}EaYbKySdl@dKbK{SkPso@|f@_{AxZw@pUkIvZtGpUoBth@mIde@fD~_@qUjP}EzLsNf^iWhWy{@eK}_@dKmIt]hdDxa@xbDte@`aDti@b_Drm@~|Clq@tzCdu@fxCzx@puCr|@vrCb`AvoCtcAplC`gAfiCljAveCtmAbbCzpAf~B|sAjzBleB_Yks`@fncBekd@n`nAqac@f|D_uIe{JpwAeiDmtfA_pR_zl@_kTkeIo}xAsbOxvB}xMzfG";
+        var props={
+        "srcFile":"POAFF",
+        "headId":"LF",
+        "orgName":"French",
+		"GUId":"GUId-LTA-FRANCE3ALPES1",
+		"aClass":"D",
+		"type":"LTA",
+		"cdAct":"FAUNA",
+		"name":"FRANCE 3 ALPES 1",
+		"nameV":"LTA FRANCE 3 ALPES 1 Lower(3000FT AGL-FL115)",
+		"AAlt":'["3000FT AGL-FL115/FL195", "3505m/5943m", "ffExt=Yes"]',
+		"AH":"FL195",
+		"AH2":"11500FT AGL",
+		"AL":"FL115",
+		"AL2":"AL2 3000FT AGL",
+		"altHigh":19500,
+		"altLow":11500,
+		"descr":"Unless otherwise specified, except for: -TMA and AWY -P,R,D areas -CTA -TRA -CBA -TSA when active. Frequencies: see GEN 3.4",
+		"activ":"[NOTAM] Possible activation by NOTAM MON-FRI (EXC public HOL): 0700-1900 (SUM -1HR)",
+		"times":{"1": ["UTCW(01/01->31/12)", "ANY(06:00->SS/30/L)"]},
+		"mhz":{"TWR": ["118.750*", "Auto-information en Français uniquement."], "ATIS": ["136.230"]},
+		"decla":true,
+		"exSAT":true,
+		"exSUN":true,
+		"exHOL":true,
+		"seeNOTAM":true
+        };
+        mapsAttachPolygon(props, ePath);
+        """
 
         sPolygon:str = cstCRLF
 
-        #print(json.dumps(oArea))
-        #oCoords sample - [[3.758285, 47.636124], [3.756871, 47.654449], [3.75247, 47.672558], [3.745134, 47.690231], [3.734949, 47.707253], [3.722035, 47.723416], [3.706549, 47.738523], [3.688676, 47.75239], [3.668633, 47.764847], [3.646664, 47.775743], [3.623037, 47.784944], [3.598039, 47.792336], [3.571977, 47.797831], [3.545169, 47.80136], [3.517944, 47.80288], [3.490634, 47.802373], [3.463576, 47.799844], [3.4371, 47.795326], [3.411531, 47.788872], [3.387182, 47.780563], [3.364349, 47.770499], [3.343311, 47.758805], [3.324324, 47.745623], [3.307619, 47.731113], [3.293398, 47.715454], [3.281831, 47.698837], [3.273057, 47.681463], ../..]
-        oCoords:list = oArea[poaffCst.cstGeoCoordinates][0]                     #get coordinates of geometry
+        # Only for debug - Show coords before encoding
         if cstCRLF!="":
-            sPolygon += "/*geoJSON coords: " + json.dumps(oCoords) + " */"
-
-        sPolygon += cstCRLF + "var pol=new google.maps.Polygon({map:map,"
+            sPolygon += "/*geoJSON coords: " + json.dumps(oCoords) + " */" + cstCRLF
 
         #0/ Std paths - sample - myCoordinates = [{lat:25.774,lng:-80.19},{lat:18.466,lng:-66.118}, ../..];
+        #sPolygon += cstCRLF + "var pol=new google.maps.Polygon({map:map,"
         #myCoordinates:str = ""
         #for aPt in oCoords:
         #    myCoordinates += "{" + "lat:{0},lng:{1}".format(aPt[1], aPt[0]) + "},"
-        #sPolygon    += "path:[" + myCoordinates[:-1] + "]"
+        #sPolygon += "path:[" + myCoordinates[:-1] + "]"
+        #sPolygon += '});' + cstCRLF
 
         #1/ API google.maps.LatLng() - problèmes: Source verbeux, Pile d'appels importante, API payante - sample - myCoordinates = [new google.maps.LatLng(0.457301,-0.597382),new google.maps.LatLng(0.475153,-0.569916),new google.maps.LatLng(0.494379,-0.563049)];
+        #sPolygon += cstCRLF + "var pol=new google.maps.Polygon({map:map,"
         #myCoordinates:str = ""
         #for aPt in oCoords:
         #    myCoordinates += "new google.maps.LatLng({0},{1}),".format(aPt[1], aPt[0])
-        #sPolygon    += "path:[" + myCoordinates[:-1] + "]"
+        #sPolygon += "path:[" + myCoordinates[:-1] + "]"
+        #sPolygon += '});' + cstCRLF
 
-        #2/ API google.maps.geometry.encoding.decodePath() - problèmes: Bug sur l'encoding de certaines zones - sample - map:map, path: google.maps.geometry.encoding.decodePath("m`otGyy`f@xt@q|bA}`H{hP`wb@mwt@rNdDzm@kq@xZu@pUeK`s@aR~_@oc@jq@cl@|_@rN`Yf^rNaRpUuGpU|ErNaYhWeDva@rh@`RrNrNhWkIzm@?|f@|_@zShWjIzSro@`RbRzL~X|LzLt@xZlIzLhWcKrNtGbKrNbRlBzL`s@?bRw{@v{@wa@bs@~E`s@jj@ldAbKn\\aRzLpUxZkPhrAcKdKn\\rh@v@rNn\\tG}Enc@xSnwAv@ro@f^hWzLkPn\\aRp\\`tAvZdDlc@cKlIf^xSde@f^cRu@|hB|EfWzLjPeDhx@hPpUcKbl@oBv{@zSlI`Rv@xZth@~y@}f@zLoBrUuh@f^p\\bK|aBoBn\\`Ybl@`YbnBo\\zLsU}Eu@dfAoc@ro@cKn\\uGzLv@rNqUth@cRznAmIhWeD`s@wZ`s@uGpv@dfAf`Bf^jP|f@|`AmIjq@oBzm@ua@xuAta@l_CmB~`Af_Alc@f^dKbKzm@bKrNmB~XvZn\\tGbRw@|aB~_@|LjPhPn\\|Lf^g^rNoB`Ycl@pUmIpUua@xt@|EhWcs@?iq@f`BgDhW`YvZso@~_@yS`Rf^de@?`YiW|E{Lth@uGlIkPkP_z@tGee@oBsqBv@w{@eDg^zf@gzBjPeKrN?jq@wZ|f@}ErNxuAxSoB~_@{gAzm@gDbKua@n\\so@ndA}E`tAxt@dDrNxSzLva@ro@lBsNcKkq@|E_Y~_@sNw@rh@f^lIhWpU`YaRriAjItGaRrNmdAoBkq@nc@}f@pUuGlByS`Y{LcKa{Arh@v@de@wZrNaYzt@{iCfWaYrUsh@rNkrArh@qv@v@{m@oBsh@zSyt@}EmkA|Eua@jPkP_F}f@aRySySwa@wa@_Y{LoBcRwZbs@itCf^ix@`Rcl@?g_AxZgyAt@_`@lIqUpwAyZbKubAlIkP|EpU`s@|En\\f^n}@nc@bs@pv@~_@qv@rGiWpv@so@bRmIzLsNxS|LxZcRta@dDlI|L`YoBde@qUhWzLbl@uh@xSu@vbAcmApUatAtGix@lc@?va@kPzLcK|`AyZbs@}E|Eth@gDzgA{Lnc@}Eta@}f@rpAeDde@dDjj@|ErU|E|`AfDhW{SvZtGvbAva@pv@th@hq@oBro@va@n\\~y@eD~_@`s@n\\zLro@g^hq@}EvbAw{@|EwZta@dD?vZcK~_@rNpv@ro@mIf^~_@`Rro@xZ?rN`YtbAw@rNlIxt@_FlIzSjPdfAdDlc@de@cRxS?bRndAzLxSuGhW|Eta@dKrNw@dl@cKxS~XrNhWoBv@zS~y@vZbRdfAta@hWdl@aYde@fDta@}LjPv@lj@aYrh@}_@f^qv@|f@lBva@iq@hWcs@rNo}@hPySjq@kPlc@sNbRsNtbAaoCn\\{LxZ{t@rN|LsNbmAf^dDjIxt@_Yth@de@nwAoBp\\lIta@ldA{LpUsNn\\bRth@eKde@|E~`AmBpUoBvZrNjPde@~_@?xSirA?_`@xZuh@|Esh@bKkPn\\|ErUeDbKeKro@qU~Xgx@rU}L|E_Y`RiWlIoc@hWcKhWwa@hW~E`RrGpUv@pUtGrNiWv@qU}EaYbKySdl@dKbK{SkPso@|f@_{AxZw@pUkIvZtGpUoBth@mIde@fD~_@qUjP}EzLsNf^iWhWy{@eK}_@dKmIt]hdDxa@xbDte@`aDti@b_Drm@~|Clq@tzCdu@fxCzx@puCr|@vrCb`AvoCtcAplC`gAfiCljAveCtmAbbCzpAf~B|sAjzBleB_Yks`@fncBekd@n`nAqac@f|D_uIe{JpwAeiDmtfA_pR_zl@_kTkeIo}xAsbOxvB}xMzfG")});
-        sPolygon    += 'path:google.maps.geometry.encoding.decodePath("'
-        sPolygon    += self.geoCod.encode(oCoords) + '")'
+        #2/ API google.maps.geometry.encoding.decodePath() - sample - map:map, path: google.maps.geometry.encoding.decodePath("m`otGyy`f@xt@q|bA}`H{hP`wb@mwt@rNdDzm@kq@xZu@pUeK`s@aR~_@oc@jq@cl@|_@rN`Yf^rNaRpUuGpU|ErNaYhWeDva@rh@`RrNrNhWkIzm@?|f@|_@zShWjIzSro@`RbRzL~X|LzLt@xZlIzLhWcKrNtGbKrNbRlBzL`s@?bRw{@v{@wa@bs@~E`s@jj@ldAbKn\\aRzLpUxZkPhrAcKdKn\\rh@v@rNn\\tG}Enc@xSnwAv@ro@f^hWzLkPn\\aRp\\`tAvZdDlc@cKlIf^xSde@f^cRu@|hB|EfWzLjPeDhx@hPpUcKbl@oBv{@zSlI`Rv@xZth@~y@}f@zLoBrUuh@f^p\\bK|aBoBn\\`Ybl@`YbnBo\\zLsU}Eu@dfAoc@ro@cKn\\uGzLv@rNqUth@cRznAmIhWeD`s@wZ`s@uGpv@dfAf`Bf^jP|f@|`AmIjq@oBzm@ua@xuAta@l_CmB~`Af_Alc@f^dKbKzm@bKrNmB~XvZn\\tGbRw@|aB~_@|LjPhPn\\|Lf^g^rNoB`Ycl@pUmIpUua@xt@|EhWcs@?iq@f`BgDhW`YvZso@~_@yS`Rf^de@?`YiW|E{Lth@uGlIkPkP_z@tGee@oBsqBv@w{@eDg^zf@gzBjPeKrN?jq@wZ|f@}ErNxuAxSoB~_@{gAzm@gDbKua@n\\so@ndA}E`tAxt@dDrNxSzLva@ro@lBsNcKkq@|E_Y~_@sNw@rh@f^lIhWpU`YaRriAjItGaRrNmdAoBkq@nc@}f@pUuGlByS`Y{LcKa{Arh@v@de@wZrNaYzt@{iCfWaYrUsh@rNkrArh@qv@v@{m@oBsh@zSyt@}EmkA|Eua@jPkP_F}f@aRySySwa@wa@_Y{LoBcRwZbs@itCf^ix@`Rcl@?g_AxZgyAt@_`@lIqUpwAyZbKubAlIkP|EpU`s@|En\\f^n}@nc@bs@pv@~_@qv@rGiWpv@so@bRmIzLsNxS|LxZcRta@dDlI|L`YoBde@qUhWzLbl@uh@xSu@vbAcmApUatAtGix@lc@?va@kPzLcK|`AyZbs@}E|Eth@gDzgA{Lnc@}Eta@}f@rpAeDde@dDjj@|ErU|E|`AfDhW{SvZtGvbAva@pv@th@hq@oBro@va@n\\~y@eD~_@`s@n\\zLro@g^hq@}EvbAw{@|EwZta@dD?vZcK~_@rNpv@ro@mIf^~_@`Rro@xZ?rN`YtbAw@rNlIxt@_FlIzSjPdfAdDlc@de@cRxS?bRndAzLxSuGhW|Eta@dKrNw@dl@cKxS~XrNhWoBv@zS~y@vZbRdfAta@hWdl@aYde@fDta@}LjPv@lj@aYrh@}_@f^qv@|f@lBva@iq@hWcs@rNo}@hPySjq@kPlc@sNbRsNtbAaoCn\\{LxZ{t@rN|LsNbmAf^dDjIxt@_Yth@de@nwAoBp\\lIta@ldA{LpUsNn\\bRth@eKde@|E~`AmBpUoBvZrNjPde@~_@?xSirA?_`@xZuh@|Esh@bKkPn\\|ErUeDbKeKro@qU~Xgx@rU}L|E_Y`RiWlIoc@hWcKhWwa@hW~E`RrGpUv@pUtGrNiWv@qU}EaYbKySdl@dKbK{SkPso@|f@_{AxZw@pUkIvZtGpUoBth@mIde@fD~_@qUjP}EzLsNf^iWhWy{@eK}_@dKmIt]hdDxa@xbDte@`aDti@b_Drm@~|Clq@tzCdu@fxCzx@puCr|@vrCb`AvoCtcAplC`gAfiCljAveCtmAbbCzpAf~B|sAjzBleB_Yks`@fncBekd@n`nAqac@f|D_uIe{JpwAeiDmtfA_pR_zl@_kTkeIo}xAsbOxvB}xMzfG")});
+        #sPolygon += cstCRLF + "var pol=new google.maps.Polygon({map:map,"
+        #sPolygon += 'path:google.maps.geometry.encoding.decodePath("'
+        #sPolygon += self.geoCod.encode(oCoords) + '")'
+        #sPolygon += '});' + cstCRLF
 
-        sPolygon    += '});' + cstCRLF
+        #3/ Without API google call - sample - pol.encodePath=m`otGyy`f@xt@q|bA}`H{hP`wb@mwt@rNdDzm@kq@xZu@pUeK`s@aR~_@oc@jq@cl@|_@rN`Yf^rNaRpUuGpU|ErNaYhWeDva@rh@`RrNrNhWkIzm@?|f@|_@zShWjIzSro@`RbRzL~X|LzLt@xZlIzLhWcKrNtGbKrNbRlBzL`s@?bRw{@v{@wa@bs@~E`s@jj@ldAbKn\\aRzLpUxZkPhrAcKdKn\\rh@v@rNn\\tG}Enc@xSnwAv@ro@f^hWzLkPn\\aRp\\`tAvZdDlc@cKlIf^xSde@f^cRu@|hB|EfWzLjPeDhx@hPpUcKbl@oBv{@zSlI`Rv@xZth@~y@}f@zLoBrUuh@f^p\\bK|aBoBn\\`Ybl@`YbnBo\\zLsU}Eu@dfAoc@ro@cKn\\uGzLv@rNqUth@cRznAmIhWeD`s@wZ`s@uGpv@dfAf`Bf^jP|f@|`AmIjq@oBzm@ua@xuAta@l_CmB~`Af_Alc@f^dKbKzm@bKrNmB~XvZn\\tGbRw@|aB~_@|LjPhPn\\|Lf^g^rNoB`Ycl@pUmIpUua@xt@|EhWcs@?iq@f`BgDhW`YvZso@~_@yS`Rf^de@?`YiW|E{Lth@uGlIkPkP_z@tGee@oBsqBv@w{@eDg^zf@gzBjPeKrN?jq@wZ|f@}ErNxuAxSoB~_@{gAzm@gDbKua@n\\so@ndA}E`tAxt@dDrNxSzLva@ro@lBsNcKkq@|E_Y~_@sNw@rh@f^lIhWpU`YaRriAjItGaRrNmdAoBkq@nc@}f@pUuGlByS`Y{LcKa{Arh@v@de@wZrNaYzt@{iCfWaYrUsh@rNkrArh@qv@v@{m@oBsh@zSyt@}EmkA|Eua@jPkP_F}f@aRySySwa@wa@_Y{LoBcRwZbs@itCf^ix@`Rcl@?g_AxZgyAt@_`@lIqUpwAyZbKubAlIkP|EpU`s@|En\\f^n}@nc@bs@pv@~_@qv@rGiWpv@so@bRmIzLsNxS|LxZcRta@dDlI|L`YoBde@qUhWzLbl@uh@xSu@vbAcmApUatAtGix@lc@?va@kPzLcK|`AyZbs@}E|Eth@gDzgA{Lnc@}Eta@}f@rpAeDde@dDjj@|ErU|E|`AfDhW{SvZtGvbAva@pv@th@hq@oBro@va@n\\~y@eD~_@`s@n\\zLro@g^hq@}EvbAw{@|EwZta@dD?vZcK~_@rNpv@ro@mIf^~_@`Rro@xZ?rN`YtbAw@rNlIxt@_FlIzSjPdfAdDlc@de@cRxS?bRndAzLxSuGhW|Eta@dKrNw@dl@cKxS~XrNhWoBv@zS~y@vZbRdfAta@hWdl@aYde@fDta@}LjPv@lj@aYrh@}_@f^qv@|f@lBva@iq@hWcs@rNo}@hPySjq@kPlc@sNbRsNtbAaoCn\\{LxZ{t@rN|LsNbmAf^dDjIxt@_Yth@de@nwAoBp\\lIta@ldA{LpUsNn\\bRth@eKde@|E~`AmBpUoBvZrNjPde@~_@?xSirA?_`@xZuh@|Esh@bKkPn\\|ErUeDbKeKro@qU~Xgx@rU}L|E_Y`RiWlIoc@hWcKhWwa@hW~E`RrGpUv@pUtGrNiWv@qU}EaYbKySdl@dKbK{SkPso@|f@_{AxZw@pUkIvZtGpUoBth@mIde@fD~_@qUjP}EzLsNf^iWhWy{@eK}_@dKmIt]hdDxa@xbDte@`aDti@b_Drm@~|Clq@tzCdu@fxCzx@puCr|@vrCb`AvoCtcAplC`gAfiCljAveCtmAbbCzpAf~B|sAjzBleB_Yks`@fncBekd@n`nAqac@f|D_uIe{JpwAeiDmtfA_pR_zl@_kTkeIo}xAsbOxvB}xMzfG";
+        sPolygon += 'var ePath="' + self.geoCod.encode(oCoords) + '";' + cstCRLF
+        sPolygon += 'var props={' + cstCRLF
 
-        sGUId:str = oGlobalCat.get("srcGUId", None)
-        if sGUId==None:     sGUId = oGlobalCat.get("GUId", "!")
-        sUId:str = oGlobalCat.get("srcUId", None)
-        if sUId==None:      sUId:str = oGlobalCat.get("UId", "!")
-        sId:str = oGlobalCat.get("id", "!")
-        #sPolygon    += "pol.AUID=GUId={0} UId={1} Id={2}".format(sGUId, sUId, sId) + ";" + cstCRLF
-        sPolygon    += 'pol.GUId="{0}"'.format(sGUId) + ";" + cstCRLF
+        sPolygon += '"srcFile":"{0}",{1}'.format(oGlobalCat["srcFile"], cstCRLF)
+        sPolygon += '"headId":"{0}",{1}'.format(oGlobalCat["headId"], cstCRLF)
+        sPolygon += '"orgName":"{0}",{1}'.format(oGlobalCat["orgName2"], cstCRLF)
+        sPolygon += '"pointsNumber":{0},{1}'.format(len(oCoords), cstCRLF)
 
-        sPolygon    += 'pol.aClass="' + oGlobalCat["class"] + '";' + cstCRLF
+        sGUId:str = oGlobalCat.get("GUId", "!") + sIdx
+        #sUId:str = oGlobalCat.get("UId", "!")
+        #sId:str = oGlobalCat.get("id", "!")
+        sPolygon += '"GUId":"{0}",{1}'.format(sGUId, cstCRLF)
+
+        sPolygon += '"aClass":"{0}",{1}'.format(oGlobalCat["class"], cstCRLF)
         if oGlobalCat["type"]!=oGlobalCat["class"]:
-            sPolygon    += 'pol.type="' + oGlobalCat["type"] + '";' + cstCRLF
-        sPolygon    += 'pol.name="' + self.cleanStr(oGlobalCat["name"]) + '";' + cstCRLF
-        sPolygon    += 'pol.nameV="' + self.cleanStr(oGlobalCat["nameV"]) + '";' + cstCRLF
+            sPolygon += '"type":"{0}",{1}'.format(oGlobalCat["type"], cstCRLF)
+        if oGlobalCat.get("codeActivity", False):
+            sPolygon += '"cdAct":"{0}",{1}'.format(oGlobalCat["codeActivity"], cstCRLF)
+        sPolygon += '"name":"{0}",{1}'.format(self.cleanStr(oGlobalCat["name"]), cstCRLF)
+        sPolygon += '"nameV":"{0}",{1}'.format(self.cleanStr(oGlobalCat["nameV"]), cstCRLF)
 
         aAlt:list = []
         aAlt.append("{0}".format(aixmReader.getSerializeAlt (oGlobalCat)[1:-1]))
@@ -287,30 +334,31 @@ class GoogleMapsArea:
         #    if float(oGlobalCat.get("lowerM", 0)) > 3504:  #FL115 = 3505m
         #        aAlt.append("ffExt=Yes")
         if len(aAlt)==3:
-            sPolygon += 'pol.AAlt=\'["{0}", "{1}", "{2}"]'.format(aAlt[0], aAlt[1], aAlt[2]) + "';" + cstCRLF
+            sPolygon += '"AAlt":["{0}","{1}","{2}"],{3}'.format(aAlt[0], aAlt[1], aAlt[2], cstCRLF)
         else:
-            sPolygon += 'pol.AAlt=\'["{0}", "{1}"]'.format(aAlt[0], aAlt[1]) + "';" + cstCRLF
+            sPolygon += '"AAlt":["{0}","{1}"],{2}'.format(aAlt[0], aAlt[1], cstCRLF)
 
-        sPolygon    += 'pol.AH="'      + self.parseAlt("AH", "-gpsWithTopo"      , False, oGlobalCat) + '";' + cstCRLF
+        sPolygon += '"AH":"{0}",{1}'.format(self.parseAlt("AH", "-gpsWithTopo", False, oGlobalCat), cstCRLF)
         if oGlobalCat.get("ordinalUpperMaxM", False):
-            sPolygon += 'pol.AH2="{0}'.format(oGlobalCat["upperMax"]) + '";' + cstCRLF
-        sPolygon    += 'pol.AL="'      + self.parseAlt("AL", "-gpsWithTopo"      , False, oGlobalCat) + '";' + cstCRLF
+            sPolygon += '"AH2":"{0}",{1}'.format(oGlobalCat["upperMax"], cstCRLF)
+        sPolygon += '"AL":"{0}",{1}'.format(self.parseAlt("AL", "-gpsWithTopo", False, oGlobalCat), cstCRLF)
         if oGlobalCat.get("ordinalLowerMinM", False):
-            sPolygon += 'pol.AL2="{0}'.format(oGlobalCat["lowerMin"]) + '";' + cstCRLF
-        sPolygon    += 'pol.altHigh=' + self.parseAlt("AH", "-gpsWithoutTopo"   , True , oGlobalCat) + ';' + cstCRLF
-        sPolygon    += 'pol.altLow='  + self.parseAlt("AL", "-gpsWithoutTopo"   , True , oGlobalCat) + ';' + cstCRLF
+            sPolygon += '"AL2":"{0}",{1}'.format(oGlobalCat["lowerMin"], cstCRLF)
+        sPolygon += '"altHigh":{0},{1}'.format(self.parseAlt("AH", "-gpsWithoutTopo", True , oGlobalCat), cstCRLF)
+        sPolygon += '"altLow":{0},{1}'.format( self.parseAlt("AL", "-gpsWithoutTopo", True , oGlobalCat), cstCRLF)
 
-        if "desc" in oGlobalCat:    sPolygon += 'pol.descr="' + self.cleanStr(oGlobalCat["desc"]) + '";' + cstCRLF
+        if "desc" in oGlobalCat:
+            sPolygon += '"descr":"{0}",{1}'.format(self.cleanStr(oGlobalCat["desc"]), cstCRLF)
 
         if ("activationCode" in oGlobalCat) and ("activationDesc" in oGlobalCat):
-            sPolygon += 'pol.activ="[{0}] {1}'.format(oGlobalCat["activationCode"], self.cleanStr(oGlobalCat["activationDesc"])) + '";' + cstCRLF
+            sPolygon += '"activ":"[{0}] {1}",{2}'.format(oGlobalCat["activationCode"], self.cleanStr(oGlobalCat["activationDesc"]), cstCRLF)
         if ("activationCode" in oGlobalCat) and not ("activationDesc" in oGlobalCat):
-            sPolygon += 'pol.activ="[{0}]'.format(oGlobalCat["activationCode"]) + '";' + cstCRLF
+            sPolygon += '"activ":"[{0}]",{1}'.format(oGlobalCat["activationCode"], cstCRLF)
         if not("activationCode" in oGlobalCat) and ("activationDesc" in oGlobalCat):
-            sPolygon += 'pol.activ="[{0}]'.format(self.cleanStr(oGlobalCat["activationDesc"])) + '";' + cstCRLF
+            sPolygon += '"activ":"{0}",{1}'.format(self.cleanStr(oGlobalCat["activationDesc"]), cstCRLF)
 
         if "timeScheduling" in oGlobalCat:
-            sPolygon += 'pol.times=\'{0}'.format(json.dumps(oGlobalCat["timeScheduling"], ensure_ascii=False)) + "';" + cstCRLF
+            sPolygon += '"times":{0},{1}'.format(json.dumps(oGlobalCat["timeScheduling"], ensure_ascii=False), cstCRLF)
 
         if "Mhz" in oGlobalCat:
             if isinstance(oGlobalCat["Mhz"], str):
@@ -321,17 +369,25 @@ class GoogleMapsArea:
                 oAMhz:dict = oGlobalCat["Mhz"]
             else:
                 oAMhz:dict = None
-            sPolygon += 'pol.mhz=\'{0}'.format(json.dumps(oAMhz, ensure_ascii=False).replace("'", "\\'")) + "';" + cstCRLF
+            sPolygon += '"mhz":{0},{1}'.format(json.dumps(oAMhz, ensure_ascii=False).replace("'", "\\'"), cstCRLF)
 
-        if bool(oGlobalCat.get("declassifiable",  False)):  sPolygon += "pol.decla=true;" + cstCRLF
-        if bool(oGlobalCat.get("exceptSAT", False)):        sPolygon += "pol.exSAT=true;" + cstCRLF
-        if bool(oGlobalCat.get("exceptSUN", False)):        sPolygon += "pol.exSUN=true;" + cstCRLF
-        if bool(oGlobalCat.get("exceptHOL", False)):        sPolygon += "pol.exHOL=true;" + cstCRLF
-        if bool(oGlobalCat.get("seeNOTAM",  False)):        sPolygon += "pol.seeNOTAM=true;" + cstCRLF
+        if bool(oGlobalCat.get("declassifiable",  False)):
+            sPolygon += '"decla":{0},{1}'.format("true", cstCRLF)
+        if bool(oGlobalCat.get("exceptSAT", False)):
+            sPolygon += '"exSAT":{0},{1}'.format("true", cstCRLF)
+        if bool(oGlobalCat.get("exceptSUN", False)):
+            sPolygon += '"exSUN":{0},{1}'.format("true", cstCRLF)
+        if bool(oGlobalCat.get("exceptHOL", False)):
+            sPolygon += '"exHOL":{0},{1}'.format("true", cstCRLF)
+        if bool(oGlobalCat.get("seeNOTAM",  False)):
+            sPolygon += '"seeNOTAM":{0},{1}'.format("true", cstCRLF)
 
-        sPolygon += "attachPolygonInfoBox(pol,infoBox,pol.nameV);" + cstCRLF
-
-        sPolygon += "polygons.push(pol);" + cstCRLF
+        if cstCRLF=="":
+            sPolygon = sPolygon[:-1] + cstCRLF
+        else:
+            sPolygon = sPolygon[:-2] + cstCRLF
+        sPolygon += "};" + cstCRLF
+        sPolygon += "mapsAttachPolygon(props, ePath);" + cstCRLF
         return sPolygon
 
     def cleanStr(self, src:str) -> str:

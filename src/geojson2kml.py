@@ -175,22 +175,29 @@ class Geojson2Kml:
                     sTypeZone:str = "Airspace"
 
                 #Répartition du VFR en deux blocs : "vfrZone" et "vfrZoneComp"
-                if sTypeZone == "vfrZone" and sClassZone in ["E","G","G","Q"]:
+                if sTypeZone == "vfrZone" and sClassZone in ["E","G","G","Q","AREA"]:
                     sTypeZone = "vfrZoneComp"
 
                 oTypeZone:dict = self.oKmlTmp.get(sTypeZone, {})
                 oClassZone:list = oTypeZone.get(sClassZone, [])
 
+                #Extraction des coordonnées
+                bMulti:bool = False
                 if oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPoint).lower():
-                    oCoords:list = []                                       #Don't show this point feature
+                    oCoords:list = []                                              #Don't show this point feature
                 elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoLine).lower():
-                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]        #get coordinates of geometry
+                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]               #get coordinates of geometry
                 elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoPolygon).lower():
-                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates][0]     #get coordinates of geometry
+                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates][0]            #get coordinates of geometry
+                elif oAsGeo[poaffCst.cstGeoType].lower()==(poaffCst.cstGeoMultiPolygon).lower():
+                    bMulti = True
+                    oCoords:list = oAsGeo[poaffCst.cstGeoCoordinates]               #get coordinates of geometry
+                else:
+                    self.oLog.error("makeAirspacesKml() {0}={1} found".format(poaffCst.cstGeoType, oAsGeo[poaffCst.cstGeoType]), outConsole=False)
 
                 if len(oCoords)>1:
                     #Optimisation du tracé
-                    if epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40):   #Ne pas optimiser le tracé des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
+                    if not bMulti and (epsilonReduce==0 or (epsilonReduce>0 and len(oCoords)>40)):   #Ne pas optimiser les polygons multiples; les tracés des zones ayant moins de 40 segments (préservation des tracés de cercle minimaliste)
                         oCoordsDst:list = rdp(oCoords, epsilon=epsilonReduce)       #Optimisation du tracé des coordonnées
                         iOrgSize:int = len(oCoords)
                         iNewSize:int = len(oCoordsDst)
@@ -249,7 +256,7 @@ class Geojson2Kml:
                 self.createKmlStyle(self.oKmlDoc, "transGreenPoly",     "ff00ff00", "3f00ff00")
                 self.createKmlStyle(self.oKmlDoc, "noFillGreenPoly",    "ff00ff00", "1f00ff00")
                 self.createKmlStyle(self.oKmlDoc, "transYellowPoly",    "ff00ffff", "6f00ffff")
-                #self.createKmlStyle(self.oKmlDoc, "noFillYellowPoly","ff00ffff", "1f00ffff")
+                self.createKmlStyle(self.oKmlDoc, "noFillYellowPoly",   "ff00ffff", "1f00ffff")
 
                 #Construction du KML avec ordonancement des dossiers
                 aTypeList = ["UTA","LTA","vfrZoneComp","vfrZone","Airspace"]
@@ -271,7 +278,7 @@ class Geojson2Kml:
             sVisiblility:str="1"
             oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche VFR", sVisiblility, "Couche de l'espace aérien VFR (Visual Flight Rule) ; dont le plancher s'étand depuis la surface de la terre (SFC/AGL) jusqu'à l'altitude limite de la surface 'S' (FL115)")
         elif sKeyType == "vfrZoneComp":
-            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Zones VFR complémentaires", sVisiblility, "Zones complémentaires de la couche de l'espace aérien VFR (Visual Flight Rule). Il s'agit des Classes de type E, F, G ou des zones Dangereues...")
+            oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Zones VFR complémentaires", sVisiblility, "Zones complémentaires de la couche de l'espace aérien VFR (Visual Flight Rule). Il s'agit des Classes de type E, F, G, des zones Dangereues (Q) ou autres...")
         elif sKeyType == "LTA":             #LTA=Lower Traffic Area
             oFolderType = self.createKmlFolder(self.oKmlDoc, "Folder", "Couche LTA", sVisiblility, "Couche de l'espace aérien LTA (Lower Traffic Area) ; zones intermédiaires dont le plancher s'élève depuis le FL115 et jusqu'au plafond maximum de FL195")
         elif sKeyType == "UTA":
@@ -284,12 +291,14 @@ class Geojson2Kml:
             idxBarre+=1
             if sKeyClass in ["A","B","C","D","E","F","G"]:
                 sLib:str = "Classe " + sKeyClass
+            elif sKeyClass in ["AREA"]:
+                sLib:str = "(" + sKeyClass + ") Périmètre "
             else:
                 sLib:str = "Zone " + sKeyClass
             oFolderClass = self.createKmlFolder(oFolderType, "Folder", sLib, sVisiblility)
 
             for oZone in oClassZone:
-
+                sVisiblility2:str = sVisiblility        #default value
                 sZoneName:str       = oZone[0]
                 sDesc:str           = oZone[1]
                 sTypezZone:str      = oZone[2]
@@ -363,72 +372,94 @@ class Geojson2Kml:
                     else:
                         sStyle = "#noFillGreenPoly"
                 #Yellow
+                elif sKeyClass in ["AREA"]:                             #Specific poaff area map
+                    sStyle = "#noFillYellowPoly"
+                    sVisiblility2 = "0"                                 #Hide area
+                #Yellow
                 else:
                     sStyle = "#transYellowPoly"
                     if self.oLog:
                         self.oLog.warning("KML Color not found for Class={0}".format(sKeyClass), outConsole=False)
 
-                oPlacemark = self.createKmlFolder(oFolderClass, "Placemark", sZoneName, sVisibility=sVisiblility, sDescription=sDesc)
+                oPlacemark = self.createKmlFolder(oFolderClass, "Placemark", sZoneName, sVisibility=sVisiblility2, sDescription=sDesc)
                 self.oKml.addTag(oPlacemark, "styleUrl", sValue=sStyle)
                 oMultiGeo = self.oKml.addTag(oPlacemark, "MultiGeometry")
 
-                oPolygon:list = []
                 sAltitudeMode:str = "absolute"
                 sFinalUpper:str = sUpperM           #Standard AMSL value
                 if sOrdUpperM:                      #Ordinal AGL value
                     sFinalUpper = int(sMaxGroundHeight) + int(sOrdUpperM)    #New - Elevation au dessus du point géographique le plus élevé de la zone
 
-                if sLowerM==0:     #Le plancher est plaqué au sol
-                    #Construct top panel
-                    for oAs in oCoords:
-                        sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                        oPolygon.append(sPoint + str(sFinalUpper))
-                    #add top panel
-                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1", sAltitudeMode=sAltitudeMode)
-                    oKmlCoords.text = " ".join(oPolygon)
+                oPolygons:list = []
+                if isinstance(oCoords[0][0], float):
+                    oPolygons.append([oCoords])                                 #Cas d'un Point, Line ou Polygon
                 else:
-                    sFinalLower:str = sLowerM           #Standard AMSL value
-                    if sOrdLowerM:                      #Ordinal AGL value
-                        sFinalLower = int(sMinGroundHeight) + int(sOrdLowerM)    #New - Elevation au dessus du point géographique le moins élevé de la zone
+                    oPolygons = oCoords                                         #Cas d'un MultiPolygon
 
-                    #Construct top panel
-                    for oAs in oCoords:
-                        sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                        oPolygon.append(sPoint + str(sFinalUpper))
-                    #add top panel
-                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
-                    oKmlCoords.text = " ".join(oPolygon)
-
-                    #Construct bottom panel
-                    oPolygon:list = []
-                    for oAs in oCoords:
-                        sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
-                        oPolygon.append(sPoint + str(sFinalLower))
-                    #add bottom panel
-                    oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
-                    oKmlCoords.text = " ".join(oPolygon)
-
-                    #Construct sides panels
-                    for idx, oAs in enumerate(oCoords):
-                        sPoint0:str = str(oCoords[idx][0]) + "," + str(oCoords[idx][1]) + ","
-                        if idx+1 == len(oCoords):
-                            sPoint1:str = str(oCoords[0][0]) + "," + str(oCoords[0][1]) + ","
-                        else:
-                            sPoint1:str = str(oCoords[idx+1][0]) + "," + str(oCoords[idx+1][1]) + ","
-
-                        oPolygon:list = []
-                        oPolygon.append(sPoint0 + str(sFinalLower))
-                        oPolygon.append(sPoint0 + str(sFinalUpper))
-                        oPolygon.append(sPoint1 + str(sFinalUpper))
-                        oPolygon.append(sPoint1 + str(sFinalLower))
-                        oPolygon.append(sPoint0 + str(sFinalLower))
-
-                        #Side panel
-                        oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
-                        oKmlCoords.text = " ".join(oPolygon)
+                if sLowerM==0:                                                  #Le plancher est plaqué au sol
+                    for oPol in oPolygons:
+                        self.makeSinglePolygon(oPol, oMultiGeo, sAltitudeMode, sFinalUpper)
+                else:
+                    sFinalLower:str = sLowerM                                   #Standard AMSL value
+                    if sOrdLowerM:                                              #Ordinal AGL value
+                        sFinalLower = int(sMinGroundHeight) + int(sOrdLowerM)   #New - Elevation au dessus du point géographique le moins élevé de la zone
+                    for oPol in oPolygons:
+                        self.makeComplexPolygon(oPol, oMultiGeo, sAltitudeMode, sFinalUpper, sFinalLower)
 
             barre.update(idxBarre)
         barre.reset()
+        return
+
+    def makeSinglePolygon(self, oPol:list, oMultiGeo, sAltitudeMode:str, sFinalUpper:str) -> None:
+        oPolygon:list = []
+        for oAs in oPol[0]:
+            sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+            oPolygon.append(sPoint + str(sFinalUpper))
+        #add top panel
+        oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="1", sAltitudeMode=sAltitudeMode)
+        oKmlCoords.text = " ".join(oPolygon)
+        return
+
+    def makeComplexPolygon(self, oPol:list, oMultiGeo, sAltitudeMode:str, sFinalUpper:str, sFinalLower:str) -> None:
+        oCoords:list = oPol[0]
+
+        #Construct top panel
+        oPolygon:list = []
+        for oAs in oCoords:
+            sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+            oPolygon.append(sPoint + str(sFinalUpper))
+        #add top panel
+        oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
+        oKmlCoords.text = " ".join(oPolygon)
+
+        #Construct bottom panel
+        oPolygon:list = []
+        for oAs in oCoords:
+            sPoint:str = str(oAs[0]) + "," + str(oAs[1]) + ","
+            oPolygon.append(sPoint + str(sFinalLower))
+        #add bottom panel
+        oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
+        oKmlCoords.text = " ".join(oPolygon)
+
+        #Construct sides panels
+        for idx, oAs in enumerate(oCoords):
+            sPoint0:str = str(oCoords[idx][0]) + "," + str(oCoords[idx][1]) + ","
+            if idx+1 == len(oCoords):
+                sPoint1:str = str(oCoords[0][0]) + "," + str(oCoords[0][1]) + ","
+            else:
+                sPoint1:str = str(oCoords[idx+1][0]) + "," + str(oCoords[idx+1][1]) + ","
+
+            oPolygon:list = []
+            oPolygon.append(sPoint0 + str(sFinalLower))
+            oPolygon.append(sPoint0 + str(sFinalUpper))
+            oPolygon.append(sPoint1 + str(sFinalUpper))
+            oPolygon.append(sPoint1 + str(sFinalLower))
+            oPolygon.append(sPoint0 + str(sFinalLower))
+
+            #Side panel
+            oKmlCoords = self.createKmlPolygon(oMultiGeo, sExtrude="0", sAltitudeMode=sAltitudeMode)
+            oKmlCoords.text = " ".join(oPolygon)
+
         return
 
     #Contruction dynamique du tableau de présentation

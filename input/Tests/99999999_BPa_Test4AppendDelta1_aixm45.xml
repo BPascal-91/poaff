@@ -6832,9 +6832,196 @@
 			<valCrc>70847B7B</valCrc>
 		</Gbv>
 	</Gbr>
-<Ase><AseUid mid="400001540739641"><codeType>D-OTHER</codeType><codeId>EFLH28</codeId></AseUid><txtName>KOTKA</txtName><codeActivity>BLAST</codeActivity><codeDistVerUpper>HEI</codeDistVerUpper><valDistVerUpper>1000</valDistVerUpper><uomDistVerUpper>FT</uomDistVerUpper><codeDistVerLower>HEI</codeDistVerLower><valDistVerLower>0</valDistVerLower><uomDistVerLower>FT</uomDistVerLower><Att><codeWorkHr>TIMSH</codeWorkHr><Timsh><codeTimeRef>UTCW</codeTimeRef><dateValidWef>01-01</dateValidWef><dateValidTil>31-12</dateValidTil><codeDay>MON</codeDay><codeDayTil>FRI</codeDayTil><timeWef>00:00</timeWef><timeTil>23:59</timeTil></Timsh></Att></Ase>	
-<Ase><AseUid mid="400001540739641"><codeType>D-OTHER</codeType><codeId>EFLH28-bis</codeId></AseUid><txtName>KOTKA (bis)</txtName><codeActivity>BLAST</codeActivity><codeDistVerUpper>HEI</codeDistVerUpper><valDistVerUpper>1000</valDistVerUpper><uomDistVerUpper>FT</uomDistVerUpper><codeDistVerLower>HEI</codeDistVerLower><valDistVerLower>0</valDistVerLower><uomDistVerLower>FT</uomDistVerLower><Att><codeWorkHr>TIMSH</codeWorkHr><Timsh><codeTimeRef>UTCW</codeTimeRef><dateValidWef>01-01</dateValidWef><dateValidTil>31-12</dateValidTil><codeDay>MON</codeDay><codeDayTil>FRI</codeDayTil><timeWef>00:00</timeWef><timeTil>23:59</timeTil></Timsh></Att></Ase>	
-<Ase><AseUid mid="400001540739641"><codeType>D-OTHER</codeType><codeId>EFLH28-ter</codeId></AseUid><txtName>KOTKA (ter)</txtName><codeActivity>BLAST</codeActivity><codeDistVerUpper>HEI</codeDistVerUpper><valDistVerUpper>1000</valDistVerUpper><uomDistVerUpper>FT</uomDistVerUpper><codeDistVerLower>HEI</codeDistVerLower><valDistVerLower>0</valDistVerLower><uomDistVerLower>FT</uomDistVerLower><Att><codeWorkHr>TIMSH</codeWorkHr><Timsh><codeTimeRef>UTCW</codeTimeRef><dateValidWef>01-01</dateValidWef><dateValidTil>31-12</dateValidTil><codeDay>MON</codeDay><codeDayTil>FRI</codeDayTil><timeWef>00:00</timeWef><timeTil>23:59</timeTil></Timsh></Att></Ase>	
+    <Ase>
+        <AseUid mid="1563145">
+            <codeType>R</codeType>
+            <codeId>LFR145</codeId>
+        </AseUid>
+        <txtName>145</txtName>
+        <codeDistVerUpper>ALT</codeDistVerUpper>
+        <valDistVerUpper>4200</valDistVerUpper>
+        <uomDistVerUpper>FT</uomDistVerUpper>
+        <codeDistVerLower>HEI</codeDistVerLower>
+        <valDistVerLower>0</valDistVerLower>
+        <uomDistVerLower>FT</uomDistVerLower>
+        <Att>
+            <codeWorkHr>NOTAM</codeWorkHr>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>TUE</codeDay>
+                <codeDayTil>TUE</codeDayTil>
+                <codeEventWef>SS</codeEventWef>
+                <timeTil>23:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>FRI</codeDay>
+                <codeDayTil>FRI</codeDayTil>
+                <timeWef>00:00</timeWef>
+                <timeTil>00:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>MON</codeDay>
+                <codeDayTil>MON</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>THU</codeDay>
+                <codeDayTil>THU</codeDayTil>
+                <codeEventWef>SS</codeEventWef>
+                <timeTil>23:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>FRI</codeDay>
+                <codeDayTil>FRI</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>WED</codeDay>
+                <codeDayTil>WED</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>THU</codeDay>
+                <codeDayTil>THU</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>WED</codeDay>
+                <codeDayTil>WED</codeDayTil>
+                <timeWef>00:00</timeWef>
+                <timeTil>00:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>TUE</codeDay>
+                <codeDayTil>TUE</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <txtRmkWorkHr>Activation by NOTAM.#
+Except HOL :#
+- MON : 0930-1100#
+- TUE, THU : 0930-1100 and SS-2359#
+- WED, FRI : 0000-0059 and 0930-1100#
+SUM : - 1HR</txtRmkWorkHr>
+        </Att>
+        <txtRmk>Administrator : CDPGE Athis- Mons.#
+Avoidance mandatory during activation hours.#
+Activation timetable available on :#
+- Internet : www.sia.aviation- civile.gouv.fr ( pre-flight section/ AZBA Charts)#
+- Internet : www.dircam.air.defense.gouv.fr/dia (Information section- short term NOTAM)#
+- Toll-free TEL number : 0800 24 54 66#
+Actual activity known on :#
+- CIV#
+- neighbouring AD.</txtRmk>
+    </Ase>	
+	<Ase>
+		<AseUid mid="400001540739641">
+			<codeType>D-OTHER</codeType>
+			<codeId>EFLH28</codeId>
+		</AseUid>
+		<txtName>KOTKA</txtName>
+		<codeActivity>BLAST</codeActivity>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>1000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-12</dateValidTil>
+				<codeDay>MON</codeDay>
+				<codeDayTil>FRI</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="400001540739641">
+			<codeType>D-OTHER</codeType>
+			<codeId>EFLH28-bis</codeId>
+		</AseUid>
+		<txtName>KOTKA (bis)</txtName>
+		<codeActivity>BLAST</codeActivity>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>1000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-12</dateValidTil>
+				<codeDay>MON</codeDay>
+				<codeDayTil>FRI</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+		</Att>
+	</Ase>
+	<Ase>
+		<AseUid mid="400001540739641">
+			<codeType>D-OTHER</codeType>
+			<codeId>EFLH28-ter</codeId>
+		</AseUid>
+		<txtName>KOTKA (ter)</txtName>
+		<codeActivity>BLAST</codeActivity>
+		<codeDistVerUpper>HEI</codeDistVerUpper>
+		<valDistVerUpper>1000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>TIMSH</codeWorkHr>
+			<Timsh>
+				<codeTimeRef>UTCW</codeTimeRef>
+				<dateValidWef>01-01</dateValidWef>
+				<dateValidTil>31-12</dateValidTil>
+				<codeDay>MON</codeDay>
+				<codeDayTil>FRI</codeDayTil>
+				<timeWef>00:00</timeWef>
+				<timeTil>23:59</timeTil>
+			</Timsh>
+		</Att>
+	</Ase>
 	<Ase>
 		<AseUid mid="1561295">
 			<codeType>TMA</codeType>
@@ -7253,7 +7440,66 @@ Partially situated in France.
 The area overhead LFAK is excluded between GND and 800 ft AMSL (510131N 0023419E - along the Belgian-French border - 510330N 0023344E - 510213N 0023003E - 510131N 0023419E).
 </txtRmk>
 	</Ase>
-<Abd><AbdUid mid="400001540739641"><AseUid mid="400001540739641"><codeType>D-OTHER</codeType><codeId>EFLH28</codeId></AseUid></AbdUid><Circle><geoLatCen>603023N</geoLatCen><geoLongCen>0264920E</geoLongCen><codeDatum>WGE</codeDatum><valRadius>0.3</valRadius><uomRadius>NM</uomRadius><valCrc>468FAD09</valCrc></Circle></Abd>	
+    <Abd>
+        <AbdUid mid="1569734">
+            <AseUid mid="1563145">
+                <codeType>R</codeType>
+                <codeId>LFR145</codeId>
+            </AseUid>
+        </AbdUid>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>460500.00N</geoLat>
+            <geoLong>0015200.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>461330.00N</geoLat>
+            <geoLong>0014815.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>462915.00N</geoLat>
+            <geoLong>0021212.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>463045.00N</geoLat>
+            <geoLong>0015630.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>461540.00N</geoLat>
+            <geoLong>0013445.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>460210.00N</geoLat>
+            <geoLong>0013847.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+    </Abd>	
+	<Abd>
+		<AbdUid mid="400001540739641">
+			<AseUid mid="400001540739641">
+				<codeType>D-OTHER</codeType>
+				<codeId>EFLH28</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>603023N</geoLatCen>
+			<geoLongCen>0264920E</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>0.3</valRadius>
+			<uomRadius>NM</uomRadius>
+			<valCrc>468FAD09</valCrc>
+		</Circle>
+	</Abd>
 	<Abd>
 		<AbdUid mid="1568498">
 			<AseUid mid="1561295">
@@ -8214,7 +8460,46 @@ The area overhead LFAK is excluded between GND and 800 ft AMSL (510131N 0023419E
 			<valCrc>D40A2671</valCrc>
 		</Avx>
 	</Abd>
-<Abd><AbdUid mid="84915502"><AseUid mid="84915502"><codeType>CTR</codeType><codeId>EBFN</codeId></AseUid></AbdUid><Avx><codeType>CWA</codeType><geoLat>510227N</geoLat><geoLong>0022840E</geoLong><codeDatum>WGE</codeDatum><geoLatArc>510717N</geoLatArc><geoLongArc>0023045E</geoLongArc><valRadiusArc>5</valRadiusArc><uomRadiusArc>NM</uomRadiusArc><valCrc>1F1D5D04</valCrc></Avx><Avx><codeType>GRC</codeType><geoLat>511145N</geoLat><geoLong>0023423E</geoLong><codeDatum>WGE</codeDatum><valCrc>EEAAA3F5</valCrc></Avx><Avx><codeType>GRC</codeType><geoLat>510357N</geoLat><geoLong>0025825E</geoLong><codeDatum>WGE</codeDatum><valCrc>7BA09DD6</valCrc></Avx><Avx><codeType>GRC</codeType><geoLat>505900N</geoLat><geoLong>0024917E</geoLong><codeDatum>WGE</codeDatum><valCrc>0731A3D9</valCrc></Avx></Abd>
+	<Abd>
+		<AbdUid mid="84915502">
+			<AseUid mid="84915502">
+				<codeType>CTR</codeType>
+				<codeId>EBFN</codeId>
+			</AseUid>
+		</AbdUid>
+		<Avx>
+			<codeType>CWA</codeType>
+			<geoLat>510227N</geoLat>
+			<geoLong>0022840E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<geoLatArc>510717N</geoLatArc>
+			<geoLongArc>0023045E</geoLongArc>
+			<valRadiusArc>5</valRadiusArc>
+			<uomRadiusArc>NM</uomRadiusArc>
+			<valCrc>1F1D5D04</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>511145N</geoLat>
+			<geoLong>0023423E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>EEAAA3F5</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>510357N</geoLat>
+			<geoLong>0025825E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>7BA09DD6</valCrc>
+		</Avx>
+		<Avx>
+			<codeType>GRC</codeType>
+			<geoLat>505900N</geoLat>
+			<geoLong>0024917E</geoLong>
+			<codeDatum>WGE</codeDatum>
+			<valCrc>0731A3D9</valCrc>
+		</Avx>
+	</Abd>
 	<Adg>
 		<AdgUid mid="7215424">
 			<AseUid mid="7215422">

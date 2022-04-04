@@ -1,6 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
 <AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2020-05-10T19:53:01.597452" effective="2020-05-10T19:53:01.597452">
+    <Ase>
+        <AseUid mid="1563145">
+            <codeType>R</codeType>
+            <codeId>LFR145</codeId>
+        </AseUid>
+        <txtName>145</txtName>
+        <codeDistVerUpper>ALT</codeDistVerUpper>
+        <valDistVerUpper>4200</valDistVerUpper>
+        <uomDistVerUpper>FT</uomDistVerUpper>
+        <codeDistVerLower>HEI</codeDistVerLower>
+        <valDistVerLower>0</valDistVerLower>
+        <uomDistVerLower>FT</uomDistVerLower>
+        <Att>
+            <codeWorkHr>NOTAM</codeWorkHr>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>TUE</codeDay>
+                <codeDayTil>TUE</codeDayTil>
+                <codeEventWef>SS</codeEventWef>
+                <timeTil>23:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>FRI</codeDay>
+                <codeDayTil>FRI</codeDayTil>
+                <timeWef>00:00</timeWef>
+                <timeTil>00:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>MON</codeDay>
+                <codeDayTil>MON</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>THU</codeDay>
+                <codeDayTil>THU</codeDayTil>
+                <codeEventWef>SS</codeEventWef>
+                <timeTil>23:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>FRI</codeDay>
+                <codeDayTil>FRI</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>WED</codeDay>
+                <codeDayTil>WED</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>THU</codeDay>
+                <codeDayTil>THU</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>WED</codeDay>
+                <codeDayTil>WED</codeDayTil>
+                <timeWef>00:00</timeWef>
+                <timeTil>00:59</timeTil>
+            </Timsh>
+            <Timsh>
+                <codeTimeRef>UTCW</codeTimeRef>
+                <dateValidWef>01-01</dateValidWef>
+                <dateValidTil>31-12</dateValidTil>
+                <codeDay>TUE</codeDay>
+                <codeDayTil>TUE</codeDayTil>
+                <timeWef>09:30</timeWef>
+                <timeTil>11:00</timeTil>
+            </Timsh>
+            <txtRmkWorkHr>Activation by NOTAM.#
+Except HOL :#
+- MON : 0930-1100#
+- TUE, THU : 0930-1100 and SS-2359#
+- WED, FRI : 0000-0059 and 0930-1100#
+SUM : - 1HR</txtRmkWorkHr>
+        </Att>
+        <txtRmk>Administrator : CDPGE Athis- Mons.#
+Avoidance mandatory during activation hours.#
+Activation timetable available on :#
+- Internet : www.sia.aviation- civile.gouv.fr ( pre-flight section/ AZBA Charts)#
+- Internet : www.dircam.air.defense.gouv.fr/dia (Information section- short term NOTAM)#
+- Toll-free TEL number : 0800 24 54 66#
+Actual activity known on :#
+- CIV#
+- neighbouring AD.</txtRmk>
+    </Ase>
 	<Ase>
 		<AseUid mid="1562881">
 			<codeType>D-OTHER</codeType>
@@ -55,14 +167,14 @@ ABV FL 115: Actual activity on TOULOUSE APP.</txtRmk>
 		<uomDistVerLower>FT</uomDistVerLower>
 		<Att>
 			<codeWorkHr>HX</codeWorkHr>
-			<txtRmkWorkHr>Activable H24</txtRmkWorkHr>
+			<txtRmkWorkHr>Activable H24. DEAUVILLE APP : 120.350 MHz </txtRmkWorkHr>
 		</Att>
 		<txtRmk>Possible activation H24.#
 OAT/GAT procedures.#
 Deactivation announced on RAI 128,950 or ORLY APP or DE GAULLE APP.#
 LF-R 84 A and B excluded.#
 LF-P 25 FONTENAY AUX ROSES : entry prohibited, exception see AIP ENR 5.1.#
-CAUTION : this CTR coexists with LF-R 275 PARIS which avoidance is mandatory for GAT VFR flights (except special authorization : see AIP ENR 5.1).</txtRmk>
+CAUTION : this CTR coexists with LF-R 275 PARIS which avoidance is mandatory for GAT VFR flights (except special authorization : see AIP ENR 5.1). Activity known on SAINT-DIZIER APP 134.775 Mhz or 264.425 Mhz.</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="1563127">
@@ -78,7 +190,7 @@ CAUTION : this CTR coexists with LF-R 275 PARIS which avoidance is mandatory for
 		<uomDistVerLower>FT</uomDistVerLower>
 		<Att>
 			<codeWorkHr>HX</codeWorkHr>
-			<txtRmkWorkHr>Possible activation H24 except SUN and public HOL</txtRmkWorkHr>
+			<txtRmkWorkHr>Possible activation H24 except SUN and public HOL. Actual activity known by: DEAUVILLE APP : 120.350 MHz DEAUVILLE FIS : 121.425 MHz ..etc.. and AFIS 120.2MHz absence</txtRmkWorkHr>
 		</Att>
 		<txtRmk>Administrator: NIL.#Avoidance mandatory except for exemption granted by the prefect of la Manche, after West DSAC consultation.</txtRmk>
 	</Ase>
@@ -288,6 +400,50 @@ VFR : air navigator's attention is drawn on the life threatening nature of activ
         </Att>
         <txtRmk>BLW FL 115: Actual activity on CLERMONT APP and CAHORS A/A.#ABV FL 115: Actual activity on TOULOUSE APP.</txtRmk>
     </Ase>
+    <Abd>
+        <AbdUid mid="1569734">
+            <AseUid mid="1563145">
+                <codeType>R</codeType>
+                <codeId>LFR145</codeId>
+            </AseUid>
+        </AbdUid>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>460500.00N</geoLat>
+            <geoLong>0015200.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>461330.00N</geoLat>
+            <geoLong>0014815.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>462915.00N</geoLat>
+            <geoLong>0021212.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>463045.00N</geoLat>
+            <geoLong>0015630.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>461540.00N</geoLat>
+            <geoLong>0013445.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+        <Avx>
+            <codeType>GRC</codeType>
+            <geoLat>460210.00N</geoLat>
+            <geoLong>0013847.00E</geoLong>
+            <codeDatum>WGE</codeDatum>
+        </Avx>
+    </Abd>    
 	<Abd>
 		<AbdUid mid="1569310">
 			<AseUid mid="1562881">

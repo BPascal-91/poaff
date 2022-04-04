@@ -19,12 +19,14 @@ import poaffCst
 class enuAreasRef(Enum):
     geoJSON     = 0     #Dictionnaire geoJSON contenant le tracé de périmètre
     baseName    = 1     #Nommage de base relatif au périmètre
-    desc        = 2     #Descirption du périmètre
-    descComp    = 3     #Complément à la description du périmètre
-    Iso3        = 4     #ISO_3166-1 - 3 chars
-    Iso2        = 5     #ISO_3166-1 - 2 chars
-    IsoComp     = 6     #ISO_Perimeter: Countries; All-Territories; Country; Partial; Additional-Territory
-    defLocation = 7    #"{Lat:47,Lng:2,Zoom:6.7}" Dictionnaire de représentation de la localisation par défaut utilisée pour centrage automatisé via GoogleMaps (Google.Maps.API)
+    shortName   = 2     #Nommage court du périmètre
+    name        = 3     #Nommage complet du périmètre
+    desc        = 4     #Descirption du périmètre
+    descComp    = 5     #Complément à la description du périmètre
+    Iso3        = 6     #ISO_3166-1 - 3 chars
+    Iso2        = 7     #ISO_3166-1 - 2 chars
+    IsoComp     = 8     #ISO_Perimeter: Countries; All-Territories; Country; Partial; Additional-Territory
+    defLocation = 9     #"{Lat:47,Lng:2,Zoom:6.7}" Dictionnaire de représentation de la localisation par défaut utilisée pour centrage automatisé via GoogleMaps (Google.Maps.API)
 
 class GeoRefArea:
 
@@ -42,49 +44,69 @@ class GeoRefArea:
         self.FrenchNESW:dict           = bpaTools.readJsonFile(self.inputPath + "geoFrenchNESW_border.geojson")
         self.FrenchVosgesJura:dict     = bpaTools.readJsonFile(self.inputPath + "geoFrenchVosgesJura_border.geojson")
         self.FrenchPyrenees:dict       = bpaTools.readJsonFile(self.inputPath + "geoFrenchPyrenees_border.geojson")
-        self.Corse:dict                = bpaTools.readJsonFile(self.inputPath + "geoCorse_border.geojson")
-        self.LaReunion:dict            = bpaTools.readJsonFile(self.inputPath + "geoLaReunion_border.geojson")
-        self.GuyaneFr:dict             = bpaTools.readJsonFile(self.inputPath + "geoGuyaneFr_border.geojson")
-        self.StPierreEtMiquelon:dict   = bpaTools.readJsonFile(self.inputPath + "geoStPierreEtMiquelon_border.geojson")
         self.AntillesFr:dict           = bpaTools.readJsonFile(self.inputPath + "geoAntillesFr_border.geojson")
-        self.Mayotte:dict              = bpaTools.readJsonFile(self.inputPath + "geoMayotte_border.geojson")
-        self.PolynesieFr:dict          = bpaTools.readJsonFile(self.inputPath + "geoPolynesieFr_border.geojson")
+        self.Corse:dict                = bpaTools.readJsonFile(self.inputPath + "geoCorse_border.geojson")
+        self.GuyaneFr:dict             = bpaTools.readJsonFile(self.inputPath + "geoGuyaneFr_border.geojson")
+        self.LaReunion:dict            = bpaTools.readJsonFile(self.inputPath + "geoLaReunion_border.geojson")
         self.NouvelleCaledonie:dict    = bpaTools.readJsonFile(self.inputPath + "geoNouvelleCaledonie_border.geojson")
+        self.Mayotte:dict              = bpaTools.readJsonFile(self.inputPath + "geoMayotte_border.geojson")
+        #self.PolynesiaFr:dict         = bpaTools.readJsonFile(self.inputPath + "geoPolynesiaFr_border.geojson")
+        self.PolynesieFr:dict          = bpaTools.readJsonFile(self.inputPath + "geoPolynesieFr_border.geojson")
+        self.StPierreEtMiquelon:dict   = bpaTools.readJsonFile(self.inputPath + "geoStPierreEtMiquelon_border.geojson")
         self.FrenchAll:dict            = self.makeFrenchAllTerritories()
         self.PWCFrenchAlps:dict        = bpaTools.readJsonFile(self.inputPath + "geoPWCFrenchAlps_border.geojson")
         self.Alps:dict                 = bpaTools.readJsonFile(self.inputPath + "geoAlps_border.geojson")
-        self.Netherlands:dict          = bpaTools.readJsonFile(self.inputPath + "geoNetherlands_border.geojson")
-        self.Belgium:dict              = bpaTools.readJsonFile(self.inputPath + "geoBelgium_border.geojson")
-        self.Luxembourg:dict           = bpaTools.readJsonFile(self.inputPath + "geoLuxembourg_border.geojson")
-        self.Germany:dict              = bpaTools.readJsonFile(self.inputPath + "geoGermany_border.geojson")
-        self.Poland:dict               = bpaTools.readJsonFile(self.inputPath + "geoPoland_border.geojson")
-        self.Czechia:dict              = bpaTools.readJsonFile(self.inputPath + "geoCzechia_border.geojson")
-        self.Slovakia:dict             = bpaTools.readJsonFile(self.inputPath + "geoSlovakia_border.geojson")
-        self.Hungary:dict              = bpaTools.readJsonFile(self.inputPath + "geoHungary_border.geojson")
-        self.Austria:dict              = bpaTools.readJsonFile(self.inputPath + "geoAustria_border.geojson")
-        self.Slovenia:dict             = bpaTools.readJsonFile(self.inputPath + "geoSlovenia_border.geojson")
-        self.Switzerland:dict          = bpaTools.readJsonFile(self.inputPath + "geoSwitzerland_border.geojson")
-        self.Liechtenstein:dict        = bpaTools.readJsonFile(self.inputPath + "geoLiechtenstein_border.geojson")
+        self.Albania:dict              = bpaTools.readJsonFile(self.inputPath + "geoAlbania_border.geojson")
         self.Andorra:dict              = bpaTools.readJsonFile(self.inputPath + "geoAndorra_border.geojson")
+        self.Austria:dict              = bpaTools.readJsonFile(self.inputPath + "geoAustria_border.geojson")
+        self.Belarus:dict              = bpaTools.readJsonFile(self.inputPath + "geoBelarus_border.geojson")
+        self.Belgium:dict              = bpaTools.readJsonFile(self.inputPath + "geoBelgium_border.geojson")
+        self.BosniaHerzegovina:dict    = bpaTools.readJsonFile(self.inputPath + "geoBosniaHerzegovina_border.geojson")
+        self.Bulgaria:dict             = bpaTools.readJsonFile(self.inputPath + "geoBulgaria_border.geojson")
+        self.Croatia:dict              = bpaTools.readJsonFile(self.inputPath + "geoCroatia_border.geojson")
+        self.Czechia:dict              = bpaTools.readJsonFile(self.inputPath + "geoCzechia_border.geojson")
         self.Denmark:dict              = bpaTools.readJsonFile(self.inputPath + "geoDenmark_border.geojson")
-        self.Spain:dict                = bpaTools.readJsonFile(self.inputPath + "geoSpain_border.geojson")
-        self.Portugal:dict             = bpaTools.readJsonFile(self.inputPath + "geoPortugal_border.geojson")
-        self.Italy:dict                = bpaTools.readJsonFile(self.inputPath + "geoItaly_border.geojson")
-        self.UnitedKingdom:dict        = bpaTools.readJsonFile(self.inputPath + "geoUnitedKingdom_border.geojson")
-        self.JerseyGuernsey:dict       = bpaTools.readJsonFile(self.inputPath + "geoJerseyGuernsey_border.geojson")
+        self.Estonia:dict              = bpaTools.readJsonFile(self.inputPath + "geoEstonia_border.geojson")
+        self.FaroeIslands:dict         = bpaTools.readJsonFile(self.inputPath + "geoFaroeIslands_border.geojson")
+        self.Finland:dict              = bpaTools.readJsonFile(self.inputPath + "geoFinland_border.geojson")
+        self.Germany:dict              = bpaTools.readJsonFile(self.inputPath + "geoGermany_border.geojson")
+        self.Greece:dict               = bpaTools.readJsonFile(self.inputPath + "geoGreece_border.geojson")
+        self.Hungary:dict              = bpaTools.readJsonFile(self.inputPath + "geoHungary_border.geojson")
+        self.Iceland:dict              = bpaTools.readJsonFile(self.inputPath + "geoIceland_border.geojson")
         self.Ireland:dict              = bpaTools.readJsonFile(self.inputPath + "geoIreland_border.geojson")
+        self.Italy:dict                = bpaTools.readJsonFile(self.inputPath + "geoItaly_border.geojson")
+        self.Latvia:dict               = bpaTools.readJsonFile(self.inputPath + "geoLatvia_border.geojson")
+        self.Liechtenstein:dict        = bpaTools.readJsonFile(self.inputPath + "geoLiechtenstein_border.geojson")
+        self.Lithuania:dict            = bpaTools.readJsonFile(self.inputPath + "geoLithuania_border.geojson")
+        self.Luxembourg:dict           = bpaTools.readJsonFile(self.inputPath + "geoLuxembourg_border.geojson")
+        self.Malta:dict                = bpaTools.readJsonFile(self.inputPath + "geoMalta_border.geojson")
+        self.Moldova:dict              = bpaTools.readJsonFile(self.inputPath + "geoMoldova_border.geojson")
+        self.Montenegro:dict           = bpaTools.readJsonFile(self.inputPath + "geoMontenegro_border.geojson")
+        self.Netherlands:dict          = bpaTools.readJsonFile(self.inputPath + "geoNetherlands_border.geojson")
+        self.NorthMacedonia:dict       = bpaTools.readJsonFile(self.inputPath + "geoNorthMacedonia_border.geojson")
+        self.Norway:dict               = bpaTools.readJsonFile(self.inputPath + "geoNorway_border.geojson")
+        self.NwSvalbard:dict           = bpaTools.readJsonFile(self.inputPath + "geoNwSvalbard_border.geojson")
+        self.Poland:dict               = bpaTools.readJsonFile(self.inputPath + "geoPoland_border.geojson")
+        self.Portugal:dict             = bpaTools.readJsonFile(self.inputPath + "geoPortugal_border.geojson")
+        self.Romania:dict              = bpaTools.readJsonFile(self.inputPath + "geoRomania_border.geojson")
+        #self.RussianFederation:dict   = bpaTools.readJsonFile(self.inputPath + "geoRussianFederation_border.geojson")
+        self.Serbia:dict               = bpaTools.readJsonFile(self.inputPath + "geoSerbia_border.geojson")
+        self.Slovakia:dict             = bpaTools.readJsonFile(self.inputPath + "geoSlovakia_border.geojson")
+        self.Slovenia:dict             = bpaTools.readJsonFile(self.inputPath + "geoSlovenia_border.geojson")
+        self.Spain:dict                = bpaTools.readJsonFile(self.inputPath + "geoSpain_border.geojson")
+        self.Sweden:dict               = bpaTools.readJsonFile(self.inputPath + "geoSweden_border.geojson")
+        self.Switzerland:dict          = bpaTools.readJsonFile(self.inputPath + "geoSwitzerland_border.geojson")
+        self.Ukraine:dict              = bpaTools.readJsonFile(self.inputPath + "geoUkraine_border.geojson")
+        self.UkJerseyGuernsey:dict     = bpaTools.readJsonFile(self.inputPath + "geoUkJerseyGuernsey_border.geojson")
+        self.UnitedKingdom:dict        = bpaTools.readJsonFile(self.inputPath + "geoUnitedKingdom_border.geojson")
 
         if partialConstruct:
             #Pour acceleration des tests en mises au points
             self.AreasRef = {
-                    #"geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories",,"{Lat:47,Lng:2,Zoom:2.5}"],
-                    "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country","{Lat:47,Lng:2,Zoom:6.5}"],
-                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    #"geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    #"geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    #"geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","---","--","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    #"geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes, périmètre de performances","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    #"geoFrenchAll":            [self.FrenchAll             , None          , "FrenchAll","FrenchAll / Territoires Français","Ensemble des territoires Français","","FRA","FR","All-Territories",,"{Lat:47,Lng:2,Zoom:2.5}"],
+                    "geoFrench":                [self.French                , None          , "French","French / France métropolitaine", "France métropolitaine","","FRA","FR","Country","{Lat:47,Lng:2,Zoom:6.5}"],
+                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "FrenchNorth","French / France métropolitaine Nord", "France métropolitaine, région Nord","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoUkJerseyGuernsey":      [self.UkJerseyGuernsey      , None          , "(Uk) Jersey-Guernesey","Iles de Jersey et Guernesey","Iles Anglo-Normandes de Jersey et Guernesey","","JEY;GGY","JE;GG","Countries","{Lat:49.5,Lng:-2.3,Zoom:9.6}"],
                     }
         else:
             #Lotissement nominal des bordures à traiter
@@ -92,44 +114,68 @@ class GeoRefArea:
                     #"geoTestPolygon":          [self.aTestPolygon          , None          , "Test avec plusieurs zones ajourée/combinée","","FRA","FR","Test","{Lat:47,Lng:2,Zoom:6.7}"],
                     #"geoTestMultiPolygon":     [self.aTestMultiPolygon     , None          , "Test une seule multi-zone ajourée/combinée","","FRA","FR","Test","{Lat:47,Lng:2,Zoom:6.7}"],
                     #"geoFrenchExt":            [self.aFrenchExt            , None          , "France métropolitaine légèrement étandue aux frontières","","---","--","Countries","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchAll":             [self.FrenchAll             , None          , "Ensemble des territoires Français","","FRA","FR","All-Territories","{Lat:47,Lng:2,Zoom:2.5}"],
-                    "geoFrench":                [self.French                , None          , "France métropolitaine","","FRA","FR","Country","{Lat:47,Lng:2,Zoom:6.5}"],
-                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "France métropolitaine, région Nord","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "France métropolitaine, région Sud","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "France métropolitaine, région Pyrenées","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "France métropolitaine, région Alpes","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
-                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC France-Alpes", "Périmètre de performance spécifique pour l'organisation des (PWC) Coupes-du-Monde de Parapente France-Alpes \n\n https://federation.ffvl.fr/ \n https://www.facebook.com/wpc.coeurdesavoie/","FRA","FR","Partial","{Lat:45.8,Lng:6.4,Zoom:9.0}"],
-                    "geoCorse":                 [self.Corse                 , None          , "Corse","","FRA","FR","Additional-Territory","{Lat:42.3,Lng:9,Zoom:8.7}"],
-                    "geoLaReunion":             [self.LaReunion             , None          , "La Réunion","","REU","RE","Country","{Lat:-21.1,Lng:55.5,Zoom:10.7}"],
-                    "geoGuyaneFr":              [self.GuyaneFr              , None          , "Guyane Française","","GUF","GU","Country","{Lat:4.2,Lng:-52.8,Zoom:8}"],
-                    "geoStPierreEtMiquelon":    [self.StPierreEtMiquelon    , None          , "Saint Pierre et Miquelon","","SPM","PM","Country","{Lat:46.92,Lng:-56.2,Zoom:10.5}"],
-                    "geoAntillesFr":            [self.AntillesFr            , None          , "Antilles Françaises", "Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade","GLP;MTQ;SMR;BLM;","GP;MQ;SM;BL","Countries","{Lat:15.8,Lng:-61,Zoom:7.5}"],
-                    "geoMayotte":               [self.Mayotte               , None          , "Mayotte","","MYT","YT","Country","{Lat:-12.82,Lng:45.2,Zoom:11.2}"],
-                    "geoPolynesieFr":           [self.PolynesieFr           , None          , "Polynesie Française (Tahiti)","","PYF","PF","Country","{Lat:-17.2,Lng:-150.5,Zoom:8.5}"],
-                    "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "Nouvelle Calédonie","","NCL","NC","Country","{Lat:-21.3,Lng:166,Zoom:8}"],
-                    "geoAlps":                  [self.Alps                  , None          , "Massif des Alpes", "France, Italie, Suisse et Autriche","---","--","Countries","{Lat:45.8,Lng:10.2,Zoom:7}"],
-                    "geoNetherlands":           [self.Netherlands           , None          , "Netherlands / Pays-Bas","","NLD","NL","Country","{Lat:52.4,Lng:6,Zoom:7.5}"],
-                    "geoBelgium":               [self.Belgium               , None          , "Belgium / Belgique","","BEL","BE","Country","{Lat:50.5,Lng:4.5,Zoom:8.2}"],
-                    "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg","","LUX","LU","Country","{Lat:49.8,Lng:6.1,Zoom:9.5}"],
-                    "geoGermany":               [self.Germany               , None          , "Germany / Allemagne","","DEU","DE","Country","{Lat:51.5,Lng:10.6,Zoom:6.4}"],
-                    "geoPoland":                [self.Poland                , None          , "Poland / Pologne","","POL","PL","Country","{Lat:52.2,Lng:19.5,Zoom:6.8}"],
-                    "geoCzechia":               [self.Czechia               , None          , "Czechia / Tchéquie","","CZE","CZ","Country","{Lat:49.9,Lng:15.5,Zoom:8}"],
-                    "geoSlovakia":              [self.Slovakia              , None          , "Slovakia / Slovaquie","","SVK","SK","Country","{Lat:48.7,Lng:19.65,Zoom:8.2}"],
-                    "geoHungary":               [self.Hungary               , None          , "Hungary / Hongrie","","HUN","HU","Country","{Lat:47.2,Lng:19.5,Zoom:8}"],
-                    "geoAustria":               [self.Austria               , None          , "Austria / Autriche","","AUT","AT","Country","{Lat:47.5,Lng:13.5,Zoom:7.6}"],
-                    "geoSlovenia":              [self.Slovenia              , None          , "Slovenia / Slovénie","","SVN","SI","Country","{Lat:46.15,Lng:15,Zoom:8.8}"],
-                    "geoSwitzerland":           [self.Switzerland           , None          , "Switzerland / Suisse","","CHE","CH","Country","{Lat:46.85,Lng:8.1,Zoom:8.2}"],
-                    "geoLiechtenstein":         [self.Liechtenstein         , None          , "Liechtenstein","","LIE","LI","Country","{Lat:47.1,Lng:9.5,Zoom:9.6}"],
-                    "geoDenmark":               [self.Denmark               , None          , "Denmark / Danemark","","DNK","DK","Country","{Lat:56.1,Lng:10.8,Zoom:7.4}"],
-                    "geoAndorra":               [self.Andorra               , None          , "Andorra / Andorre","","AND","AD","Country","{Lat:42.5,Lng:1.6,Zoom:9.5}"],
-                    "geoSpain":                 [self.Spain                 , None          , "Spain / Espagne","","ESP","ES","Country","{Lat:36,Lng:-7,Zoom:5.8}"],
-                    "geoPortugal":              [self.Portugal              , None          , "Portugal","","PRT","PT","Country","{Lat:36.5,Lng:-17,Zoom:6.2}"],
-                    "geoItaly":                 [self.Italy                 , None          , "Italy / Italie","","ITA","IT","Country","{Lat:41.8,Lng:13,Zoom:6.4}"],
-                    "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom / Royaume-Uni","","GBR","GB","Country","{Lat:54.5,Lng:-3.4,Zoom:6.2}"],
-                    "geoJerseyGuernsey":        [self.JerseyGuernsey        , None          , "Iles Anglo-Normandes de Jersey et Guernesey","","JEY;GGY","JE;GG","Countries","{Lat:49.5,Lng:-2.3,Zoom:9.6}"],
-                    "geoIreland":               [self.Ireland               , None          , "Ireland / Irlande","","IRL","IE","Country","{Lat:53.45,Lng:-7.8,Zoom:7.4}"],
+                    "geoFrenchAll":             [self.FrenchAll             , None          , "French-All","FrenchAll / Territoires Français","Ensemble des territoires Français","","FRA","FR","All-Territories","{Lat:47,Lng:2,Zoom:2.5}"],
+                    "geoFrench":                [self.French                , None          , "French","French / France métropolitaine", "France métropolitaine","","FRA","FR","Country","{Lat:47,Lng:2,Zoom:6.5}"],
+                    "geoFrenchNorth":           [self.FrenchNorth           , "geoFrench"   , "French-North","French / France métropolitaine Nord", "France métropolitaine, région Nord","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchSouth":           [self.FrenchSouth           , "geoFrench"   , "French-South","French / France métropolitaine Sud", "France métropolitaine, région Sud","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchNESW":            [self.FrenchNESW            , "geoFrench"   , "French-NESW","French / France métropolitaine Nord-Est à Sud-Ouest", "France métropolitaine, région Nord-Est à Sud-Ouest (NESW)","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchVosgesJura":      [self.FrenchVosgesJura      , "geoFrench"   , "French-VosgesJura","French / France métropolitaine Vosges et Jura", "France métropolitaine, région Vosges et Jura","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchPyrenees":        [self.FrenchPyrenees        , "geoFrench"   , "French-Pyrenees","French / France métropolitaine Pyrenées", "France métropolitaine, région Pyrenées","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoFrenchAlps":            [self.Alps                  , "geoFrench"   , "French-Alps","French / Alpes Française", "France métropolitaine, région Alpes","","FRA","FR","Partial","{Lat:47,Lng:2,Zoom:6.7}"],
+                    "geoCorse":                 [self.Corse                 , None          , "Corse","French / Corse", "Corse","","FRA","FR","Additional-Territory","{Lat:42.3,Lng:9,Zoom:8.7}"],
+                    "geoLaReunion":             [self.LaReunion             , None          , "LaRéunion","French / La Réunion", "La Réunion","","REU","RE","Country","{Lat:-21.15,Lng:55.6,Zoom:10.7}"],
+                    "geoAntillesFr":            [self.AntillesFr            , None          , "AntillesFr","French / Antilles Françaises", "Antilles Françaises", "Guadeloupe, Martinique, Saint-Martin, Marie-Galante, Saint-Barthélemy, Les Saintes, La Désirade","GLP;MTQ;SMR;BLM;","GP;MQ;SM;BL","Countries","{Lat:15.15,Lng:-61,Zoom:7.5}"],
+                    "geoGuyaneFr":              [self.GuyaneFr              , None          , "GuyaneFr","French / Guyane Française", "Guyane Française","","GUF","GU","Country","{Lat:3.9,Lng:-52.8,Zoom:8}"],
+                    "geoNouvelleCaledonie":     [self.NouvelleCaledonie     , None          , "N-Calédonie","French / Nouvelle Calédonie", "Nouvelle Calédonie","","NCL","NC","Country","{Lat:-21.3,Lng:166.1,Zoom:8}"],
+                    "geoMayotte":               [self.Mayotte               , None          , "Mayotte","French / Mayotte", "Mayotte","","MYT","YT","Country","{Lat:-12.82,Lng:45.2,Zoom:11.2}"],
+                    #"geoPolynesiaFr":          [self.PolynesiaFr           , None          , "PolynesiaFr","French / Polynésie Française", "Polynésie Française","","PYF","PF","Country","{Lat:0,Lng:0,Zoom:5}"],
+                    "geoPolynesieFr":           [self.PolynesieFr           , None          , "PolynesieFr","French / Polynésie Française", "Polynesie Française (Tahiti)","","PYF","PF","Country","{Lat:-17.2,Lng:-150.5,Zoom:8.5}"],
+                    "geoStPierreEtMiquelon":    [self.StPierreEtMiquelon    , None          , "St-Pierre-Miquelon","French / Saint Pierre et Miquelon", "Saint Pierre et Miquelon","","SPM","PM","Country","{Lat:46.92,Lng:-56.2,Zoom:10.5}"],
+                    "geoPWCFrenchAlps":         [self.PWCFrenchAlps         , None          , "PWC-FrenchAlps", "French / PWC France-Alpes", "PWC France-Alpes", "Périmètre de performance spécifique pour l'organisation des (PWC) Coupes-du-Monde de Parapente France-Alpes \n\n https://federation.ffvl.fr/ \n https://www.facebook.com/wpc.coeurdesavoie/","FRA","FR","Partial","{Lat:45.8,Lng:6.4,Zoom:9.0}"],
+                    "geoAlps":                  [self.Alps                  , None          , "Alps", "Alps / Massif des Alpes", "Massif des Alpes", "France, Italie, Suisse et Autriche","---","--","Countries","{Lat:45.8,Lng:10.2,Zoom:7}"],
+                    "geoAlbania":               [self.Albania               , None          , "Albania", "Albania / Albanie", "Albania / Albanie", "","ALB","AL","Country","{Lat:41.2,Lng:20.4,Zoom:8}"],
+                    "geoAndorra":               [self.Andorra               , None          , "Andorra", "Andorra / Andorre", "Andorra / Andorre","","AND","AD","Country","{Lat:42.54,Lng:1.6,Zoom:11}"],
+                    "geoAustria":               [self.Austria               , None          , "Austria","Austria / Autriche","Austria / Autriche","","AUT","AT","Country","{Lat:47.5,Lng:13.5,Zoom:7.6}"],
+                    "geoBelarus":               [self.Belarus               , None          , "Belarus", "Belarus / Biélorussie", "Belarus / Biélorussie", "","BLR","BY","Country","{Lat:53.8,Lng:28.5,Zoom:7}"],
+                    "geoBelgium":               [self.Belgium               , None          , "Belgium","Belgium / Belgique","Belgium / Belgique","","BEL","BE","Country","{Lat:50.5,Lng:4.5,Zoom:8.2}"],
+                    "geoBosniaHerzegovina":     [self.BosniaHerzegovina     , None          , "Bosnia-Herz.", "Bosnia Herzegovina / Bosnie-Herzégovine", "Bosnia Herzegovina / Bosnie-Herzégovine", "","BIH","BA","Country","{Lat:43.9,Lng:17.9,Zoom:8}"],
+                    "geoBulgaria":              [self.Bulgaria              , None          , "Bulgaria", "Bulgaria / Bulgarie", "Bulgaria / Bulgarie", "","BGR","BG","Country","{Lat:42.7,Lng:25.5,Zoom:8}"],
+                    "geoCroatia":               [self.Croatia               , None          , "Croatia", "Croatia / Croatie", "Croatia / Croatie", "","HRV","HR","Country","{Lat:44.5,Lng:16.5,Zoom:7.5}"],
+                    "geoCzechia":               [self.Czechia               , None          , "Czechia","Czechia / Tchéquie","Czechia / Tchéquie","","CZE","CZ","Country","{Lat:49.8,Lng:15.5,Zoom:8}"],
+                    "geoDenmark":               [self.Denmark               , None          , "Denmark","Denmark / Danemark","Denmark / Danemark","","DNK","DK","Country","{Lat:56.1,Lng:10.8,Zoom:7.4}"],
+                    "geoEstonia":               [self.Estonia               , None          , "Estonia", "Estonia / Estonie", "Estonia / Estonie", "","EST","EE","Country","{Lat:58.6,Lng:25.4,Zoom:8}"],
+                    "geoFaroeIslands":          [self.FaroeIslands          , None          , "Faroe-Islands", "Faroe Islands / Îles Féroé", "Faroe Islands / Îles Féroé", "","FRO","FO","Country","{Lat:61.9,Lng:-6.8,Zoom:9}"],
+                    "geoFinland":               [self.Finland               , None          , "Finland", "Finland / Finlande", "Finland / Finlande", "","FIN","FI","Country","{Lat:65.5,Lng:27.3,Zoom:5.5}"],
+                    "geoGermany":               [self.Germany               , None          , "Germany","Germany / Allemagne","Germany / Allemagne","","DEU","DE","Country","{Lat:51.3,Lng:10.6,Zoom:6.4}"],
+                    "geoGreece":                [self.Greece                , None          , "Greece","Greece / Grèce","Greece / Grèce","","GRC","GR","Country","{Lat:38.5,Lng:24.8,Zoom:7}"],
+                    "geoHungary":               [self.Hungary               , None          , "Hungary","Hungary / Hongrie","Hungary / Hongrie","","HUN","HU","Country","{Lat:47.2,Lng:19.5,Zoom:8}"],
+                    "geoIceland":               [self.Iceland               , None          , "Iceland","Iceland / Islande","Iceland / Islande","","ISL","IS","Country","{Lat:65,Lng:-18.5,Zoom:7}"],
+                    "geoIreland":               [self.Ireland               , None          , "Ireland","Ireland / Irlande","Ireland / Irlande","","IRL","IE","Country","{Lat:53.45,Lng:-7.8,Zoom:7.4}"],
+                    "geoItaly":                 [self.Italy                 , None          , "Italy","Italy / Italie","Italy / Italie","","ITA","IT","Country","{Lat:41.8,Lng:13,Zoom:6.4}"],
+                    "geoLatvia":                [self.Latvia                , None          , "Latvia","Latvia / Lettonie","Latvia / Lettonie","","LVA","LV","Country","{Lat:57.0,Lng:24.0,Zoom:7.5}"],
+                    "geoLiechtenstein":         [self.Liechtenstein         , None          , "Liechtenstein","Liechtenstein","Liechtenstein","","LIE","LI","Country","{Lat:47.2,Lng:9.5,Zoom:10}"],
+                    "geoLithuania":             [self.Lithuania             , None          , "Lithuania","Lithuania / Lituanie","Lithuania / Lituanie","","LTU","LT","Country","{Lat:55.2,Lng:23.0,Zoom:7.7}"],
+                    "geoLuxembourg":            [self.Luxembourg            , None          , "Luxembourg","Luxembourg","Luxembourg","","LUX","LU","Country","{Lat:49.8,Lng:6.1,Zoom:9.5}"],
+                    "geoMalta":                 [self.Malta                 , None          , "Malta","Malta / Malte","Malta / Malte","","MLT","MT","Country","{Lat:35.9,Lng:14.5,Zoom:8.7}"],
+                    "geoMoldova":               [self.Moldova               , None          , "Moldova","Moldova / Moldavie","Moldova / Moldavie","","MDA","MD","Country","{Lat:47.0,Lng:29.0,Zoom:8}"],
+                    "geoMontenegro":            [self.Montenegro            , None          , "Montenegro","Montenegro / Monténégro","Montenegro / Monténégro","","MNE","ME","Country","{Lat:42.7,Lng:19.5,Zoom:8.7}"],
+                    "geoNetherlands":           [self.Netherlands           , None          , "Netherlands","Netherlands / Pays-Bas","Netherlands / Pays-Bas","","NLD","NL","Country","{Lat:52.4,Lng:6,Zoom:7.5}"],
+                    "geoNorthMacedonia":        [self.NorthMacedonia        , None          , "North-Macedonia","North-Macedonia / Macédoine du Nord","North-Macedonia / Macédoine du Nord","","MKD","MK","Country","{Lat:41.6,Lng:21.7,Zoom:9}"],
+                    "geoNorway":                [self.Norway                , None          , "Norway","Norway / Norvège","Norway / Norvège","","NOR","NO","Country","{Lat:65.0,Lng:17.0,Zoom:5}"],
+                    "geoNwSvalbard":            [self.NwSvalbard            , None          , "Svalbard","Svalbard / Svalbard et Jan Mayen","Svalbard / Svalbard et Jan Mayen","","SJM","SJ","Country","{Lat:76.5,Lng:12.0,Zoom:4.7}"],
+                    "geoPoland":                [self.Poland                , None          , "Poland","Poland / Pologne","Poland / Pologne","","POL","PL","Country","{Lat:52.2,Lng:19.5,Zoom:6.8}"],
+                    "geoPortugal":              [self.Portugal              , None          , "Portugal","Portugal","Portugal","","PRT","PT","Country","{Lat:36.5,Lng:-17,Zoom:6.2}"],
+                    "geoRomania":               [self.Romania               , None          , "Romania","Romania / Roumanie","Romania / Roumanie","","ROU","RO","Country","{Lat:46.0,Lng:25.5,Zoom:7}"],
+                    #"geoRussianFederation":    [self.RussianFederation     , None          , "Russian-Federation","Russian-Federation / Fédération Russe","Russian-Federation / Fédération Russe","","RUS","RU","Country","{Lat:0,Lng:0,Zoom:5}"],
+                    "geoSerbia":                [self.Serbia                , None          , "Serbia","Serbia / Serbie","Serbia / Serbie","","SRB","RS","Country","{Lat:44.0,Lng:21.0,Zoom:7.4}"],
+                    "geoSlovakia":              [self.Slovakia              , None          , "Slovakia","Slovakia / Slovaquie","Slovakia / Slovaquie","","SVK","SK","Country","{Lat:48.7,Lng:19.65,Zoom:8.2}"],
+                    "geoSlovenia":              [self.Slovenia              , None          , "Slovenia","Slovenia / Slovénie","Slovenia / Slovénie","","SVN","SI","Country","{Lat:46.15,Lng:15,Zoom:8.8}"],
+                    "geoSpain":                 [self.Spain                 , None          , "Spain","Spain / Espagne","Spain / Espagne","","ESP","ES","Country","{Lat:36,Lng:-7,Zoom:5.8}"],
+                    "geoSweden":                [self.Sweden                , None          , "Sweden","Sweden / la Suède","Sweden / la Suède","","SWE","SE","Country","{Lat:63.0,Lng:16.5,Zoom:5}"],
+                    "geoSwitzerland":           [self.Switzerland           , None          , "Switzerland","Switzerland / Suisse","Switzerland / Suisse","","CHE","CH","Country","{Lat:46.85,Lng:8.1,Zoom:8.2}"],
+                    "geoUkraine":               [self.Ukraine               , None          , "Ukraine","Ukraine","Ukraine","","UKR","UA","Country","{Lat:48.5,Lng:31.5,Zoom:6.5}"],
+                    "geoUkJerseyGuernsey":      [self.UkJerseyGuernsey      , None          , "(Uk) Jersey-Guernesey","Iles de Jersey et Guernesey","Iles Anglo-Normandes de Jersey et Guernesey","","JEY;GGY","JE;GG","Countries","{Lat:49.5,Lng:-2.3,Zoom:9.6}"],
+                    "geoUnitedKingdom":         [self.UnitedKingdom         , None          , "United-Kingdom","United-Kingdom / Royaume-Uni","United-Kingdom / Royaume-Uni","","GBR","GB","Country","{Lat:54.5,Lng:-3.4,Zoom:6.2}"]
                     }
 
         self.oShapeZoneRef = None
@@ -139,11 +185,11 @@ class GeoRefArea:
     def makeFrenchAllTerritories(self) -> dict:
         geoJSON:dict = copy.deepcopy(self.French)
         aFeatures = geoJSON[poaffCst.cstGeoFeatures]
-        aAreas:list = [self.Corse, self.LaReunion, self.GuyaneFr, self.StPierreEtMiquelon, self.AntillesFr, self.Mayotte, self.PolynesieFr, self.NouvelleCaledonie]
+        aAreas:list = [self.AntillesFr, self.Corse, self.GuyaneFr, self.LaReunion, self.NouvelleCaledonie, self.Mayotte, self.PolynesieFr, self.StPierreEtMiquelon]
         for gJS in aAreas:
             oFeature = gJS[poaffCst.cstGeoFeatures][0]
             aFeatures.append(oFeature)
-        #bpaTools.writeJsonFile(self.inputPath + "__geoFrenchAll_border.geojson", geoJSON)
+        bpaTools.writeJsonFile(self.inputPath + "__geoFrenchAll_border.geojson", geoJSON)
         return geoJSON
 
     #Controle de conformité de la fermeture d'une zone. Erreur levée si le premier-point de la géométrie est différent du dernier
