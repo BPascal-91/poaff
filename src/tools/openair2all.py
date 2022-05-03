@@ -179,16 +179,39 @@ def parcsConsolidation() -> None:
         "Vauville":         ["Vauville", "20210615_Mare-de-Vauville.txt"],
         "Hourtin":          ["Hourtin", "20200729_SergeR_ParcNat_Hourtin.txt"],
         "Pyrenees":         ["Pyrenees", "20210323_Pyrenees_hr.txt"],
-        "Ordessa":          ["Ordessa", "20210304_Ordessa.txt"],
+        "Py":               ["Py", "20220418_RNN-Py_hr.txt"],
+        "Mantet":           ["Mantet", "20220418_RNN-Mantet_hr.txt"],
+        "Frank-Miss":       ["Frankenthal-Missheimle", "20220418_RNN_Frankenthal-Missheimle_hr.txt"],
+        "Langen-Klintz":    ["Langenfeldkopf-Klintzkopf", "20220501_Langenfeldkopf-Klintzkopf_hr.txt"],
+        "Chaudefour":       ["Chaudefour", "20220501_Chaudefour_hr.txt"],
+        "Jacquette":        ["Jacquette", "20220501_Jacquette_hr.txt"],
+        "Herbouilly":       ["Herbouilly", "20220501_Herbouilly_hr.txt"],
+        "Louschbach":       ["Louschbach", "20220501_Louschbach_hr.txt"],
+        "Taennchel":        ["Taennchel", "20220501_Taennchel_hr.txt"],
+        "Lorry-Mardig":     ["Lorry-Mardigny", "20220501_Lorry-Mardigny_hr.txt"],
+        "Anse-d-Arcot":     ["Anse-d-Arcot", "20220501_Anse-d-Arcot_hr.txt"],
+        "Mar-Villards-Parc":["Marais-des-Villards-et-du-Parc", "20220501_Marais-des-Villards-et-du-Parc_hr.txt"],
+        "Tourb-Montendry":  ["Tourbieres-Montendry-Montgilbert", "20220501_Tourbieres-Montendry-Montgilbert_hr.txt"],
+        "St-Jean-Chevelu":  ["Saint-Jean-de-Chevelu", "20220501_Saint-Jean-de-Chevelu_hr.txt"],
+        "Marais-Etelles":   ["Marais-des-Etelles", "20220501_Marais-des-Etelles_hr.txt"],
         "Calanques":        ["Calanques", "20210420_Calanques.txt"],
         "PortCros":         ["PortCros", "20210420_PortCros.txt"],
+        "Bio-FR3800192":    ["Biotopes-FR3800192", "20220424_Biotope-FR3800192_hr.txt"],
+        "Bio-Divers":       ["Biotopes-Divers", "20220424_ArreteProtectionBiotope_hr.txt"],
+        "ZSM-Basseville":   ["ZSM-Basseville", "20220501_ZSM-Basseville_hr.txt"],
+        "ZSM-Hte-Seille":   ["ZSM-Reculees-Haute-Seille", "20220501_ZSM-Reculees-Haute-Seille_hr.txt"],
+        "ZSM-Divers":       ["ZSM-Divers", "20220501_ZSM-Divers_hr.txt"],
         "Scandola":         ["Scandola", "20210420_Scandola.txt"],
+        "LaReunion":        ["LaReunion", "20220501_LaReunion_hr.txt"],
+        "Guadeloupe":       ["Guadeloupe", "20220424_ParcNational_Guadeloupe_hr.txt"],
+        "GuyaneFr":         ["GuyaneFr", "20220424_ParcNational_GuyaneFr_hr.txt"],
+        "Ordessa":          ["Ordessa", "20210304_Ordessa.txt"],
         "Italie":           ["Italie", "20210324_ParcsItaliens.txt"]
     }
     iConstructParc: int = 2                            #Phase de construction des Parcs: 0=Rien, 1=Phase1, 2=Phase2
     if iConstructParc == 1:
         ###(deb) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc
-        aParc = oParcs["Vauville"]
+        aParc = oParcs["ZSM-Divers"]
         sInPath: str = cstPoaffInPath + "Parcs/" + aParc[0] + "/"
         sOutPath: str = sInPath + "map/"
         makeAllFiles(sInPath, aParc[1], sOutPath, cstPoaffInPath)
@@ -269,7 +292,7 @@ if __name__ == '__main__':
     setConfEpsilonReduce(epsilonReduce)         #### Paramétrage de l'optimisation des tracés ####
 
 
-    ## parcsConsolidation()
+    parcsConsolidation()
 
 
     """
@@ -321,7 +344,7 @@ if __name__ == '__main__':
     """
 
 
-
+    """
     ###--- PWC-FrenchAlps --
     sPwcPathName: str = "FFVL/PWC-FrenchAlps/"
     sInPath: str = cstPoaffInPath  + sPwcPathName
@@ -329,7 +352,7 @@ if __name__ == '__main__':
     sSrcOpenairFile: str = "20210311_PWC-FrenchAlps_Airspace-mondiaux_BPa-20210311.txt"
     #sFilterClass=["ZSM", "GP"]
     makeAllFiles(sInPath, sSrcOpenairFile, sPOutPath, "../" + cstPoaffInPath)
-
+    """
 
 
     #Clotures

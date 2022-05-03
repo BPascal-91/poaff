@@ -1,0 +1,3 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"name": "Malta", "countryName": "Malta", "countryCode": "MT", "countryIsoCode": "MLT", "src": "...", "creationDatetime": "2022-01-15T15:15:30.337548"}, 
+	"geometry": {"type": "Polygon", "coordinates": [[[14.07714, 35.684072], [14.719706, 35.684072], [14.719706, 36.197742], [14.07714, 36.197742], [14.07714, 35.684072]]]}
+}]}

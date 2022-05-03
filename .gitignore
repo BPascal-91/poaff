@@ -8,7 +8,6 @@ __pycache__/
 
 # Local resources
 output/
-input/_*
 input/BPa
 input/dataGouv-fr
 input/DIRCAM
@@ -16,7 +15,8 @@ input/EuCtrl
 input/FFVL
 input/FFVP
 input/LPO
+input/OpenAIP
 input/Parcs
 input/SIA
-input/OpenAIP
 input/Tests/KML-tests
+input/ZSMs
