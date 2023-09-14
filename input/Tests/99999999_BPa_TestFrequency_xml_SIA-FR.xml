@@ -331,6 +331,20 @@
 				<HorTxt>HOR ATS</HorTxt>
 				<Remarque>Test d'accentuations: "à-â-é-è-î-ï-ô-ù" / Particulière transit/Particular to transit</Remarque>
 			</Frequence>
+			<Frequence pk="4410a" lk="[LF][SX][TWR LUXEUIL Approche][140.925]">
+				<Service pk="4410a" lk="[LF][SX][TWR LUXEUIL Approche]"/>
+				<Frequence>140.925</Frequence>
+				<HorCode>HX</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Cette fréquence ne doit pas être récupérée car n'est pas comprise dans l'intervalle de 118.000 à 136.990</Remarque>
+			</Frequence>
+			<Frequence pk="4410b" lk="[LF][SX][TWR LUXEUIL Approche][114.925]">
+				<Service pk="4410b" lk="[LF][SX][TWR LUXEUIL Approche]"/>
+				<Frequence>114.925</Frequence>
+				<HorCode>HX</HorCode>
+				<HorTxt>HOR ATS</HorTxt>
+				<Remarque>Cette fréquence ne doit pas être récupérée car n'est pas comprise dans l'intervalle de 118.000 à 136.990</Remarque>
+			</Frequence>
 			<Frequence pk="13151" lk="[LF][UTA FRANCE][UAC BREST Contrôle][119.825]">
 				<Service pk="1501" lk="[LF][UTA FRANCE][UAC BREST Contrôle]"/>
 				<Frequence>119.825</Frequence>

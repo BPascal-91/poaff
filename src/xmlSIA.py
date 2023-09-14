@@ -296,6 +296,7 @@ class XmlSIA:
             idx+=1
             if len(o)>1:                                            #Exclure les tags interne de type '<Frequence>360.125</Frequence>'
                 sFreq = o.Frequence.string
+                #Demande de Camille Lafargue - Les fréquences accessibles sont entre 118.000 et 136.990 ; il faut exclure tous le reste
                 if (float(sFreq)>=118) and (float(sFreq)<=137):
                     sLocKey:str = o["lk"]                           #lk="[LF][RK][TWR CAEN Tour][134.525]
                     sLocKey = sLocKey.replace("[", "")
@@ -443,7 +444,9 @@ class XmlSIA:
                     sFreqOld:str = sFreq
                     sFreq = sFreq.replace(",", ".")
                     sTxt = sTxt.replace(sFreqOld, sFreq)
-                if self.ctrlNewFrequecy(sFreq, oFreqList):
+                #Demande de Camille Lafargue - Les fréquences accessibles sont entre 118.000 et 136.990 ; il faut exclure tous le reste
+                if (float(sFreq)>=118) and (float(sFreq)<=137) and self.ctrlNewFrequecy(sFreq, oFreqList):
+                #if self.ctrlNewFrequecy(sFreq, oFreqList):
                     sFreqKey:str = self.findFrequecyType(sTxt, sFreq)
                     sFreqKey = self.makeNewKey(sFreqKey, oFreqList)
                     oFreqList.update({sFreqKey:[sFreq]})
@@ -486,6 +489,9 @@ class XmlSIA:
         sFind = sFind.replace("glider-info" , "info")
         sFind = sFind.replace("watch"       , "")               #Special clean for not 'atc'
         lFreq:int = sFind.find(sFreq)                           #Frequecy position
+        #Mise au point...
+        #if sFind.find("CC MAR MEDITERRANEE (FANNY TWR 127.975 MHz, 118.5 MHz)".lower()) > 0:
+        #    1 == 1
         if lFreq != -1:
             for iIdx in range(4):                               #Boucle de 0 à 3 (4 itérations)
                 if iIdx == 0:

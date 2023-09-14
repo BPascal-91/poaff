@@ -12,6 +12,7 @@ import airspacesCatalog
 from airspacesCatalog import AsCatalog
 import geoRefArea
 import googleAPI  #from googleAPI import geocoding
+from time import gmtime, strftime
 
 
 cstGoogleMaps:str   = "GoogleMaps"
@@ -40,6 +41,7 @@ class GoogleMapsArea:
 
     def makePoaffDataFile(self, sFile:str) -> None:
         sContent:str = "// " + bpaTools.getCopyright() + "\n"
+        sContent += cstCRLF + 'const creationDatetimeUtc="'+ strftime("%Y-%m-%d %H:%M:%S", gmtime()) + '";' + cstCRLF
         sContent += cstCRLF + 'const defaultCheckFile="geoFrench";' + cstCRLF
         sContent += 'var poaffFiles={' + cstCRLF
         for sAreaKey in self.oGeoRefArea.AreasRef.keys():
@@ -417,7 +419,7 @@ class GoogleMapsArea:
                             return oZone["upperValue"]
                         elif oZone["upperType"]=="STD":
                             return oZone["upperValue"] + "00"
-                        elif oZone["upperType"] in ["HEI","QFE","QNH","W84"]:
+                        elif oZone["upperType"] in ["HEI","QFE","QNH","W84","OTHER"]:
                             altM = oZone["upperM"]
                             altFT = int(float(altM+100) / aixmReader.CONST.ft)      #Surélévation du plafond de 100 mètres pour marge d'altitude
                             return "{0}".format(altFT)
@@ -452,7 +454,7 @@ class GoogleMapsArea:
                             return oZone["lowerValue"]
                         elif oZone["lowerType"]=="STD":
                             return oZone["lowerValue"] + "00"
-                        elif oZone["lowerType"] in ["HEI","QFE","QNH","W84"]:
+                        elif oZone["lowerType"] in ["HEI","QFE","QNH","W84","OTHER"]:
                             if oZone["lowerValue"]=="0":
                                 return "0"
                             else:

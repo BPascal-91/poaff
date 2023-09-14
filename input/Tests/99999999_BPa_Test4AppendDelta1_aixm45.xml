@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
-<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2020-07-19T19:53:01.597452" effective="2020-07-19T19:53:01.597452">
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa-Test" version="4.5" created="2020-07-19T19:53:01.597452" effective="2020-07-19T19:53:01.597452">
 	<Gbr>
 		<GbrUid mid="19048558">
 			<txtName>BELGIUM_FRANCE</txtName>

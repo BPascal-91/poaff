@@ -78,8 +78,8 @@ def makeAixm2Openair(sSrcPath:str, sSrcFile:str, sDstPath:str, sDstFile:str) -> 
         aArgs += [aixmReader.CONST.optEpsilonReduce + "=" + str(poaffCst.cstOpenairEpsilonReduce)]
     oOpts = bpaTools.getCommandLineOptions(aArgs)
     aixmCtrl = aixmReader.AixmControler(sSrcPath + sSrcFile, sDstPath, "", oLog)        #Init controler
-    aixmCtrl.bOpenairOptimizePoint = True           #False-->'46:23:57 N 006:06:20 E' or True-->'46:23:57N 6:6:2E'
-    #aixmCtrl.bOpenairOptimizeArc = False        #--> Ne pas optimiser l'Arc car l'alignement du 1er point de l'arc de cercle ne coincide souvent pas avec le point théorique du départ de l'arc !?
+    aixmCtrl.bOpenairOptimizePoint = poaffCst.cstOpenairOptimizePoint                   #False-->'46:23:57 N 006:06:20 E' or True-->'46:23:57N 6:6:2E'
+    #aixmCtrl.bOpenairOptimizeArc = False                                               #--> Ne pas optimiser l'Arc car l'alignement du 1er point de l'arc de cercle ne coincide souvent pas avec le point théorique du départ de l'arc !?
     aixmCtrl.execParser(oOpts)                                                          #Execution des traitements
     renameFile(sDstPath, "airspaces-all-gpsWithTopo.txt", sDstPath, sDstFile)
     return
@@ -161,18 +161,12 @@ def setConfEpsilonReduce(epsilonReduce:bool=None) -> None:
 def parcsConsolidation() -> None:
     sAllOpenair: str = ""
     oParcs:dict = {
-        "Jura":             ["Jura", "20210324_Parc-Jura.txt"],
         "Bauges":           ["Bauges", "20210104_FFVL_ParcBauges.txt"],
-        "AnnecyMarais":     ["AnnecyMarais", "20200120_FFVL_ParcAnnecyMarais.txt"],
-        "Passy":            ["Passy", "20191129_FFVL_ParcPassy.txt"],
-        "Sixt-Passy":       ["Sixt-Passy", "20210305_Sixt-Passy.txt"],
-        "AiguillesRouges":  ["AiguillesRouges", "20210304_AiguillesRouges.txt"],
-        "Contamines":       ["Contamines", "20210304_Contamines.txt"],
+        "AnnecyMarais":     ["AnnecyMarais", "20230330_FFVL_ParcAnnecyMarais.txt"],
         "GrandeSassiere":   ["GrandeSassiere", "20210304_GrandeSassiere.txt"],
         "Vanoise":          ["Vanoise", "20210325_Vanoise.txt"],
-        "Vercors":          ["Vercors", "20210305_Vercors.txt"],
-        "Ecrins":           ["Ecrins", "20210304_Ecrins.txt"],
-        "Mercantour":       ["Mercantour", "20210304_Mercantour.txt"],
+        "Vercors":          ["Vercors", "20230314_Vercors.txt"],
+        "Ecrins":           ["Ecrins", "20230904_Ecrins-HR.txt"],                          #OLD 20210304_Ecrins-LR.txt
         "Champagne":        ["Champagne", "20210202_BPa_ParcsNat_Champagne.txt"],
         "Cevennes":         ["Cevennes", "20210324_PascalW_ParcCevennes.txt"],
         "BaieDeSomme":      ["BaieDeSomme", "20200729_SergeR_ParcNat_BaieDeSomme.txt"],
@@ -183,7 +177,6 @@ def parcsConsolidation() -> None:
         "Mantet":           ["Mantet", "20220418_RNN-Mantet_hr.txt"],
         "Frank-Miss":       ["Frankenthal-Missheimle", "20220418_RNN_Frankenthal-Missheimle_hr.txt"],
         "Langen-Klintz":    ["Langenfeldkopf-Klintzkopf", "20220501_Langenfeldkopf-Klintzkopf_hr.txt"],
-        "Chaudefour":       ["Chaudefour", "20220501_Chaudefour_hr.txt"],
         "Jacquette":        ["Jacquette", "20220501_Jacquette_hr.txt"],
         "Herbouilly":       ["Herbouilly", "20220501_Herbouilly_hr.txt"],
         "Louschbach":       ["Louschbach", "20220501_Louschbach_hr.txt"],
@@ -208,6 +201,17 @@ def parcsConsolidation() -> None:
         "Ordessa":          ["Ordessa", "20210304_Ordessa.txt"],
         "Italie":           ["Italie", "20210324_ParcsItaliens.txt"]
     }
+        #BPascal le 02/04/2023 - Ces Parcs ne sont plus nécessaires car automatiquement intégré via Biodiv-sports
+        #"Bio-FR3800749":    ["Biotopes-FR3800749", "20230330_ArreteProtectionBiotope_hr.txt"],
+        #"Jura":             ["Jura", "20210324_Parc-Jura.txt"],
+        #"Chaudefour":       ["Chaudefour", "20220501_Chaudefour_hr.txt"],
+        #"Passy":            ["Passy", "20191129_FFVL_ParcPassy.txt"],
+        #"Contamines":       ["Contamines", "20210304_Contamines.txt"],
+        #"Mercantour":       ["Mercantour", "20210304_Mercantour.txt"],
+        #"AiguillesRouges":  ["AiguillesRouges", "20210304_AiguillesRouges.txt"],
+        #"Sixt-Passy":       ["Sixt-Passy", "20210305_Sixt-Passy.txt"],
+
+
     iConstructParc: int = 2                            #Phase de construction des Parcs: 0=Rien, 1=Phase1, 2=Phase2
     if iConstructParc == 1:
         ###(deb) Phase 1 - Construction des fichiers unitaire pour mise au point du tracé d'un unique parc

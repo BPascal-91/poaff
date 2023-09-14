@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
-<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" version="4.5" effective="2021-02-14T00:00:00" origin="EAD-SDO" created="2021-02-14T00:00:00">
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" version="4.5" effective="2021-02-14T00:00:00" origin="BPa-Test" created="2021-02-14T00:00:00">
     <Ase>
         <AseUid mid="1564491">
             <codeType>R</codeType>

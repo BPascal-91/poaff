@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
-<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2020-07-19T19:53:01.597452" effective="2020-07-19T19:53:01.597452">
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa-Test" version="4.5" created="2020-07-19T19:53:01.597452" effective="2020-07-19T19:53:01.597452">
 	<Ase>
 		<AseUid mid="4484815">
 			<codeType>R</codeType>
@@ -94,7 +94,7 @@
 			<txtRmkWorkHr>Tests d'accentuations (txtRmkWorkHr): "à-â-é-è-î-ï-ô-ù". Freq-Radio complémentaires RADAR: 121.425</txtRmkWorkHr>
 		</Att>
 		<txtRmk>Test-Zone1 (sans plancher) -  Tests d'accentuations (txtRmk): "à-â-é-è-î-ï-ô-ù"#
-Freq-Radio complémentaires APP: 129.925 ; TWR: 120.950 ; INFO: 120.325 ;
+Freq-Radio complémentaires APP: 129.925 ; TWR: 120.950 ; INFO: 120.325 ; TWR: 155.950 ; TWR: 140.950 ; 
 SUM : - 1HR#
 Excluding the French part of SARREBRUCK CTR.
 #MON-FRI: 0500-1800, 1900-2030</txtRmk>
@@ -114,7 +114,8 @@ Excluding the French part of SARREBRUCK CTR.
 		</Att>
 		<txtRmk>Test-Zone2 (sans plafond)#
 SUM : - 1HR#
-Excluding the French part of SARREBRUCK CTR.</txtRmk>
+Excluding the French part of SARREBRUCK CTR.
+CC MAR MEDITERRANEE (FANNY CTL 127.975 MHz, 118.5 MHz).</txtRmk>
 	</Ase>
 	<Ase>
 		<AseUid mid="mid-Test1">

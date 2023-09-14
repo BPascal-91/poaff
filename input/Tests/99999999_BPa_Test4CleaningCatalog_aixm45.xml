@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
-<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2020-05-10T19:53:01.597452" effective="2020-05-10T19:53:01.597452">
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa-Test" version="4.5" created="2020-05-10T19:53:01.597452" effective="2020-05-10T19:53:01.597452">
     <Ase>
         <AseUid mid="1563145">
             <codeType>R</codeType>
@@ -182,6 +182,25 @@ CAUTION : this CTR coexists with LF-R 275 PARIS which avoidance is mandatory for
 			<codeId>LFR12</codeId>
 		</AseUid>
 		<txtName>12 CLASS R</txtName>
+		<codeDistVerUpper>ALT</codeDistVerUpper>
+		<valDistVerUpper>3000</valDistVerUpper>
+		<uomDistVerUpper>FT</uomDistVerUpper>
+		<codeDistVerLower>HEI</codeDistVerLower>
+		<valDistVerLower>0</valDistVerLower>
+		<uomDistVerLower>FT</uomDistVerLower>
+		<Att>
+			<codeWorkHr>HX</codeWorkHr>
+			<txtRmkWorkHr>Possible activation H24 except SUN and public HOL. Actual activity known by: DEAUVILLE APP : 120.350 MHz DEAUVILLE FIS : 121.425 MHz ..etc.. and AFIS 120.2MHz absence</txtRmkWorkHr>
+		</Att>
+		<txtRmk>Administrator: NIL.#Avoidance mandatory except for exemption granted by the prefect of la Manche, after West DSAC consultation.</txtRmk>
+	</Ase>
+	<Ase>
+		<AseUid mid="1563127b">
+			<codeType>CTA</codeType>
+			<codeId>LFRTSTCTA</codeId>
+		</AseUid>
+		<txtName>Test de CTA sans desactivation possible !</txtName>
+		<codeClass>D</codeClass>
 		<codeDistVerUpper>ALT</codeDistVerUpper>
 		<valDistVerUpper>3000</valDistVerUpper>
 		<uomDistVerUpper>FT</uomDistVerUpper>
@@ -604,6 +623,21 @@ VFR : air navigator's attention is drawn on the life threatening nature of activ
 		</AbdUid>
 		<Circle>
 			<geoLatCen>483811.00N</geoLatCen>
+			<geoLongCen>0013040.00W</geoLongCen>
+			<codeDatum>WGE</codeDatum>
+			<valRadius>1.6</valRadius>
+			<uomRadius>NM</uomRadius>
+		</Circle>
+	</Abd>
+	<Abd>
+		<AbdUid mid="1569496b">
+			<AseUid mid="1563127b">
+				<codeType>CTA</codeType>
+				<codeId>LFTSTCTA</codeId>
+			</AseUid>
+		</AbdUid>
+		<Circle>
+			<geoLatCen>482811.00N</geoLatCen>
 			<geoLongCen>0013040.00W</geoLongCen>
 			<codeDatum>WGE</codeDatum>
 			<valRadius>1.6</valRadius>

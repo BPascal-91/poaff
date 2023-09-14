@@ -58,4 +58,4 @@ cstOpenairCfdEpsilonReduce:float    = -1    #Simplification des tracés Openair 
 cstOpenairEpsilonReduce:float       = -1    #Simplification des tracés Openair standard
 cstOpenairEpsilonReduceMR:float     = -1    #Simplification des tracés Openair pour les zones régionnales "ISO_Perimeter=Partial" (gpsWithTopo or gpsWithoutTopo)
 cstOpenairDigitOptimize:float       =  0    #openairDigitOptimize=-1 / 0 / 2
-
+cstOpenairOptimizePoint:bool        = False #Std=False  12/03/2023: Demande de Jacques Fournier du 23/05/2022 - Ne pas optimiser les point GPS car probleme de formalisme OpenAir pour certains parseue du Software-FAI pour les PWC

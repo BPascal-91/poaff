@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../input/_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa" version="4.5" created="2021-02-10T00:44:52.311029" effective="2021-02-10T00:44:52.311029">
+<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../input/_aixm_xsd-4.5b/AIXM-Snapshot.xsd" origin="BPa-Test" version="4.5" created="2021-02-10T00:44:52.311029" effective="2021-02-10T00:44:52.311029">
   <Ase>
     <AseUid mid="1">
       <codeType>D</codeType>

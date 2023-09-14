@@ -3,7 +3,7 @@
 #### poaff - Procedure d'intégration des fichiers
 
 	1/ Recupération des fic SIA
-		https://www.sia.aviation-civile.gouv.fr/produits-numeriques-en-libre-disposition/exports-de-donnees.html
+		https://www.sia.aviation-civile.gouv.fr/produits-numeriques-en-libre-disposition/les-bases-de-donnees-sia.html
 		Fichiers a placer 
 			Zip a placer ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA\src
 			2 fic xml a placer ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA
@@ -22,6 +22,8 @@
 		### Procedure de récupération des fichiers ###
 		Demarrer l'application "Cisco AnyConnect Secure Mobility Client"
 			Ouvrir une session sur le 1er VPN - vpn1.ead-it.com  (ou vpn2.ead-it.com)
+				avec username lf_PBazile + Psw push 
+				Application 'Duo Mobile' sur telephone pour double authentification
 		Avec Navigateur Chrome - Aller sur la page d'accueil d'Eurocontrol
 			http://vead03.prod.ead-itp.com:8888/publicuser/public/du/login.do
 			se connecter : EAD: User Name + Password
@@ -32,7 +34,6 @@
 			puis les fichiers sont dans le dossier '/home/sdo/download/ffvl'
 		Placeer le fic Zip a placer ds D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\EuCtrl
 
-		
 	3/ Récupérer les SUPAIP SIA-FR
 		Suivre fichier -> D:\_Users_\BPascal\_4_Src\Src_Python\git\poaff\input\SIA\_SIA_SUP-AIP\___Suivi-des-SUPAIP.txt
 		

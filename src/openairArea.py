@@ -64,13 +64,13 @@ class OpenairZone:
               self.sLower  != None
         return ret
 
-    def serializeArea(self, gpsType:str="", digit:int=-1, epsilonReduce:float=-1, nbMaxSegment:int=-1,oLog:bpaTools.Logger=None) -> str:
+    def serializeArea(self, gpsType:str="", digit:int=-1, epsilonReduce:float=-1, nbMaxSegment:int=-1, oLog:bpaTools.Logger=None) -> str:
         iNbSegments:int = len(self.oBorder)
         if iNbSegments == 0:
             return ""
         oAirspace:dict = self.oCat
         oAirspace.update({poaffCst.cstGeoGeometry:self.oBorder})
-        oZone:list = aixm2openair.makeOpenair(oAirspace, gpsType, digit=poaffCst.cstOpenairDigitOptimize, epsilonReduce=epsilonReduce, nbMaxSegment=nbMaxSegment, epsilonrDyn=True, oLog=oLog)
+        oZone:list = aixm2openair.makeOpenair(oAirspace, gpsType, digit=poaffCst.cstOpenairDigitOptimize, epsilonReduce=epsilonReduce, nbMaxSegment=nbMaxSegment, epsilonrDyn=True, bOpenairOptimizePoint=poaffCst.cstOpenairOptimizePoint, oLog=oLog)
         area:str = "\n".join(oZone) + "\n"
         return area
 
@@ -81,6 +81,7 @@ class OpenairArea:
         bpaTools.initEvent(__file__, oLog)
         self.oLog:bpaTools.Logger       = oLog      #Log file
         self.oAsCat:AsCatalog           = oAsCat    #Catalogue des zones
+        self.aAsIndex                   = []        #Index spécifique pour classement par Nommage des zones
         self.oGlobalOpenair:dict        = {}        #Liste globale des zones
         self.oOpenair:dict              = {}        #Liste temporaire des zones
         self.oZone:OpenairZone          = None      #Zone active
@@ -94,6 +95,7 @@ class OpenairArea:
         return
 
     def saveOpenairAirspacesFile(self, sFile:str, sContext:str="all", sAreaKey:str="") -> None:
+        self.makeCatalogIndex()    #Indexation avec tri alphabetique sur le nom des zones
         if sContext=="cfd":
             self.saveOpenairAirspacesFile2(sFile, sContext, "-gpsWithTopo")
         elif sContext=="ff":
@@ -136,7 +138,9 @@ class OpenairArea:
         sTitle = cstOpenair + " save airspaces file - {0} / {1} / {2} / {3}".format(sContext, gpsType, exceptDay, sAreaKey)
         barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
         idx = 0
-        for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
+        #for sGlobalKey, oGlobalCat in oGlobalCats.items():                                      #Traitement du catalogue global complet
+        for sGlobalKey, sIdxKey in self.aAsIndex:                                               #Scrutation de l'index des zones triés par nommage
+            oGlobalCat = oGlobalCats[sGlobalKey]                                                #Identification de la zone dans le catalogue
             idx+=1
 
             #if oGlobalCat["id"] in ["TMA16169","TMA16170"]:
@@ -394,7 +398,7 @@ class OpenairArea:
             return
 
         self.oOpenair:dict = {}     #Clean temporary dict
-        fileOpenair = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName +  poaffCst.cstAsAllOpenairFileName                  #Fichier comportant toutes les bordures de zones
+        fileOpenair = oFile[poaffCst.cstSpOutPath] + sKeyFile + poaffCst.cstSeparatorFileName + poaffCst.cstAsAllOpenairFileName                  #Fichier comportant toutes les bordures de zones
 
         sTitle = cstOpenair + " airspaces consolidation - {0}".format(sKeyFile)
         self.oLog.info(sTitle + ": {1} --> {2}".format(sKeyFile, fileOpenair, oFile[poaffCst.cstSpProcessType]), outConsole=False)
@@ -444,3 +448,33 @@ class OpenairArea:
         #self.oLog.info("--> {} Openair parsing zones".format(len(self.oOpenair)), outConsole=False)
         return
 
+    def makeCatalogIndex(self) -> None:
+        """
+        Tri Alphabetique des zones sur la base du nom court 'name' ex:CLERMONT 1.20 ; ou si le nomage est vide on prend 'nameV' qui contient systématiquement la typologie de zone. ex: TMA CLERMONT 1.20 App(122.225) Lower(1000FT AGL-2700FT AMSL)
+        Sample self.aAsIndex = [
+                #(<UId>     , <Key for index>),
+                ('LFLC1.20' , 'CLERMONT 1.20'),     # TMA CLERMONT 1.20 App(122.225) Lower(1000FT AGL-2700FT AMSL)
+                ('LFLC2'    , 'CLERMONT 2'),        # TMA CLERMONT 2 App(122.225)
+                ('LFLC3'    , 'CLERMONT 3'),        # TMA CLERMONT 3 App(122.225)
+                etc ../..
+            ]
+        """
+        if len(self.aAsIndex)>0:                                                             #Eviter la réantrance d'indexation
+            return
+
+        oGlobalCats = self.oAsCat.oGlobalCatalog[airspacesCatalog.cstKeyCatalogCatalog]         #Récupération de la liste des zones consolidés
+        sTitle = cstOpenair + " airspaces make index"
+        barre = bpaTools.ProgressBar(len(oGlobalCats), 20, title=sTitle)
+        idx = 0
+        aTmp = []
+        for sGlobalKey, oAs in oGlobalCats.items():                                      #Traitement du catalogue global complet
+            idx+=1
+            if oAs["name"]=="":
+                sIdxKey = oAs["nameV"]
+            else:
+                sIdxKey = oAs["name"]
+            aTmp.append((oAs["GUId"], sIdxKey))
+            barre.update(idx)
+        barre.reset()
+        self.aAsIndex = sorted(aTmp, reverse=False, key=lambda oTmp: oTmp[1])             #Tri alphanumérique
+        return
