@@ -518,8 +518,10 @@ class AsCatalog:
                 oAs.update({"exceptHOL":True})
 
         #Toutes les RTBA du SIA France, ne sont jamais activées les samedis/dimanches et jours fériés
+        # Chercher les zone frisées ("zones grisées → RTBA") présentes dans le document 'En route France' - https://www.dircam.dsae.defense.gouv.fr/index.php/fr/documentation-4/en-route-france
+        # Lien direct au PDF - https://www.dircam.dsae.defense.gouv.fr/images/Stories/Doc/ERF/erf_complet.pdf
         if sKeyFile in ["EuCtrl","SIA-AIXM"] and oAs["type"]=="R":
-            if oAs[cstKeyCatalogKeyId] in ["LFR45A","LFR45B","LFR45C","LFR45D","LFR45N2","LFR45N3","LFR45N4","LFR45N5.1","LFR45N5.2","LFR45S1","LFR45S2","LFR45S3","LFR45S4","LFR45S5","LFR45S6.1","LFR45S6.2","LFR45S7","LFR45NS","LFR46A","LFR46B","LFR46C","LFR46D","LFR46E1","LFR46E2","LFR46F1","LFR46F2","LFR46F3","LFR46G","LFR46N1","LFR46N2","LFR69","LFR139","LFR142","LFR143","LFR144","LFR145","LFR147","LFR165","LFR152","LFR166A","LFR166B","LFR166C","LFR56","LFR57","LFR149A","LFR149B","LFR149D","LFR149E","LFR193A","LFR193B","LFR590A","LFR590B","LFR191A","LFR191B","LFR191C","LFR589A","LFR589B","LFR591","LFR592","LFR593A","LFR593B"]:
+            if oAs[cstKeyCatalogKeyId] in ["LFR45A","LFR45B","LFR45C","LFR45D","LFR45N2","LFR45N3","LFR45N4","LFR45N5.1","LFR45N5.2","LFR45NS","LFR45S1","LFR45S2","LFR45S2Z","LFR45S3","LFR45S3Z","LFR45S4","LFR45S4Z","LFR45S5","LFR45S6.1","LFR45S6.2","LFR45S7","LFR46A","LFR46B","LFR46C","LFR46D","LFR46E1","LFR46E2","LFR46F1","LFR46F2","LFR46F3","LFR46G","LFR46N1","LFR46N2","LFR56","LFR57","LFR69","LFR139","LFR139A","LFR139B","LFR142","LFR142A","LFR142B","LFR143","LFR144","LFR144A","LFR144B","LFR145","LFR145A","LFR145B","LFR147","LFR149A","LFR149B","LFR149D","LFR149E","LFR152","LFR164","LFR165","LFR165A","LFR165B","LFR166A","LFR166A1","LFR166A2","LFR166B","LFR166C","LFR191A","LFR191B","LFR191C","LFR193A","LFR193B","LFR589A","LFR589B","LFR590A","LFR590B","LFR591","LFR592","LFR593","LFR593A","LFR593B"]:
                 oAs.update({"type":"RTBA"})
                 if oAs.get("codeActivity", "")=="":
                     oAs.update({"codeActivity":"MILOPS"})
@@ -623,7 +625,7 @@ class AsCatalog:
                   "LFSB36Z.20","LFSBDZZ4","LFSB38Z.20","LFSBDZZ4T2","LFSTSUD","LFSTNORD","LFSB20L.20","LFSB21L.30","LFSBCLDSE","LFSB21L.20","LFSB22L.30","EDCLSBAE","LFSBCLE","LFSBCLDSW1","LFSB22L.20","LFSBDLSW1",
                   "LS-T21Z_1","LS-T201Z","LS-T21Z_2","LS-T23Z_3","LSAS","LSAS@@-1","LSAZ","LSR75_1","LSR75_2","LSR29","EUC25SMZ","EUC25SHZ","EUC25SM","EUC25SH","EUC25SMPZ","EUC25SLZ","EUC25SL1","EUC25SL2","EUC25SLPZ","LSR27","LSAG","LSR28","LSR26","LSR80","LSR81","LSR21","LSR23","LSR24","LSGG5",
                   "LECBFIR_G","LECB","LECB@@-1","LEBL_G","LEBL_C","LEBL_D","LEBL","LER152","LECM","LECM@@-1","LECMFIR_G","LESO-PART1","LESO","LECM-C","LECBFIR_C","LECBUIR_C","LED47B","LECBFIR_E","LECMUIR_C","LECMFIR_E","LED47A","LETLPRPTC1",
-                  "LICTAMM18","LIMM","LIMM@@-1","LISFRAM01A","LIR4","LITSA72","LIR64","LICTAMM4","LICTAMM7","EGUP","EGTT","EGTT@@-1","EGSO","EGWO2","EGJA-2","EGJJ","EGJJS","EGJJ1","EGJJ2","CTA11562","LIGRANPARADISO","LEOrdessa","LIMM@@-2","LSASFRA1","LSASFRA2","LEFRA1","LED47Z2","LED47Z1","LETS91","LS-R18"]:
+                  "LICTAMM18","LIMM","LIMM@@-1","LISFRAM01A","LIR4","LITSA72","LIR64","LICTAMM4","LICTAMM7","EGUP","EGTT","EGTT@@-1","EGSO","EGWO2","EGJA-2","EGJJ","EGJJS","EGJJ1","EGJJ2","CTA11562","LIGRANPARADISO","LEOrdessa","LIMM@@-2","LSASFRA1","LSASFRA2","LEFRA1","LED47Z2","LED47Z1","LETS91","LS-R18","EBTRA-W"]:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire: geoFrenchNESW (supprimer les LTA Pyrénées, trop lourdes pour la mémoire des Flymaster)

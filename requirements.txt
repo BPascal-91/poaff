@@ -1,11 +1,12 @@
 ###
-### Librayries
-###    Syntaxe4load --> pip install -r requirements.txt
+### Syntaxe4load: 	pip install -r requirements.txt
+### Libraries:		https://pypi.org/
+### Documentation: 	https://python.doctor/page-pip-installer-librairies-automatiquement
 ###
 #aixmPaser							; necessary to parse sources files
 #aixmPaser.groundEstimatedHeight    ; necessary to complete input-data
 #openairPaser                       ; necessary to parse Openair files
-beautifulsoup4==4.8.0
+beautifulsoup4==4.12.2
 rdp==0.8
 Shapely==1.6.4
 #Sous Windows, 'Shapely' peut ne pas s'installer, si besoin le télécharger --> https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely

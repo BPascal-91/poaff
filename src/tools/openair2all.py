@@ -161,8 +161,9 @@ def setConfEpsilonReduce(epsilonReduce:bool=None) -> None:
 def parcsConsolidation() -> None:
     sAllOpenair: str = ""
     oParcs:dict = {
-        "Bauges":           ["Bauges", "20210104_FFVL_ParcBauges.txt"],
+        "AiguillesRouges":  ["AiguillesRouges", "20210304_AiguillesRouges.txt"],
         "AnnecyMarais":     ["AnnecyMarais", "20230330_FFVL_ParcAnnecyMarais.txt"],
+        "Bauges":           ["Bauges", "20210104_FFVL_ParcBauges.txt"],
         "GrandeSassiere":   ["GrandeSassiere", "20210304_GrandeSassiere.txt"],
         "Vanoise":          ["Vanoise", "20210325_Vanoise.txt"],
         "Vercors":          ["Vercors", "20230314_Vercors.txt"],
@@ -170,6 +171,7 @@ def parcsConsolidation() -> None:
         "Champagne":        ["Champagne", "20210202_BPa_ParcsNat_Champagne.txt"],
         "Cevennes":         ["Cevennes", "20210324_PascalW_ParcCevennes.txt"],
         "BaieDeSomme":      ["BaieDeSomme", "20200729_SergeR_ParcNat_BaieDeSomme.txt"],
+        "Castel-Vendon":    ["Biotope-FR3801101_Castel-Vendon", "20231002_FR3801101_Castel-Vendon_hr.txt"],
         "Vauville":         ["Vauville", "20210615_Mare-de-Vauville.txt"],
         "Hourtin":          ["Hourtin", "20200729_SergeR_ParcNat_Hourtin.txt"],
         "Pyrenees":         ["Pyrenees", "20210323_Pyrenees_hr.txt"],
@@ -208,7 +210,6 @@ def parcsConsolidation() -> None:
         #"Passy":            ["Passy", "20191129_FFVL_ParcPassy.txt"],
         #"Contamines":       ["Contamines", "20210304_Contamines.txt"],
         #"Mercantour":       ["Mercantour", "20210304_Mercantour.txt"],
-        #"AiguillesRouges":  ["AiguillesRouges", "20210304_AiguillesRouges.txt"],
         #"Sixt-Passy":       ["Sixt-Passy", "20210305_Sixt-Passy.txt"],
 
 
