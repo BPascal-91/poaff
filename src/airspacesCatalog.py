@@ -104,7 +104,7 @@ class AsCatalog:
             sSrcFile:str = "POAFF"
         elif sKeyFile in ["BPa-Parcs","LPO-Parcs"]:
             sSrcFile:str = "POAFF-Parcs"
-        elif sKeyFile in ["BPa-Birds","LPO-Birds","FFVP-Birds"]:
+        elif sKeyFile in ["BPa-Birds","LPO-Birds","FFVP-Birds","STAC-Birds"]:
             sSrcFile:str = "POAFF-Birds"
         elif sKeyFile in ["FFVL-Protocoles"]:
             sSrcFile:str = "POAFF-Prot"
@@ -617,7 +617,7 @@ class AsCatalog:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire
 
         #Traitements particuliers
-        if sKeyFile in ["EuCtrl","SIA-AIXM","SIA-SUPAIP","FFVL-Protocoles","BPa-ZonesComp","BPa-Parcs","LPO-Parcs","LPO-Birds","BPa-Birds","FFVP-Birds","BPa-Test4AppDelta1"]:
+        if sKeyFile in ["EuCtrl","SIA-AIXM","SIA-SUPAIP","FFVL-Protocoles","BPa-ZonesComp","BPa-Parcs","LPO-Parcs","LPO-Birds","BPa-Birds","FFVP-Birds","STAC-Birds","BPa-Test4AppDelta1"]:
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones de tous les territoires: Français (geoFrench + geoFrenchNorth + geoFrenchSouth etc...)
             if oAs[cstKeyCatalogKeyGUId] in ["K-FIR","EBBU-RMZ","EBBU-TMZ","EBKT-TMZ","EBKT-RMZ","EBUR","EBBU","EBCBA1C","EBLFA11","EBLCTA","EBHTA10A-P","EBTRAW","EBTSA15","EBTRA15","EBR25","EBS27","EBHTA10C-P","EBS30","EBHTA10D","EBS02","EBS182","EBTRA-SA","EBD29","EBS29","EBS33-1","EBS177","EBD26","EBS161","EBTSA27A","EBTSA27D","EBHTA04A-P","EBFS","EBFS@@-1","EBTSA27E","EBHTA06","EBSOUTH3","EBUR@@-1",
@@ -625,7 +625,7 @@ class AsCatalog:
                   "LFSB36Z.20","LFSBDZZ4","LFSB38Z.20","LFSBDZZ4T2","LFSTSUD","LFSTNORD","LFSB20L.20","LFSB21L.30","LFSBCLDSE","LFSB21L.20","LFSB22L.30","EDCLSBAE","LFSBCLE","LFSBCLDSW1","LFSB22L.20","LFSBDLSW1",
                   "LS-T21Z_1","LS-T201Z","LS-T21Z_2","LS-T23Z_3","LSAS","LSAS@@-1","LSAZ","LSR75_1","LSR75_2","LSR29","EUC25SMZ","EUC25SHZ","EUC25SM","EUC25SH","EUC25SMPZ","EUC25SLZ","EUC25SL1","EUC25SL2","EUC25SLPZ","LSR27","LSAG","LSR28","LSR26","LSR80","LSR81","LSR21","LSR23","LSR24","LSGG5",
                   "LECBFIR_G","LECB","LECB@@-1","LEBL_G","LEBL_C","LEBL_D","LEBL","LER152","LECM","LECM@@-1","LECMFIR_G","LESO-PART1","LESO","LECM-C","LECBFIR_C","LECBUIR_C","LED47B","LECBFIR_E","LECMUIR_C","LECMFIR_E","LED47A","LETLPRPTC1",
-                  "LICTAMM18","LIMM","LIMM@@-1","LISFRAM01A","LIR4","LITSA72","LIR64","LICTAMM4","LICTAMM7","EGUP","EGTT","EGTT@@-1","EGSO","EGWO2","EGJA-2","EGJJ","EGJJS","EGJJ1","EGJJ2","CTA11562","LIGRANPARADISO","LEOrdessa","LIMM@@-2","LSASFRA1","LSASFRA2","LEFRA1","LED47Z2","LED47Z1","LETS91","LS-R18","EBTRA-W"]:
+                  "LICTAMM18","LIMM","LIMM@@-1","LISFRAM01A","LIR4","LITSA72","LIR64","LICTAMM4","LICTAMM7","EGUP","EGTT","EGTT@@-1","EGSO","EGWO2","EGJA-2","EGJJ","EGJJS","EGJJ1","EGJJ2","CTA11562","LIGRANPARADISO","LEOrdessa","LIMM@@-2","LSASFRA1","LSASFRA2","LEFRA1","LED47Z2","LED47Z1","LETS91","LS-R18","EBTRA-W","EDGGFS08","EDGGFS09"]:
                 oAs.update({"ExtOfFrench":True})       #Exclusion volontaire sur base de l'Id
 
             #Fonctionnalité d'Exclusion volontaire de certaines zones du territoire: geoFrenchNESW (supprimer les LTA Pyrénées, trop lourdes pour la mémoire des Flymaster)

@@ -21,9 +21,9 @@ import geoRefArea
 # /!\ Change before generate html page !!! -> Sample - Cycle AIRAC 03/21 (25/03/2021 au 21/04/2021)
 # /!\ and cleen folder - poaff/output/_POAFF_www/files/
 ###################################################################################################
-cstPOAFFdateTrait:datetime = datetime.date(2023, 11, 2)      #bpaTools.getDateNow()  ||or||  datetime.date(2021, 5, 25)
-cstAIRACdateStart:datetime = datetime.date(2023, 11, 2)
-cstAIRACdateEnd:datetime   = datetime.date(2023, 11, 29)
+cstPOAFFdateTrait:datetime = datetime.date(2023, 12, 30)      #bpaTools.getDateNow()  ||or||  datetime.date(2021, 5, 25)
+cstAIRACdateStart:datetime = datetime.date(2023, 12, 28)
+cstAIRACdateEnd:datetime   = datetime.date(2024, 1, 24)
 ###################################################################################################
 
 
